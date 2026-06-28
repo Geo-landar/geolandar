@@ -2,12 +2,15 @@ name: Geolandar - Mise à jour élections
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # Chaque nuit à 1h du matin
-  workflow_dispatch:       # Permet de lancer manuellement
+    - cron: '0 1 * * *'
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
     steps:
       - name: Récupérer le code
@@ -23,6 +26,3 @@ jobs:
 
       - name: Lancer la mise à jour
         run: python update_elections.py
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
