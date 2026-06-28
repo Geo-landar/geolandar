@@ -8,7 +8,7 @@ import os
 # CONFIGURATION
 # ══════════════════════════════════════
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://tmbupyyugedmtmvzadeq.supabase.co")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtYnVweXl1Z2VkbXRtdnphZGVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTM3MTIsImV4cCI6MjA2MTQyOTcxMn0.mwb7OrlLLq0PaPMzqBV8KWIzaALhFy3AoXLuuiCMXmAAM")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
