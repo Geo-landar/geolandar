@@ -6,6 +6,40 @@
 <title>Geolandar — Élections Mondiales</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+:root{
+  --mode-dark:1;
+}
+:root.light-mode{
+  --bg:#f5f5f7;
+  --bd:#d2d2d7;
+  --tx:#1d1d1f;
+  --mu:#6e6e73;
+  --cd:rgba(0,0,0,.04);
+  --a1:#0071e3;
+  --a2:#0077ed;
+  --r:12px;
+  --mode-dark:0;
+}
+:root.light-mode body{
+  background:#f5f5f7;
+  color:#1d1d1f;
+}
+:root.light-mode .card{
+  background:#ffffff;
+  border-color:#d2d2d7;
+  box-shadow:0 2px 12px rgba(0,0,0,.08);
+}
+:root.light-mode nav{
+  background:rgba(245,245,247,.85);
+  border-color:#d2d2d7;
+}
+:root.light-mode .gpanel{
+  background:rgba(245,245,247,.97);
+  border-color:#d2d2d7;
+}
+:root.light-mode #globe-container{
+  background:radial-gradient(ellipse at center,#e8e8ed 0%,#f5f5f7 100%);
+}
 :root{--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2540;--a:#f97316;--a2:#3b82f6;--a3:#10b981;--a4:#8b5cf6;--tx:#f1f5f9;--mu:#94a3b8;--bd:rgba(255,255,255,.08);--cd:rgba(255,255,255,.04);--r:14px;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:DM Sans,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;}
@@ -259,6 +293,7 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
     <div class="ltog">
       <button class="lbtn active" onclick="setLang('fr')">FR</button>
       <button class="lbtn" onclick="setLang('en')">EN</button>
+    <button id="theme-btn" onclick="toggleTheme()" title="Mode clair/sombre" style="background:none;border:none;cursor:pointer;font-size:1.1rem;margin-left:8px;padding:4px 8px;border-radius:8px;color:var(--tx)">🌙</button>
     </div>
   </div>
 </nav>
@@ -324,9 +359,10 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
   <svg id="globe-svg"></svg>
   <button id="gbtn" onclick="closePanels()">← <span id="gbtxt">Retour</span></button>
   <div id="gzoom">
-    <button id="gzin" onclick="globeZoom(1)">+</button>
-    <button id="gzout" onclick="globeZoom(-1)">−</button>
-    <button id="gzrst" onclick="globeZoomReset()">⌂</button>
+    <button id="gzin" onclick="globeZoom(1)" title="Zoom +">+</button>
+    <button id="gzout" onclick="globeZoom(-1)" title="Zoom −">−</button>
+    <button id="gzrst" onclick="globeZoomReset()" title="Réinitialiser">⌂</button>
+    <button id="gzstop" onclick="globeToggleRotation()" title="Stop/Play rotation">⏸</button>
   </div>
   <div class="gpanel gpl" id="panL">
     <div class="gphdr"><div class="gpfl" id="gfL"></div><div><div class="gpname" id="gnL"></div><div class="gpsub" id="gsL"></div></div><button class="gpcls" onclick="closeGP('L')">✕</button></div>
@@ -1276,6 +1312,8 @@ var ISO3={
 '558':'Nicaragua','562':'Niger','566':'Nigeria','578':'Norvege','512':'Oman','586':'Pakistan','585':'Palau','591':'Panama','598':'Papouasie-NG','600':'Paraguay','604':'Perou','608':'Philippines','616':'Pologne','620':'Portugal','634':'Qatar','642':'Roumanie','643':'Russie','646':'Rwanda','659':'Saint-Kitts','662':'Sainte-Lucie','670':'Saint-Vincent','882':'Samoa','674':'Saint-Marin','678':'Sao Tome-et-Principe','682':'Arabie Saoudite','686':'Senegal','694':'Sierra Leone','703':'Slovaquie','705':'Slovenie','090':'Iles Salomon','706':'Somalie','710':'Afrique du Sud','724':'Espagne','144':'Sri Lanka','729':'Soudan','740':'Suriname','748':'Eswatini','752':'Suede','756':'Suisse','760':'Syrie','762':'Tadjikistan','764':'Thailande','626':'Timor oriental','768':'Togo','776':'Tonga','780':'Trinidad & Tobago','788':'Tunisie','792':'Turquie','795':'Turkmenistan','800':'Ouganda','804':'Ukraine','784':'Emirats arabes','826':'Royaume-Uni','840':'Etats-Unis','858':'Uruguay','860':'Ouzbekistan','548':'Vanuatu','862':'Venezuela','704':'Vietnam','887':'Yemen','894':'Zambie','716':'Zimbabwe',
 '112':'Belarus','268':'Georgie','051':'Armenie','031':'Azerbaidjan','191':'Croatie','703':'Slovaquie','705':'Slovenie','070':'Bosnie','499':'Montenegro','807':'Macedoine du Nord','688':'Serbie','384':"Cote d'Ivoire",'854':'Burkina Faso','266':'Gabon','226':'Guinee equatoriale',
 '834':'Tanzanie',
+'204':'Benin',
+'084':'Belize',
 '728':'Soudan du Sud',
 '417':'Kirghizstan',
 '090':'Iles Salomon',
@@ -1319,6 +1357,8 @@ var ISO3={
 'Togo':{capital:'Lomé',langue:'Français',monnaie:'Franc CFA (XOF)',pop:'8.8M',superficie:'56 785 km²'},
 'Tonga':{capital:'Nukualofa',langue:'Tongan, Anglais',monnaie:'Pa\'anga (TOP)',pop:'100K',superficie:'747 km²'},
 'Trinidad & Tobago':{capital:'Port of Spain',langue:'Anglais',monnaie:'Dollar de T&T (TTD)',pop:'1.4M',superficie:'5 128 km²'},
+'Somaliland':{capital:'Hargeisa',langue:'Somali, Arabe',monnaie:'Shilling du Somaliland (SLSH)',pop:'5.7M',superficie:'137 600 km²'},
+'Belize':{capital:'Belmopan',langue:'Anglais, Espagnol',monnaie:'Dollar du Belize (BZD)',pop:'430K',superficie:'22 966 km²'},
 'Turkmenistan':{capital:'Achgabat',langue:'Turkmène',monnaie:'Manat (TMT)',pop:'6M',superficie:'488 100 km²'},
 };
 
@@ -1552,6 +1592,8 @@ var LEADERS = {
 "Turkmenistan":{n:"Serdar Berdimuhamedow",t:"Président",p:"HDPTH (autoritarisme)",pos:8,d:"Fils du prédécesseur Gurbanguly. Régime parmi les plus fermés du monde. 2e réserves mondiales de gaz naturel prouvées. Culte de la personnalité. Aucun media indépendant."},
 /* ══ OCÉANIE ══ */
 "Australie":{n:"Anthony Albanese",t:"Premier ministre",p:"Parti Travailliste (centre-gauche)",pos:-2,d:"Social-démocrate. Politique climatique ambitieuse (50% renouvelables d'ici 2030). AUKUS (sous-marins nucléaires). Réconciliation avec les Aborigènes."},
+"Somaliland":{n:"Abdirahman Irro",t:"Président",p:"Wadani (opposition)",pos:1,d:"Territoire auto-proclamé indépendant depuis 1991. Non reconnu internationalement mais doté d'institutions démocratiques stables. Capitale Hargeisa. Économie basée sur l'élevage et les transferts de la diaspora."},
+"Belize":{n:"John Briceño",t:"Premier ministre",p:"PUP (centre-gauche)",pos:-2,d:"Social-démocrate. Petit État caribéen anglophone. Dispute territoriale avec le Guatemala. Économie du tourisme et agriculture (agrumes, canne à sucre)."},
 "Nouvelle-Caledonie":{n:"Louis Mapou",t:"Président du gouvernement",p:"UNI (indépendantiste kanak)",pos:-3,d:"Président du gouvernement de la Nouvelle-Calédonie depuis 2021. Territoire français d'outre-mer. Trois référendums d'indépendance organisés (2018, 2020, 2021) — tous rejetés. Tensions persistantes entre indépendantistes kanak et loyalistes."},
 "Taiwan":{n:"Lai Ching-te",t:"Président",p:"DPP (démocrate progressiste)",pos:-3,d:"Élu en janvier 2024. Partisan de l'indépendance de Taiwan. Tensions croissantes avec la Chine (PRC). Soutien américain renforcé (ventes d'armes). Économie des semi-conducteurs (TSMC — 60% de la production mondiale)."},
 "Nouvelle-Zelande":{n:"Christopher Luxon",t:"Premier ministre",p:"Parti National (centre-droit)",pos:3,d:"Conservateur libéral. Ex-PDG d'Air New Zealand. Coupes budgétaires. Crise du logement à Auckland. Tensions sur le Traité de Waitangi (droits maoris)."},
@@ -2226,7 +2268,9 @@ function initGlobe(){
       {p:'Timor oriental',lon:125.73,lat:-8.87,r:4},{p:'Brunei',lon:114.73,lat:4.53,r:4},
       {p:'Taiwan',lon:121.0,lat:23.7,r:5},{p:'Namibie',lon:17.08,lat:-22.96,r:5},
       {p:'Lesotho',lon:28.23,lat:-29.61,r:4},{p:'Eswatini',lon:31.46,lat:-26.52,r:4},
-      {p:'Gambie',lon:-15.31,lat:13.44,r:4},{p:'Guinee-Bissau',lon:-14.45,lat:11.8,r:4}
+      {p:'Gambie',lon:-15.31,lat:13.44,r:4},{p:'Guinee-Bissau',lon:-14.45,lat:11.8,r:4},
+    {p:'Somaliland',lon:46.2,lat:9.5,r:5},
+    {p:'Belize',lon:-88.7,lat:17.25,r:4}
     ];
 
     function markerCol(pays){
@@ -2334,6 +2378,18 @@ function initGlobe(){
     },{passive:false});
 
     /* Boutons zoom */
+    window.globeToggleRotation=function(){
+      var btn=document.getElementById('gzstop');
+      if(gPaused){
+        gPaused=false;
+        if(btn) btn.textContent='⏸';
+        if(btn) btn.title='Pause rotation';
+      } else {
+        gPaused=true;
+        if(btn) btn.textContent='▶';
+        if(btn) btn.title='Reprendre rotation';
+      }
+    };
     window.globeZoom=function(dir){
       var s=proj.scale();
       proj.scale(Math.max(80,Math.min(Math.min(W,H)*5,s*(dir>0?1.3:0.77))));
@@ -2519,6 +2575,29 @@ function showPage(p){
 }
 
 /* ══ LANGUE ══ */
+function toggleTheme(){
+  var root=document.documentElement;
+  var btn=document.getElementById('theme-btn');
+  if(root.classList.contains('light-mode')){
+    root.classList.remove('light-mode');
+    localStorage.setItem('theme','dark');
+    if(btn) btn.textContent='🌙';
+  } else {
+    root.classList.add('light-mode');
+    localStorage.setItem('theme','light');
+    if(btn) btn.textContent='☀️';
+  }
+}
+/* Restaurer le thème au chargement */
+(function(){
+  var t=localStorage.getItem('theme');
+  if(t==='light'){
+    document.documentElement.classList.add('light-mode');
+    var btn=document.getElementById('theme-btn');
+    if(btn) btn.textContent='☀️';
+  }
+})();
+
 function setLang(l){
   lang=l;
   var fr=(l==='fr');
