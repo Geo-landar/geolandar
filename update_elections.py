@@ -1,6 +1,6 @@
 import requests
 from supabase import create_client
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import time
 import os
 
@@ -13,72 +13,126 @@ SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ══════════════════════════════════════
-# ELECTIONS AVEC VRAIS QID WIKIDATA
-# Format: (pays, date, QID_election, winner_connu, party_connu)
-# Si winner_connu est rempli, on l'utilise directement
-# Sinon on interroge Wikidata
+# PARTIE 1 — DÉCOUVERTE AUTOMATIQUE
+# Interroge Wikidata pour trouver toutes
+# les élections dans les 3 prochaines années
 # ══════════════════════════════════════
-ELECTIONS = [
-    # Résultats connus et vérifiés
-    ("Colombie",          "2026-06-21", "Q112183465", "Abelardo de la Espriella", "Defensores de la Patria (extrême droite)"),
-    ("Hongrie",           "2026-04-12", "Q125627220", "Péter Magyar",             "Tisza (conservateur pro-UE)"),
-    ("Canada",            "2025-04-28", "Q116820061", "Mark Carney",              "Parti Libéral (centre)"),
-    ("Coree du Sud",      "2025-06-03", "Q116820060", "Lee Jae-myung",            "Parti Démocrate (centre-gauche)"),
-    ("Equateur",          "2026-02-09", "Q125879300", "Daniel Noboa",             "ADN (centre-droit)"),
-    ("Albanie",           "2026-05-11", "Q125879320", "Edi Rama",                 "PS (Parti Socialiste)"),
-    ("Chypre",            "2026-05-24", "Q125879340", "DISY",                     "DISY (centre-droit)"),
-    ("Armenie",           "2026-06-07", "Q125879350", "Nikol Pachinian",          "Contrat civil (centre)"),
-    ("Bahamas",           "2026-05-12", "Q125879330", "Philip Davis",             "PLP (centre-gauche)"),
-    ("Costa Rica",        "2026-02-01", "Q125879280", "Laura Hernandez",          "PLN (centre-gauche)"),
-    ("Barbade",           "2026-02-11", "Q125879290", "Mia Mottley",              "BLP (centre-gauche)"),
-    ("Salvador",          "2026-03-01", "Q125879310", "Nayib Bukele",             "Nuevas Ideas (populiste)"),
-    ("Antigua-et-Barbuda","2026-04-30", "Q125879400", "Gaston Browne",            "ABLP (centre-gauche)"),
 
-    # Elections avec QID corrects - Wikidata interrogé
-    ("Ouganda",           "2026-01-15", "Q116820059", "", ""),
-    ("Danemark",          "2026-03-24", "Q125627200", "", ""),
-    ("Bulgarie",          "2026-04-19", "Q125627210", "", ""),
-    ("Vietnam",           "2026-03-15", "Q125627230", "", ""),
-    ("Montenegro",        "2026-03-15", "Q125627240", "", ""),
-    ("Macedoine du Nord", "2026-04-01", "Q125627250", "", ""),
-    ("Benin",             "2026-04-12", "Q125627260", "", ""),
-    ("Liban",             "2026-05-10", "Q125627270", "", ""),
-    ("Perou",             "2026-04-12", "Q125627280", "", ""),
+QUERY_DECOUVERTE = """
+SELECT DISTINCT ?election ?electionLabel ?paysLabel ?date ?type ?typeLabel WHERE {
+  ?election wdt:P31 ?type .
+  ?type wdt:P279* wd:Q40231 .
+  ?election wdt:P17 ?pays .
+  ?election wdt:P585 ?date .
+  FILTER(?date >= "2025-01-01"^^xsd:dateTime)
+  FILTER(?date <= "2028-12-31"^^xsd:dateTime)
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". }
+}
+ORDER BY ?date
+LIMIT 200
+"""
 
-    # Elections futures - juste pour suivi
-    ("Zambie",            "2026-08-12", "Q125627290", "", ""),
-    ("Israel",            "2026-10-01", "Q125627300", "", ""),
-    ("Bresil",            "2026-10-04", "Q125627310", "", ""),
-    ("Suede",             "2026-09-13", "Q125627320", "", ""),
-    ("Nouvelle-Zelande",  "2026-11-01", "Q125627330", "", ""),
-    ("Gambie",            "2026-12-01", "Q125627340", "", ""),
-    ("Algerie",           "2026-06-29", "Q125627350", "", ""),
-]
+def decouvrir_elections():
+    """Interroge Wikidata pour trouver toutes les élections à venir"""
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Découverte des élections sur Wikidata...")
+    headers = {
+        "Accept": "application/json",
+        "User-Agent": "Geolandar/3.0 (github.com/Geo-landar)"
+    }
+    try:
+        r = requests.get(
+            "https://query.wikidata.org/sparql",
+            params={"query": QUERY_DECOUVERTE, "format": "json"},
+            headers=headers,
+            timeout=45
+        )
+        r.raise_for_status()
+        resultats = r.json()["results"]["bindings"]
+        print(f"  {len(resultats)} élections trouvées sur Wikidata")
+
+        nouvelles = 0
+        for row in resultats:
+            pays = row.get("paysLabel", {}).get("value", "")
+            date_el = row.get("date", {}).get("value", "")[:10]
+            type_el = row.get("typeLabel", {}).get("value", "")
+
+            if not pays or not date_el:
+                continue
+
+            # Vérifier si cette élection existe déjà dans Supabase
+            try:
+                res = supabase.table("elections") \
+                    .select("id") \
+                    .eq("pays", pays) \
+                    .eq("date", date_el) \
+                    .execute()
+
+                if not res.data:
+                    # Nouvelle élection — l'ajouter dans Supabase
+                    supabase.table("elections").insert({
+                        "pays":       pays,
+                        "date":       date_el,
+                        "winner":     "",
+                        "party":      "",
+                        "done":       False,
+                        "updated_at": datetime.now().isoformat()
+                    }).execute()
+                    print(f"  + Nouvelle élection: {pays} ({date_el}) — {type_el}")
+                    nouvelles += 1
+            except:
+                pass
+
+        print(f"  {nouvelles} nouvelles élections ajoutées dans Supabase")
+        return True
+
+    except Exception as e:
+        print(f"  Erreur découverte: {type(e).__name__} — {e}")
+        return False
 
 # ══════════════════════════════════════
-# WIKIDATA PAR QID + PAR PAYS
+# PARTIE 2 — MISE À JOUR DES RÉSULTATS
+# Pour chaque élection passée sans résultat,
+# cherche le vainqueur sur Wikidata
 # ══════════════════════════════════════
-PAYS_QID = {
-    "Colombie": "Q739", "Ouganda": "Q1036", "Danemark": "Q35",
-    "Hongrie": "Q28", "Bulgarie": "Q219", "Vietnam": "Q881",
-    "Costa Rica": "Q800", "Barbade": "Q244", "Equateur": "Q736",
-    "Salvador": "Q792", "Albanie": "Q222", "Bahamas": "Q778",
-    "Chypre": "Q229", "Armenie": "Q399", "Coree du Sud": "Q884",
-    "Canada": "Q16", "Montenegro": "Q236", "Macedoine du Nord": "Q221",
-    "Benin": "Q962", "Liban": "Q822", "Antigua-et-Barbuda": "Q781",
-    "Perou": "Q419", "Zambie": "Q953", "Israel": "Q801",
-    "Bresil": "Q155", "Suede": "Q34", "Nouvelle-Zelande": "Q664",
-    "Gambie": "Q1005", "Algerie": "Q262",
+
+# Résultats connus et vérifiés — écrits directement sans passer par Wikidata
+RESULTATS_CONNUS = {
+    "Colombie":           ("Abelardo de la Espriella", "Defensores de la Patria (extrême droite)", "2026-06-21"),
+    "Hongrie":            ("Péter Magyar",             "Tisza (conservateur pro-UE)",              "2026-04-12"),
+    "Canada":             ("Mark Carney",              "Parti Libéral (centre)",                   "2025-04-28"),
+    "Coree du Sud":       ("Lee Jae-myung",            "Parti Démocrate (centre-gauche)",          "2025-06-03"),
+    "Equateur":           ("Daniel Noboa",             "ADN (centre-droit)",                       "2026-02-09"),
+    "Albanie":            ("Edi Rama",                 "PS (Parti Socialiste)",                    "2026-05-11"),
+    "Chypre":             ("DISY",                     "DISY (centre-droit)",                      "2026-05-24"),
+    "Armenie":            ("Nikol Pachinian",          "Contrat civil (centre)",                   "2026-06-07"),
+    "Bahamas":            ("Philip Davis",             "PLP (centre-gauche)",                      "2026-05-12"),
+    "Costa Rica":         ("Laura Hernandez",          "PLN (centre-gauche)",                      "2026-02-01"),
+    "Barbade":            ("Mia Mottley",              "BLP (centre-gauche)",                      "2026-02-11"),
+    "Salvador":           ("Nayib Bukele",             "Nuevas Ideas (populiste)",                 "2026-03-01"),
+    "Antigua-et-Barbuda": ("Gaston Browne",            "ABLP (centre-gauche)",                     "2026-04-30"),
 }
 
-def fetch_wikidata_pays(pays, annee):
-    qid_pays = PAYS_QID.get(pays)
-    if not qid_pays:
+PAYS_QID = {
+    "Ouganda":"Q1036","Danemark":"Q35","Bulgarie":"Q219",
+    "Vietnam":"Q881","Montenegro":"Q236","Macedoine du Nord":"Q221",
+    "Benin":"Q962","Liban":"Q822","Perou":"Q419","Zambie":"Q953",
+    "Israel":"Q801","Bresil":"Q155","Suede":"Q34",
+    "Nouvelle-Zelande":"Q664","Gambie":"Q1005","Algerie":"Q262",
+    "Ouganda":"Q1036","Japon":"Q17","Turquie":"Q43","Pologne":"Q36",
+    "Nigeria":"Q1033","Italie":"Q38","Argentine":"Q414",
+    "Maroc":"Q1028","Pakistan":"Q843","Royaume-Uni":"Q145",
+}
+
+def fetch_wikidata_resultat(pays, annee):
+    """Cherche le vainqueur d'une élection sur Wikidata"""
+    qid = PAYS_QID.get(pays)
+    if not qid:
         return None
+
     query = """
 SELECT ?vainqueurLabel ?partiLabel WHERE {
-  ?election wdt:P31 wd:Q40231 .
-  ?election wdt:P17 wd:""" + qid_pays + """ .
+  ?election wdt:P31/wdt:P279* wd:Q40231 .
+  ?election wdt:P17 wd:""" + qid + """ .
   ?election wdt:P585 ?date .
   ?election wdt:P991 ?vainqueur .
   OPTIONAL { ?vainqueur wdt:P102 ?parti . }
@@ -91,7 +145,7 @@ LIMIT 1
         r = requests.get(
             "https://query.wikidata.org/sparql",
             params={"query": query, "format": "json"},
-            headers={"Accept": "application/json", "User-Agent": "Geolandar/3.0"},
+            headers={"Accept":"application/json","User-Agent":"Geolandar/3.0"},
             timeout=30
         )
         r.raise_for_status()
@@ -101,94 +155,98 @@ LIMIT 1
                 "winner": data[0]["vainqueurLabel"]["value"],
                 "party":  data[0].get("partiLabel", {}).get("value", ""),
             }
-    except Exception as e:
-        print(f"    Wikidata erreur: {type(e).__name__}")
-    return None
-
-# ══════════════════════════════════════
-# SUPABASE
-# ══════════════════════════════════════
-def deja_enregistre(pays):
-    try:
-        res = supabase.table("elections") \
-            .select("winner") \
-            .eq("pays", pays) \
-            .eq("done", True) \
-            .execute()
-        for row in res.data:
-            w = row.get("winner", "")
-            if w and w not in ["", "En cours de verification"]:
-                return True
     except:
         pass
-    return False
+    return None
 
-def save_supabase(pays, date_el, winner, party):
+def maj_resultats():
+    """Met à jour les résultats des élections passées"""
+    print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Mise à jour des résultats...")
+
+    # 1. Écrire les résultats connus
+    print(f"  Résultats connus: {len(RESULTATS_CONNUS)}")
+    for pays, (winner, party, date_el) in RESULTATS_CONNUS.items():
+        try:
+            # Vérifier si déjà enregistré avec ce vainqueur
+            res = supabase.table("elections") \
+                .select("winner") \
+                .eq("pays", pays) \
+                .eq("done", True) \
+                .execute()
+            deja = any(r.get("winner") == winner for r in res.data)
+            if deja:
+                continue
+
+            supabase.table("elections").upsert({
+                "pays": pays, "date": date_el,
+                "winner": winner, "party": party,
+                "done": True,
+                "updated_at": datetime.now().isoformat()
+            }, on_conflict="pays,date").execute()
+            print(f"  OK: {pays} → {winner}")
+        except Exception as e:
+            print(f"  Erreur {pays}: {e}")
+
+    # 2. Chercher les résultats manquants sur Wikidata
+    print(f"\n  Recherche résultats manquants sur Wikidata...")
     try:
-        supabase.table("elections").upsert({
-            "pays":       pays,
-            "date":       date_el,
-            "winner":     winner,
-            "party":      party,
-            "done":       True,
-            "updated_at": datetime.now().isoformat()
-        }, on_conflict="pays,date").execute()
-        print(f"  SUPABASE OK: {winner}")
-        return True
+        today = date.today().isoformat()
+        res = supabase.table("elections") \
+            .select("pays,date,winner") \
+            .eq("done", False) \
+            .lte("date", today) \
+            .execute()
+
+        elections_sans_resultat = [
+            r for r in res.data
+            if not r.get("winner")
+        ]
+        print(f"  {len(elections_sans_resultat)} élections sans résultat")
+
+        for row in elections_sans_resultat:
+            pays = row["pays"]
+            date_el = row["date"]
+            annee = int(date_el[:4]) if date_el else 2026
+
+            print(f"  Wikidata: {pays} ({date_el})...")
+            resultat = fetch_wikidata_resultat(pays, annee)
+            if resultat and resultat["winner"]:
+                try:
+                    supabase.table("elections").upsert({
+                        "pays": pays, "date": date_el,
+                        "winner": resultat["winner"],
+                        "party": resultat["party"],
+                        "done": True,
+                        "updated_at": datetime.now().isoformat()
+                    }, on_conflict="pays,date").execute()
+                    print(f"  OK: {pays} → {resultat['winner']}")
+                except Exception as e:
+                    print(f"  Erreur Supabase: {e}")
+            else:
+                print(f"  Pas encore de résultat")
+            time.sleep(1)
+
     except Exception as e:
-        print(f"  SUPABASE ERREUR: {e}")
-        return False
+        print(f"  Erreur lecture Supabase: {e}")
 
 # ══════════════════════════════════════
 # MAIN
 # ══════════════════════════════════════
-def est_passee(date_str):
-    try:
-        d_str = date_str.replace("-00", "-15")
-        return datetime.strptime(d_str[:10], "%Y-%m-%d").date() <= date.today()
-    except:
-        return False
-
 def main():
     print("=" * 60)
-    print("  GEOLANDAR - Mise a jour automatique v3.0")
+    print("  GEOLANDAR - Mise à jour automatique v4.0")
     print(f"  {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 60)
 
-    passees = [(p, d, q, w, pa) for p, d, q, w, pa in ELECTIONS if est_passee(d)]
-    print(f"\n  {len(passees)} elections passees\n")
+    # Étape 1: Découvrir les nouvelles élections
+    decouvrir_elections()
+    time.sleep(2)
 
-    total = 0
-
-    for pays, date_el, qid, winner_connu, party_connu in passees:
-        print(f"--- {pays} ({date_el}) ---")
-
-        if deja_enregistre(pays):
-            print(f"  Deja enregistre")
-            continue
-
-        # Utiliser le résultat connu directement
-        if winner_connu:
-            print(f"  Resultat connu: {winner_connu}")
-            if save_supabase(pays, date_el, winner_connu, party_connu):
-                total += 1
-        else:
-            # Interroger Wikidata
-            print(f"  Wikidata...")
-            annee = int(date_el[:4])
-            res = fetch_wikidata_pays(pays, annee)
-            if res and res["winner"]:
-                print(f"  Trouve: {res['winner']}")
-                if save_supabase(pays, date_el, res["winner"], res["party"]):
-                    total += 1
-            else:
-                print(f"  Pas de resultat")
-
-        time.sleep(1)
+    # Étape 2: Mettre à jour les résultats
+    maj_resultats()
 
     print(f"\n{'=' * 60}")
-    print(f"  TOTAL: {total} elections mises a jour")
-    print(f"  Termine: {datetime.now().strftime('%H:%M:%S')}")
+    print(f"  Terminé: {datetime.now().strftime('%H:%M:%S')}")
     print(f"{'=' * 60}")
 
 if __name__ == "__main__":
