@@ -2596,20 +2596,23 @@ function syncFromSupabase() {
       var changed = false;
       rows.forEach(function(row) {
         if (!row.pays || !row.date || !row.winner) return;
-        /* Chercher l'élection correspondante par pays ET date */
+        /* Chercher l'élection correspondante par pays ET date UNIQUEMENT */
+        /* Ne jamais associer un résultat à un pays différent */
+        var today = new Date().toISOString().slice(0,10);
+        /* Ignorer les résultats d'élections futures */
+        if (row.date > today) return;
         var e = E.find(function(x) {
           return x.p === row.pays && x.d === row.date;
         });
-        /* Si pas trouvé par date exacte, chercher par pays seulement */
-        /* MAIS vérifier que la date est bien passée */
+        /* Si pas trouvé par date exacte, chercher par pays+année */
         if (!e) {
-          var today = new Date().toISOString().slice(0,10);
-          if (row.date <= today) {
-            e = E.find(function(x) {
-              return x.p === row.pays && !x.done;
-            });
-          }
+          var annee = row.date ? row.date.slice(0,4) : '';
+          e = E.find(function(x) {
+            return x.p === row.pays && x.d && x.d.slice(0,4) === annee;
+          });
         }
+        /* JAMAIS associer à un autre pays */
+        if (e && e.p !== row.pays) return;
         if (e && row.winner) {
           e.done = true;
           e.result = e.result || {};
