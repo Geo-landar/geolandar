@@ -2569,7 +2569,7 @@ function supaFetch(table, params) {
 
 /* ── Synchronisation depuis Supabase ── */
 function syncFromSupabase() {
-  /* SYNC — Par pays+date UNIQUEMENT (match strict) */
+  /* SYNC — Par pays uniquement, gère les élections à 2 tours */
   var today = new Date().toISOString().slice(0,10);
   supaFetch('elections', 'select=pays,date,winner,party&done=eq.true&winner=not.is.null')
     .then(function(rows) {
@@ -2578,55 +2578,52 @@ function syncFromSupabase() {
         return;
       }
       var changed = false;
+
+      /* Grouper les résultats par pays — garder le plus récent */
+      var parPays = {};
       rows.forEach(function(row) {
-        /* Vérifications strictes */
-        if (!row.pays || !row.date || !row.winner) return;
-        /* Ignorer les élections futures */
-        if (row.date > today) return;
-        /* Chercher UNIQUEMENT par pays ET date exacte */
-        var e = E.find(function(x) {
-          return x.p === row.pays && x.d === row.date;
-        });
-        /* Si date pas exacte, chercher par pays + même mois */
-        if (!e) {
-          var mois = row.date.slice(0,7); /* YYYY-MM */
-          e = E.find(function(x) {
-            return x.p === row.pays
-              && x.d
-              && x.d.slice(0,7) === mois;
-          });
+        if (!row.pays || !row.winner) return;
+        /* Ignorer résultats futurs */
+        if (row.date && row.date > today) return;
+        /* Garder le résultat le plus récent pour ce pays */
+        if (!parPays[row.pays] || row.date > parPays[row.pays].date) {
+          parPays[row.pays] = row;
         }
-        /* Vérification finale: le pays DOIT correspondre */
-        if (!e || e.p !== row.pays) return;
-        /* Ne pas écraser un résultat déjà présent */
-        if (e.result && e.result.winner) return;
-        e.done = true;
-        e.result = {
-          winner: row.winner,
-          party:  row.party || ''
-        };
-        changed = true;
       });
+
+      /* Appliquer les résultats aux élections du fichier */
+      Object.keys(parPays).forEach(function(pays) {
+        var row = parPays[pays];
+        /* Chercher TOUTES les élections de ce pays */
+        var elections = E.filter(function(x) { return x.p === pays; });
+        if (!elections.length) return;
+
+        elections.forEach(function(e) {
+          /* Vérifier que la date du 1er tour est passée */
+          if (e.d && e.d > today) return;
+          /* Ne pas écraser un résultat déjà présent */
+          if (e.result && e.result.winner) return;
+          e.done = true;
+          e.result = {
+            winner: row.winner,
+            party:  row.party || ''
+          };
+          changed = true;
+        });
+      });
+
       if (changed) {
+        /* Reconstruire eByP avec les nouvelles données */
+        Object.keys(eByP).forEach(function(p){ eByP[p]=[];});
+        E.forEach(function(e){ if(!eByP[e.p])eByP[e.p]=[]; eByP[e.p].push(e); });
         renderCal();
+        /* Recolorier le globe */
         if (typeof gCountriesG !== 'undefined' && gCountriesG) {
           gCountriesG.selectAll('.cp').attr('fill', function(d) {
-            var iso = String(d.id).padStart(3,'0');
-            var pays = ISO3[iso];
-            if (!pays) return '#0f1e38';
-            var es = eByP[pays] || [];
-            if (!es.length) return '#1a3560';
-            var ev = es[0];
-            if (ev.done) return '#10b981';
-            var dt = daysTo(ev.d);
-            if (dt === null) return '#7c3aed';
-            if (dt <= 30) return '#ef4444';
-            if (dt <= 90) return '#f59e0b';
-            if (dt <= 365) return '#3b82f6';
-            return '#7c3aed';
+            return paysColor(d.id);
           });
         }
-        showSyncStatus('✅ Résultats Supabase chargés', '#10b981');
+        showSyncStatus('✅ Résultats mis à jour', '#10b981');
       } else {
         showSyncStatus('✓ Connecté', 'var(--mu)');
       }
