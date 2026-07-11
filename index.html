@@ -2569,62 +2569,46 @@ function supaFetch(table, params) {
 
 /* ── Synchronisation depuis Supabase ── */
 function syncFromSupabase() {
-  /* SYNC 1 — Par ID numérique (données manuelles Supabase) */
-  supaFetch('elections', 'select=id,done,winner,party,gov,score&done=eq.true')
-    .then(function(rows) {
-      if (!rows || !rows.length) return;
-      rows.forEach(function(row) {
-        var e = E.find(function(x) { return x.id === row.id; });
-        if (e && row.done && row.winner) {
-          e.done = true;
-          e.result = e.result || {};
-          e.result.winner = row.winner;
-          e.result.party  = row.party  || '';
-          e.result.gov    = row.gov    || '';
-          e.result.score  = row.score  || '';
-        }
-      });
-    }).catch(function(){});
-
-  /* SYNC 2 — Par pays+date (données automatiques Wikidata/GitHub Actions) */
-  supaFetch('elections', 'select=pays,date,winner,party,done&done=eq.true&winner=not.is.null')
+  /* SYNC — Par pays+date UNIQUEMENT (match strict) */
+  var today = new Date().toISOString().slice(0,10);
+  supaFetch('elections', 'select=pays,date,winner,party&done=eq.true&winner=not.is.null')
     .then(function(rows) {
       if (!rows || !rows.length) {
-        showSyncStatus('✓ Base de données connectée', 'var(--mu)');
+        showSyncStatus('✓ Connecté', 'var(--mu)');
         return;
       }
       var changed = false;
       rows.forEach(function(row) {
+        /* Vérifications strictes */
         if (!row.pays || !row.date || !row.winner) return;
-        /* Chercher l'élection correspondante par pays ET date UNIQUEMENT */
-        /* Ne jamais associer un résultat à un pays différent */
-        var today = new Date().toISOString().slice(0,10);
-        /* Ignorer les résultats d'élections futures */
+        /* Ignorer les élections futures */
         if (row.date > today) return;
+        /* Chercher UNIQUEMENT par pays ET date exacte */
         var e = E.find(function(x) {
           return x.p === row.pays && x.d === row.date;
         });
-        /* Si pas trouvé par date exacte, chercher par pays+année */
+        /* Si date pas exacte, chercher par pays + même mois */
         if (!e) {
-          var annee = row.date ? row.date.slice(0,4) : '';
+          var mois = row.date.slice(0,7); /* YYYY-MM */
           e = E.find(function(x) {
-            return x.p === row.pays && x.d && x.d.slice(0,4) === annee;
+            return x.p === row.pays
+              && x.d
+              && x.d.slice(0,7) === mois;
           });
         }
-        /* JAMAIS associer à un autre pays */
-        if (e && e.p !== row.pays) return;
-        if (e && row.winner) {
-          e.done = true;
-          e.result = e.result || {};
-          e.result.winner = row.winner;
-          e.result.party  = row.party || '';
-          changed = true;
-          console.log('Supabase -> résultat:', row.pays, row.winner);
-        }
+        /* Vérification finale: le pays DOIT correspondre */
+        if (!e || e.p !== row.pays) return;
+        /* Ne pas écraser un résultat déjà présent */
+        if (e.result && e.result.winner) return;
+        e.done = true;
+        e.result = {
+          winner: row.winner,
+          party:  row.party || ''
+        };
+        changed = true;
       });
       if (changed) {
         renderCal();
-        /* Mettre à jour les couleurs du globe */
         if (typeof gCountriesG !== 'undefined' && gCountriesG) {
           gCountriesG.selectAll('.cp').attr('fill', function(d) {
             var iso = String(d.id).padStart(3,'0');
@@ -2642,12 +2626,11 @@ function syncFromSupabase() {
             return '#7c3aed';
           });
         }
-        showSyncStatus('✅ Résultats mis à jour depuis Supabase', '#10b981');
+        showSyncStatus('✅ Résultats Supabase chargés', '#10b981');
       } else {
-        showSyncStatus('✓ Base de données connectée', 'var(--mu)');
+        showSyncStatus('✓ Connecté', 'var(--mu)');
       }
-    }).catch(function(err) {
-      console.warn('Supabase sync2:', err.message);
+    }).catch(function() {
       showSyncStatus('⚠️ Mode hors-ligne', '#f59e0b');
     });
 }
