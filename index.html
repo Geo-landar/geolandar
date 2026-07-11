@@ -391,7 +391,17 @@ var ISO={
 'Etats-Unis':'us','Canada':'ca','Mexique':'mx','Bresil':'br','Argentine':'ar','Colombie':'co','Chili':'cl','Perou':'pe','Venezuela':'ve','Equateur':'ec','Bolivie':'bo','Uruguay':'uy','Paraguay':'py','Cuba':'cu','Costa Rica':'cr','Panama':'pa','Guatemala':'gt','Honduras':'hn','El Salvador':'sv','Nicaragua':'ni','Jamaique':'jm','Haiti':'ht','Rep. dominicaine':'do','Trinidad & Tobago':'tt',
 'Nigeria':'ng','Ethiopie':'et','Egypte':'eg','RD Congo':'cd','Tanzanie':'tz','Kenya':'ke','Afrique du Sud':'za','Ghana':'gh','Maroc':'ma','Algerie':'dz','Tunisie':'tn','Ouganda':'ug','Mozambique':'mz','Zambie':'zm','Cameroun':'cm','Senegal':'sn','Angola':'ao','Mali':'ml','Burkina Faso':'bf','Niger':'ne','Rwanda':'rw','Madagascar':'mg',"Cote d'Ivoire":'ci','Gambie':'gm','Namibie':'na','Botswana':'bw','Zimbabwe':'zw','Soudan du Sud':'ss','Somalie':'so','Libye':'ly','Tchad':'td','Guinee':'gn','Mauritanie':'mr',
 'Chine':'cn','Inde':'in','Japon':'jp','Coree du Sud':'kr','Indonesie':'id','Pakistan':'pk','Bangladesh':'bd','Philippines':'ph','Vietnam':'vn','Thailande':'th','Iran':'ir','Irak':'iq','Arabie Saoudite':'sa','Israel':'il','Malaisie':'my','Myanmar':'mm','Afghanistan':'af','Nepal':'np','Sri Lanka':'lk','Singapour':'sg','Cambodge':'kh','Liban':'lb','Jordanie':'jo','Syrie':'sy','Yemen':'ye','Emirats arabes':'ae','Qatar':'qa','Koweit':'kw','Oman':'om','Kazakhstan':'kz','Ouzbekistan':'uz','Mongolie':'mn','Tadjikistan':'tj','Kirghizstan':'kg','Coree du Nord':'kp',
-'Australie':'au','Nouvelle-Zelande':'nz','Papouasie-NG':'pg','Fidji':'fj'
+'Australie':'au','Nouvelle-Zelande':'nz','Papouasie-NG':'pg','Fidji':'fj',
+'Kosovo':'xk',
+'Timor oriental':'tl',
+'Eswatini':'sz',
+'Rep. du Congo':'cg',
+'Sao Tome-et-Principe':'st',
+'Guinee-Bissau':'gw',
+'Guinee equatoriale':'gq',
+'Centrafrique':'cf',
+'Nouvelle-Caledonie':'nc',
+'Antigua-et-Barbuda':'ag',
 };
 function flagH(p,w,h){w=w||26;h=h||Math.round(w*.74);var c=ISO[p];if(!c)return '<div class="nfl">'+p.substring(0,2).toUpperCase()+'</div>';return '<img src="https://flagcdn.com/'+w+'x'+h+'/'+c+'.png" alt="'+p+'" width="'+w+'" height="'+h+'" style="border-radius:2px;object-fit:cover;" loading="lazy">';}
 
@@ -1266,6 +1276,19 @@ var ISO3={
 '558':'Nicaragua','562':'Niger','566':'Nigeria','578':'Norvege','512':'Oman','586':'Pakistan','585':'Palau','591':'Panama','598':'Papouasie-NG','600':'Paraguay','604':'Perou','608':'Philippines','616':'Pologne','620':'Portugal','634':'Qatar','642':'Roumanie','643':'Russie','646':'Rwanda','659':'Saint-Kitts','662':'Sainte-Lucie','670':'Saint-Vincent','882':'Samoa','674':'Saint-Marin','678':'Sao Tome-et-Principe','682':'Arabie Saoudite','686':'Senegal','694':'Sierra Leone','703':'Slovaquie','705':'Slovenie','090':'Iles Salomon','706':'Somalie','710':'Afrique du Sud','724':'Espagne','144':'Sri Lanka','729':'Soudan','740':'Suriname','748':'Eswatini','752':'Suede','756':'Suisse','760':'Syrie','762':'Tadjikistan','764':'Thailande','626':'Timor oriental','768':'Togo','776':'Tonga','780':'Trinidad & Tobago','788':'Tunisie','792':'Turquie','795':'Turkmenistan','800':'Ouganda','804':'Ukraine','784':'Emirats arabes','826':'Royaume-Uni','840':'Etats-Unis','858':'Uruguay','860':'Ouzbekistan','548':'Vanuatu','862':'Venezuela','704':'Vietnam','887':'Yemen','894':'Zambie','716':'Zimbabwe',
 '112':'Belarus','268':'Georgie','051':'Armenie','031':'Azerbaidjan','191':'Croatie','703':'Slovaquie','705':'Slovenie','070':'Bosnie','499':'Montenegro','807':'Macedoine du Nord','688':'Serbie','384':"Cote d'Ivoire",'854':'Burkina Faso','266':'Gabon','226':'Guinee equatoriale',
 '834':'Tanzanie',
+'728':'Soudan du Sud',
+'417':'Kirghizstan',
+'090':'Iles Salomon',
+'548':'Vanuatu',
+'882':'Samoa',
+'776':'Tonga',
+'296':'Kiribati',
+'583':'Micronesie',
+'585':'Palau',
+'520':'Nauru',
+'184':'Iles Cook',
+'772':'Tokelau',
+'570':'Niue',
 /* Pays manquants ajoutés */
 '020':'Andorre','158':'Taiwan','232':'Erythree','233':'Estonie','276':'Allemagne','308':'Grenade','352':'Islande','384':"Cote d'Ivoire",'428':'Lettonie','630':'Puerto Rico','736':'Soudan',
 /* Territoires et petits États */
@@ -2124,14 +2147,27 @@ function initGlobe(){
       if(!pays) return '#0f1e38';
       var es=eByP[pays]||[];
       if(!es.length) return '#1a3560';
-      var e=es[0];
-      if(e.done) return '#10b981';
+      /* Trouver l'élection la plus récente */
+      var esDone=es.filter(function(x){return x.done;});
+      var esAVenir=es.filter(function(x){return !x.done;});
+      /* VERT uniquement si résultat confirmé cette année ou l'année passée */
+      if(esDone.length>0){
+        var anneeEnCours=new Date().getFullYear();
+        var recent=esDone.some(function(x){
+          var annee=x.d?parseInt(x.d.slice(0,4)):0;
+          return annee>=anneeEnCours-1;
+        });
+        if(recent) return '#10b981'; /* Vert — résultat récent */
+      }
+      /* Elections à venir */
+      if(!esAVenir.length) return '#1a3560';
+      var e=esAVenir.sort(function(a,b){return (a.d||'').localeCompare(b.d||'');})[0];
       var dt=daysTo(e.d);
       if(dt===null) return '#7c3aed';
-      if(dt<=30) return '#ef4444';
-      if(dt<=90) return '#f59e0b';
-      if(dt<=365) return '#3b82f6';
-      return '#7c3aed';
+      if(dt<=30) return '#ef4444';  /* Rouge — dans 30j */
+      if(dt<=90) return '#f59e0b';  /* Orange — dans 3 mois */
+      if(dt<=365) return '#3b82f6'; /* Bleu — cette année */
+      return '#7c3aed'; /* Violet — 2027-2028 */
     }
 
     /* Dessiner les pays */
