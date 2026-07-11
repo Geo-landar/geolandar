@@ -154,6 +154,7 @@ LIMIT 1
             return {
                 "winner": data[0]["vainqueurLabel"]["value"],
                 "party":  data[0].get("partiLabel", {}).get("value", ""),
+                "date":   data[0].get("date", {}).get("value", "")[:10] if data[0].get("date") else "",
             }
     except:
         pass
@@ -212,18 +213,21 @@ def maj_resultats():
             resultat = fetch_wikidata_resultat(pays, annee)
             if resultat and resultat["winner"]:
                 try:
+                    # Pour les élections à 2 tours: utiliser la date du résultat
+                    # pas forcément la date du 1er tour
+                    date_resultat = resultat.get("date", date_el) or date_el
                     supabase.table("elections").upsert({
-                        "pays": pays, "date": date_el,
+                        "pays": pays, "date": date_resultat,
                         "winner": resultat["winner"],
                         "party": resultat["party"],
                         "done": True,
                         "updated_at": datetime.now().isoformat()
                     }, on_conflict="pays,date").execute()
-                    print(f"  OK: {pays} → {resultat['winner']}")
+                    print(f"  OK: {pays} -> {resultat['winner']} ({date_resultat})")
                 except Exception as e:
                     print(f"  Erreur Supabase: {e}")
             else:
-                print(f"  Pas encore de résultat")
+                print(f"  Pas encore de resultat")
             time.sleep(1)
 
     except Exception as e:
