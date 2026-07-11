@@ -4,6 +4,118 @@ from datetime import datetime, date, timedelta
 import time
 import os
 
+
+# ══════════════════════════════════════
+# NORMALISATION DES NOMS DE PAYS
+# Wikidata -> nom dans le fichier HTML
+# ══════════════════════════════════════
+NOMS_PAYS = {
+    # Accents
+    "Algérie": "Algerie",
+    "Arménie": "Armenie",
+    "Bélarus": "Belarus",
+    "Bénin": "Benin",
+    "Brésil": "Bresil",
+    "Chypre": "Chypre",
+    "Corée du Sud": "Coree du Sud",
+    "Corée du Nord": "Coree du Nord",
+    "Côte d'Ivoire": "Cote d'Ivoire",
+    "Érythrée": "Erythree",
+    "Éthiopie": "Ethiopie",
+    "Équateur": "Equateur",
+    "Fédération de Russie": "Russie",
+    "Géorgie": "Georgie",
+    "Grèce": "Grece",
+    "Guinée": "Guinee",
+    "Guinée-Bissau": "Guinee-Bissau",
+    "Guinée équatoriale": "Guinee equatoriale",
+    "Haïti": "Haiti",
+    "Hongrie": "Hongrie",
+    "Îles Marshall": "Iles Marshall",
+    "Îles Salomon": "Iles Salomon",
+    "Indonésie": "Indonesie",
+    "Irak": "Irak",
+    "Islande": "Islande",
+    "Israël": "Israel",
+    "Italie": "Italie",
+    "Jamaïque": "Jamaique",
+    "Jordanie": "Jordanie",
+    "Liban": "Liban",
+    "Lettonie": "Lettonie",
+    "Lituanie": "Lituanie",
+    "Macédoine du Nord": "Macedoine du Nord",
+    "Malaisie": "Malaisie",
+    "Mali": "Mali",
+    "Mauritanie": "Mauritanie",
+    "Mexique": "Mexique",
+    "Moldavie": "Moldavie",
+    "Mongolie": "Mongolie",
+    "Monténégro": "Montenegro",
+    "Mozambique": "Mozambique",
+    "Myanmar": "Myanmar",
+    "Népal": "Nepal",
+    "Nicaragua": "Nicaragua",
+    "Nigéria": "Nigeria",
+    "Norvège": "Norvege",
+    "Nouvelle-Zélande": "Nouvelle-Zelande",
+    "Ouzbékistan": "Ouzbekistan",
+    "Ouganda": "Ouganda",
+    "Pakistan": "Pakistan",
+    "Papouasie-Nouvelle-Guinée": "Papouasie-NG",
+    "Pérou": "Perou",
+    "Philippines": "Philippines",
+    "Pologne": "Pologne",
+    "Portugal": "Portugal",
+    "République centrafricaine": "Centrafrique",
+    "République de Corée": "Coree du Sud",
+    "République démocratique du Congo": "RD Congo",
+    "République dominicaine": "Rep. dominicaine",
+    "République du Congo": "Rep. du Congo",
+    "Roumanie": "Roumanie",
+    "Royaume-Uni": "Royaume-Uni",
+    "Russie": "Russie",
+    "São Tomé-et-Príncipe": "Sao Tome-et-Principe",
+    "Sénégal": "Senegal",
+    "Serbie": "Serbie",
+    "Sierra Leone": "Sierra Leone",
+    "Slovaquie": "Slovaquie",
+    "Slovénie": "Slovenie",
+    "Somalie": "Somalie",
+    "Soudan": "Soudan",
+    "Soudan du Sud": "Soudan du Sud",
+    "Sri Lanka": "Sri Lanka",
+    "Suède": "Suede",
+    "Suisse": "Suisse",
+    "Syrie": "Syrie",
+    "Tadjikistan": "Tadjikistan",
+    "Taïwan": "Taiwan",
+    "Tanzanie": "Tanzanie",
+    "Tchad": "Tchad",
+    "Tchéquie": "Tchequie",
+    "Thaïlande": "Thailande",
+    "Timor oriental": "Timor oriental",
+    "Togo": "Togo",
+    "Trinité-et-Tobago": "Trinidad & Tobago",
+    "Tunisie": "Tunisie",
+    "Turkménistan": "Turkmenistan",
+    "Turquie": "Turquie",
+    "Ukraine": "Ukraine",
+    "Uruguay": "Uruguay",
+    "Venezuela": "Venezuela",
+    "Viêt Nam": "Vietnam",
+    "Vietnam": "Vietnam",
+    "Yémen": "Yemen",
+    "Zambie": "Zambie",
+    "Zimbabwe": "Zimbabwe",
+    "États-Unis": "Etats-Unis",
+    "Émirats arabes unis": "Emirats arabes",
+}
+
+def normaliser_pays(pays_wikidata):
+    """Convertit un nom de pays Wikidata vers le nom du fichier HTML"""
+    return NOMS_PAYS.get(pays_wikidata, pays_wikidata)
+
+
 # ══════════════════════════════════════
 # CONFIGURATION
 # ══════════════════════════════════════
@@ -61,16 +173,18 @@ def decouvrir_elections():
 
             # Vérifier si cette élection existe déjà dans Supabase
             try:
+                pays_normalise = normaliser_pays(pays)
                 res = supabase.table("elections") \
                     .select("id") \
-                    .eq("pays", pays) \
+                    .eq("pays", pays_normalise) \
                     .eq("date", date_el) \
                     .execute()
 
                 if not res.data:
                     # Nouvelle élection — l'ajouter dans Supabase
+                    pays_normalise = normaliser_pays(pays)
                     supabase.table("elections").insert({
-                        "pays":       pays,
+                        "pays":       pays_normalise,
                         "date":       date_el,
                         "winner":     "",
                         "party":      "",
@@ -205,7 +319,7 @@ def maj_resultats():
         print(f"  {len(elections_sans_resultat)} élections sans résultat")
 
         for row in elections_sans_resultat:
-            pays = row["pays"]
+            pays = normaliser_pays(row["pays"])
             date_el = row["date"]
             annee = int(date_el[:4]) if date_el else 2026
 
