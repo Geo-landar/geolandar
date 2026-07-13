@@ -438,7 +438,7 @@ var ISO={
 'Centrafrique':'cf',
 'Nouvelle-Caledonie':'nc',
 'Antigua-et-Barbuda':'ag',
-};
+'Barbade':'bb','Benin':'bj','Belize':'bz','Somaliland':'so',};
 function flagH(p,w,h){w=w||26;h=h||Math.round(w*.74);var c=ISO[p];if(!c)return '<div class="nfl">'+p.substring(0,2).toUpperCase()+'</div>';return '<img src="https://flagcdn.com/'+w+'x'+h+'/'+c+'.png" alt="'+p+'" width="'+w+'" height="'+h+'" style="border-radius:2px;object-fit:cover;" loading="lazy">';}
 
 /* ══ SOURCES OFFICIELLES ══ */
@@ -1116,6 +1116,15 @@ var E=[
  fiabilite:{n:2,src:"IEC Afrique du Sud (prévu)",txt:"L'IEC est généralement fiable. Si réforme constitutionnelle vers l'élection directe, de nouvelles garanties seront nécessaires. Tensions ANC-MK à surveiller."},
  ctx:"Élection présidentielle directe (1ère depuis la fin de l'apartheid si la réforme constitutionnelle passe). ANC en déclin, DA et MK (Zuma) en progression.",
  enjeux:[{i:"⚖️",t:"Réforme constitutionnelle — élection directe du président",d:"L'Afrique du Sud discute d'un passage à l'élection présidentielle au suffrage universel direct, comme en France. Ce changement modifierait fondamentalement le système politique post-apartheid."},{i:"💼",t:"Chômage 33% — temps perdu depuis 30 ans",d:"Trente ans après la fin de l'apartheid, l'ANC n'a pas résolu le chômage structurel. Des millions de Sud-Africains, majoritairement noirs, restent exclus de l'économie formelle."},{i:"🌍",t:"BRICS+ — pivot vers le Sud global",d:"L'Afrique du Sud accueille les BRICS+. Elle navigue entre l'Occident (son 1er partenaire commercial) et les puissances émergentes (Chine, Russie, Inde). Ce positionnement géopolitique ambigu est de plus en plus difficile à tenir."}]}
+/* ══ ÉLECTIONS AJOUTÉES AUTOMATIQUEMENT ══ */
+,{id:75,p:'Algerie',r:'AF',t:"l",d:"2026-07-02",cert:1,done:false,
+ fiabilite:{n:2,src:"Autorité nationale indépendante des élections (ANIE)",txt:"Scrutin très contrôlé. Opposition marginalisée. Participation historiquement faible (21% en 2026)."},
+ ctx:"Élections législatives du 2 juillet 2026. Le FLN et ses alliés pro-Tebboune dominent. Taux de participation de 21% — record historique de faible mobilisation.",
+ enjeux:[{i:"🗳️",t:"Faible participation — 21%",d:"Taux de participation record à la baisse, signe d'une défiance croissante envers les institutions électorales."},{i:"🔒",t:"Opposition marginalisée",d:"Les partis d'opposition ont boycotté ou été empêchés de participer efficacement."},{i:"🛢️",t:"Dépendance aux hydrocarbures",d:"L'Algérie cherche à diversifier son économie, enjeu central pour les prochaines années."}]},
+{id:76,p:'Japon',r:'AS',t:"l",d:"2025-10-27",cert:1,done:true,
+ fiabilite:{n:1,src:"Commission électorale du Japon",txt:"Démocratie solide avec institutions électorales indépendantes."},
+ ctx:"Élections législatives d'octobre 2025. Le PLD perd sa majorité absolue pour la première fois depuis des années.",
+ enjeux:[{i:"💴",t:"Inflation et pouvoir d'achat",d:"La hausse des prix frappe les ménages japonais après des décennies de déflation."},{i:"🛡️",t:"Réarmement historique",d:"Doublement du budget défense — débat majeur dans la société japonaise."},{i:"👥",t:"Dénatalité et immigration",d:"Le Japon fait face à un déclin démographique sans précédent."}]},
 ];
 
 /* ══ 196 PAYS — INDICATEURS ══ */
@@ -2187,7 +2196,8 @@ function initGlobe(){
       var iso=String(id).padStart(3,'0');
       var pays=ISO3[iso];
       if(!pays) return '#0f1e38';
-      var es=eByP[pays]||[];
+      /* Lire directement depuis E[] pour avoir les données fraîches */
+      var es=E.filter(function(e){return e.p===pays;});
       if(!es.length) return '#1a3560';
       /* Trouver l'élection la plus récente */
       var esDone=es.filter(function(x){return x.done;});
@@ -2683,6 +2693,118 @@ function supaFetch(table, params) {
 }
 
 /* ── Synchronisation depuis Supabase ── */
+function loadElectionsFromSupabase() {
+  /* Charger toutes les élections depuis Supabase */
+  /* et les fusionner avec E[] */
+  supaFetch('elections', 'select=pays,date,winner,party,done,type&order=date.asc')
+    .then(function(rows) {
+      if (!rows || !rows.length) return;
+      var added = 0;
+      var today = new Date().toISOString().slice(0,10);
+
+      rows.forEach(function(row) {
+        if (!row.pays || !row.date) return;
+
+        /* Chercher si cette élection existe déjà dans E[] */
+        var existing = E.find(function(e) {
+          return e.p === row.pays && e.d === row.date;
+        });
+
+        if (existing) {
+          /* Mettre à jour si résultat disponible */
+          if (row.done && row.winner && !existing.result) {
+            existing.done = true;
+            existing.result = {
+              winner: row.winner,
+              party: row.party || ''
+            };
+          }
+        } else {
+          /* Nouvelle élection non connue dans E[] — l'ajouter */
+          var newId = Math.max.apply(null, E.map(function(e){return e.id||0;})) + 1;
+          var newElection = {
+            id: newId,
+            p: row.pays,
+            r: regionPays(row.pays),
+            t: row.type || 'l',
+            d: row.date,
+            cert: 2,
+            done: row.done || false,
+          };
+          if (row.done && row.winner) {
+            newElection.result = {
+              winner: row.winner,
+              party: row.party || ''
+            };
+          }
+          E.push(newElection);
+          /* Mettre à jour eByP */
+          if (!eByP[row.pays]) eByP[row.pays] = [];
+          eByP[row.pays].push(newElection);
+          added++;
+        }
+      });
+
+      if (added > 0) {
+        console.log('Nouvelles élections depuis Supabase:', added);
+        /* Reconstruire eByP */
+        Object.keys(eByP).forEach(function(p){ eByP[p]=[]; });
+        E.forEach(function(e){ 
+          if (!eByP[e.p]) eByP[e.p] = [];
+          eByP[e.p].push(e);
+        });
+        renderCal();
+      }
+    }).catch(function(err) {
+      console.warn('loadElections:', err);
+    });
+}
+
+/* Helper: déterminer la région d'un pays */
+function regionPays(pays) {
+  var regions = {
+    'AF': ['Algerie','Maroc','Tunisie','Egypte','Libye','Soudan','Ethiopie',
+           'Kenya','Nigeria','Ghana','Senegal','Mali','Burkina Faso','Niger',
+           'Tchad','Cameroun','RD Congo','Angola','Mozambique','Tanzania',
+           'Ouganda','Rwanda','Zambie','Zimbabwe','Afrique du Sud','Namibie',
+           'Botswana','Madagascar','Benin','Togo','Sierra Leone','Liberia',
+           'Guinee','Guinee-Bissau','Gambie','Cap-Vert','Mauritanie',
+           'Centrafrique','Soudan du Sud','Somalie','Djibouti','Erythree',
+           'Eswatini','Lesotho','Malawi','Burundi','Comores','Congo',
+           'Rep. du Congo','Gabon','Guinee equatoriale','Sao Tome-et-Principe'],
+    'EU': ['France','Allemagne','Espagne','Italie','Portugal','Belgique',
+           'Pays-Bas','Suisse','Autriche','Pologne','Tchequie','Hongrie',
+           'Roumanie','Bulgarie','Suede','Norvege','Danemark','Finlande',
+           'Islande','Irlande','Grece','Turquie','Russie','Ukraine',
+           'Belarus','Moldavie','Serbie','Croatie','Slovenie','Slovaquie',
+           'Albanie','Montenegro','Macedoine du Nord','Bosnie','Kosovo',
+           'Lettonie','Lituanie','Estonie','Luxembourg','Malte','Chypre',
+           'Georgie','Armenie','Azerbaidjan','Monaco','Andorre','Saint-Marin'],
+    'AM': ['Etats-Unis','Canada','Mexique','Bresil','Argentine','Colombie',
+           'Chili','Perou','Venezuela','Bolivie','Equateur','Uruguay',
+           'Paraguay','Guyana','Suriname','Belize','Guatemala','Honduras',
+           'Salvador','Nicaragua','Costa Rica','Panama','Cuba','Haiti',
+           'Rep. dominicaine','Jamaique','Trinidad & Tobago','Bahamas',
+           'Barbade','Antigua-et-Barbuda','Saint-Kitts','Sainte-Lucie',
+           'Saint-Vincent','Grenade','Dominique'],
+    'AS': ['Chine','Japon','Coree du Sud','Coree du Nord','Inde','Pakistan',
+           'Bangladesh','Sri Lanka','Nepal','Bhoutan','Afghanistan','Iran',
+           'Irak','Syrie','Liban','Israel','Jordanie','Arabie Saoudite',
+           'Emirats arabes','Qatar','Koweit','Bahrein','Oman','Yemen',
+           'Kazakhstan','Ouzbekistan','Tadjikistan','Kirghizstan',
+           'Turkmenistan','Mongolie','Birmanie','Myanmar','Thailande',
+           'Vietnam','Cambodge','Laos','Malaisie','Singapour','Indonesie',
+           'Philippines','Timor oriental','Brunei','Taiwan'],
+    'OC': ['Australie','Nouvelle-Zelande','Papouasie-NG','Fidji','Samoa',
+           'Tonga','Vanuatu','Iles Salomon','Kiribati','Micronesie',
+           'Palau','Nauru','Iles Marshall','Nouvelle-Caledonie']
+  };
+  for (var r in regions) {
+    if (regions[r].indexOf(pays) >= 0) return r;
+  }
+  return 'AS'; /* défaut */
+}
+
 function syncFromSupabase() {
   /* SYNC — Par pays uniquement, gère les élections à 2 tours */
   var today = new Date().toISOString().slice(0,10);
@@ -2732,13 +2854,18 @@ function syncFromSupabase() {
         Object.keys(eByP).forEach(function(p){ eByP[p]=[];});
         E.forEach(function(e){ if(!eByP[e.p])eByP[e.p]=[]; eByP[e.p].push(e); });
         renderCal();
-        /* Recolorier le globe */
-        if (typeof gCountriesG !== 'undefined' && gCountriesG) {
-          gCountriesG.selectAll('.cp').attr('fill', function(d) {
-            return paysColor(d.id);
-          });
+        /* Recolorier le globe avec délai pour s'assurer que gCountriesG existe */
+        function recolorGlobe(){
+          if(typeof gCountriesG!=='undefined'&&gCountriesG){
+            gCountriesG.selectAll('.cp').attr('fill',function(d){
+              return paysColor(d.id);
+            });
+            showSyncStatus('✅ Résultats mis à jour', '#10b981');
+          } else {
+            setTimeout(recolorGlobe, 500);
+          }
         }
-        showSyncStatus('✅ Résultats mis à jour', '#10b981');
+        recolorGlobe();
       } else {
         showSyncStatus('✓ Connecté', 'var(--mu)');
       }
@@ -2967,7 +3094,8 @@ function syncDirigeants(){
 }
 
 /* Lancer Supabase en priorité, Google Sheets en fallback */
-setTimeout(syncFromSupabase, 1500);
+setTimeout(loadElectionsFromSupabase, 1000);
+setTimeout(syncFromSupabase, 2500);
 setTimeout(syncDirigeants, 2000);
 /* Resynchroniser les dirigeants toutes les 6 heures */
 setInterval(syncDirigeants, 6 * 60 * 60 * 1000);
