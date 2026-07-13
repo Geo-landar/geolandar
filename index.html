@@ -2195,26 +2195,31 @@ function initGlobe(){
     function paysColor(id){
       var iso=String(id).padStart(3,'0');
       var pays=ISO3[iso];
-      if(!pays) return '#0f1e38';
-      var es=E.filter(function(e){return e.p===pays;});
-      if(!es.length) return '#1a3560';
+      if(!pays) return '#0d1b2e';
       var annee=new Date().getFullYear();
-      /* VERT = résultats disponibles cette année */
+      /* Chercher dans eByP ET dans E[] */
+      var es=(eByP[pays]||[]).concat(E.filter(function(e){
+        return e.p===pays && !(eByP[pays]||[]).some(function(x){return x.id===e.id;});
+      }));
+      /* VERT = résultats disponibles */
       var esDone=es.filter(function(x){
         return x.done && x.d && parseInt(x.d.slice(0,4))>=annee-1;
       });
       if(esDone.length>0) return '#10b981';
-      /* Elections à venir — trier par date */
+      /* Elections à venir */
       var esAVenir=es.filter(function(x){return !x.done;});
-      if(!esAVenir.length) return '#1a3560';
+      if(!esAVenir.length){
+        /* Pas d'élection connue — couleur neutre mais visible */
+        return '#1e3a5f';
+      }
       var e=esAVenir.sort(function(a,b){
         return (a.d||'').localeCompare(b.d||'');
       })[0];
       var anneeEl=e.d?parseInt(e.d.slice(0,4)):0;
-      if(anneeEl===annee)   return '#ef4444'; /* Rouge = cette année */
-      if(anneeEl===annee+1) return '#8b5cf6'; /* Violet = N+1 */
-      if(anneeEl===annee+2) return '#3b82f6'; /* Bleu = N+2 */
-      return '#1a3560'; /* Gris-bleu = pas d'élection connue */
+      if(anneeEl===annee)   return '#dc2626'; /* Rouge vif = cette année */
+      if(anneeEl===annee+1) return '#7c3aed'; /* Violet = N+1 */
+      if(anneeEl===annee+2) return '#1d4ed8'; /* Bleu = N+2 */
+      return '#1e3a5f'; /* Bleu marine = pas d'élection connue */
     }
 
     /* Dessiner les pays */
