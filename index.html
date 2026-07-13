@@ -2197,29 +2197,24 @@ function initGlobe(){
       var pays=ISO3[iso];
       if(!pays) return '#0d1b2e';
       var annee=new Date().getFullYear();
-      /* Chercher dans eByP ET dans E[] */
-      var es=(eByP[pays]||[]).concat(E.filter(function(e){
-        return e.p===pays && !(eByP[pays]||[]).some(function(x){return x.id===e.id;});
-      }));
-      /* VERT = résultats disponibles */
+      var es=eByP[pays]||[];
+      if(!es.length) return '#1e3a5f';
+      /* VERT = résultats disponibles cette année ou l'année passée */
       var esDone=es.filter(function(x){
         return x.done && x.d && parseInt(x.d.slice(0,4))>=annee-1;
       });
       if(esDone.length>0) return '#10b981';
-      /* Elections à venir */
+      /* Elections à venir - prendre la plus proche */
       var esAVenir=es.filter(function(x){return !x.done;});
-      if(!esAVenir.length){
-        /* Pas d'élection connue — couleur neutre mais visible */
-        return '#1e3a5f';
-      }
+      if(!esAVenir.length) return '#1e3a5f';
       var e=esAVenir.sort(function(a,b){
         return (a.d||'').localeCompare(b.d||'');
       })[0];
       var anneeEl=e.d?parseInt(e.d.slice(0,4)):0;
-      if(anneeEl===annee)   return '#dc2626'; /* Rouge vif = cette année */
+      if(anneeEl===annee)   return '#dc2626'; /* Rouge = cette année */
       if(anneeEl===annee+1) return '#7c3aed'; /* Violet = N+1 */
       if(anneeEl===annee+2) return '#1d4ed8'; /* Bleu = N+2 */
-      return '#1e3a5f'; /* Bleu marine = pas d'élection connue */
+      return '#1e3a5f';
     }
 
     /* Dessiner les pays */
@@ -2692,69 +2687,86 @@ function supaFetch(table, params) {
 /* ── Synchronisation depuis Supabase ── */
 function loadElectionsFromSupabase() {
   /* Charger toutes les élections depuis Supabase */
-  /* et les fusionner avec E[] */
-  supaFetch('elections', 'select=pays,date,winner,party,done,type&order=date.asc')
+  supaFetch('elections', 'select=pays,date,winner,party,done,type&order=date.desc')
     .then(function(rows) {
       if (!rows || !rows.length) return;
       var added = 0;
       var today = new Date().toISOString().slice(0,10);
 
+      /* ÉTAPE 1: Dédupliquer par pays — garder le résultat le plus récent */
+      var meilleurParPays = {};
       rows.forEach(function(row) {
         if (!row.pays || !row.date) return;
-
-        /* Chercher si cette élection existe déjà dans E[] */
-        var existing = E.find(function(e) {
-          return e.p === row.pays && e.d === row.date;
-        });
-
-        if (existing) {
-          /* Mettre à jour si résultat disponible */
-          if (row.done && row.winner && row.winner !== 'undefined' && !existing.result) {
-            existing.done = true;
-            existing.result = {
-              winner: row.winner,
-              party: (row.party && row.party !== 'undefined') ? row.party : ''
-            };
-          }
-        } else {
-          /* Nouvelle élection non connue dans E[] — l'ajouter */
-          var newId = Math.max.apply(null, E.map(function(e){return e.id||0;})) + 1;
-          var newElection = {
-            id: newId,
-            p: row.pays,
-            r: regionPays(row.pays),
-            t: row.type || 'l',
-            d: row.date,
-            cert: 2,
-            done: row.done || false,
-          };
-          if (row.done && row.winner && row.winner !== 'undefined') {
-            newElection.result = {
-              winner: row.winner,
-              party: (row.party && row.party !== 'undefined') ? row.party : ''
-            };
-          }
-          /* Limiter à 3 élections par pays depuis Supabase */
-          var existingCount = E.filter(function(e){ return e.p === row.pays; }).length;
-          if (existingCount < 3) {
-            E.push(newElection);
-            if (!eByP[row.pays]) eByP[row.pays] = [];
-            eByP[row.pays].push(newElection);
-            added++;
-          }
+        if (row.winner === 'undefined' || row.party === 'undefined') return;
+        /* Ne garder que les élections passées avec un vrai vainqueur */
+        if (!row.winner || !row.done) return;
+        /* Garder seulement si pas encore de résultat pour ce pays */
+        if (!meilleurParPays[row.pays]) {
+          meilleurParPays[row.pays] = row;
         }
       });
 
-      if (added > 0) {
-        console.log('Nouvelles élections depuis Supabase:', added);
-        /* Reconstruire eByP */
-        Object.keys(eByP).forEach(function(p){ eByP[p]=[]; });
-        E.forEach(function(e){ 
-          if (!eByP[e.p]) eByP[e.p] = [];
-          eByP[e.p].push(e);
+      /* ÉTAPE 2: Appliquer les résultats aux élections existantes dans E[] */
+      Object.keys(meilleurParPays).forEach(function(pays) {
+        var row = meilleurParPays[pays];
+        /* Chercher l'élection correspondante dans E[] */
+        var existing = E.find(function(e) {
+          return e.p === pays && !e.result;
         });
-        renderCal();
-      }
+        if (existing) {
+          existing.done = true;
+          existing.result = {
+            winner: row.winner,
+            party: row.party || ''
+          };
+        }
+      });
+
+      /* ÉTAPE 3: Ajouter les nouvelles élections non encore dans E[] */
+      rows.forEach(function(row) {
+        if (!row.pays || !row.date) return;
+        /* Ignorer les futures et les sans données */
+        if (row.date > today) return;
+        if (row.winner === 'undefined') return;
+        /* Vérifier si cette élection existe déjà dans E[] (par pays) */
+        var dejaDans = E.some(function(e){ return e.p === row.pays; });
+        if (dejaDans) return;
+        /* Ajouter la nouvelle élection */
+        var newId = Math.max.apply(null, E.map(function(e){return e.id||0;})) + 1;
+        var newElection = {
+          id: newId,
+          p: row.pays,
+          r: regionPays(row.pays),
+          t: row.type || 'l',
+          d: row.date,
+          cert: 2,
+          done: row.done || false,
+        };
+        if (row.done && row.winner) {
+          newElection.result = {
+            winner: row.winner,
+            party: row.party || ''
+          };
+        }
+        E.push(newElection);
+        added++;
+      });
+
+      /* Reconstruire eByP avec TOUTES les élections */
+      Object.keys(eByP).forEach(function(p){ eByP[p]=[]; });
+      E.forEach(function(e){
+        if(!eByP[e.p]) eByP[e.p]=[];
+        eByP[e.p].push(e);
+      });
+      if(added>0){ renderCal(); }
+      /* Recolorier le globe */
+      setTimeout(function(){
+        if(typeof gCountriesG!=='undefined'&&gCountriesG){
+          gCountriesG.selectAll('.cp').attr('fill',function(d){
+            return paysColor(d.id);
+          });
+        }
+      }, 100);
     }).catch(function(err) {
       console.warn('loadElections:', err);
     });
