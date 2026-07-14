@@ -2710,8 +2710,10 @@ function loadElectionsFromSupabase() {
       Object.keys(meilleurParPays).forEach(function(pays) {
         var row = meilleurParPays[pays];
         /* Chercher l'élection correspondante dans E[] */
+        /* CRITIQUE: l'élection DOIT être passée */
         var existing = E.find(function(e) {
-          return e.p === pays && !e.result;
+          return e.p === pays && !e.result
+            && e.d && e.d <= today; /* seulement si élection passée */
         });
         if (existing) {
           existing.done = true;
