@@ -84,6 +84,13 @@ RESULTATS_CONNUS = {
     "Bulgarie":           ("Rumen Radev","Bulgarie Progressiste","2026-04-19"),
     "Vietnam":            ("Parti Communiste du Vietnam","PCV","2026-03-15"),
     "Ouganda":            ("Yoweri Museveni","NRM","2026-01-15"),
+    "Liban":              ("Nawaf Salam","Liste Ensemble pour le Changement","2026-05-10"),
+    "Ethiopie":           ("Abiy Ahmed","Parti de la Prosperite (PP)","2026-06-00"),
+    "Portugal":           ("Luis Montenegro","AD - Alliance Democratique (centre-droit)","2025-03-16"),
+    "Montenegro":         ("Milojko Spajic","Europe Maintenant (centre-droit)","2026-03-15"),
+    "Macedoine du Nord":  ("Hristijan Mickoski","VMRO-DPMNE (droite)","2026-04-01"),
+    "Benin":              ("Patrice Talon","UP (Union Progressiste)","2026-04-12"),
+    "Perou":              ("Keiko Fujimori","Fuerza Popular (droite)","2026-06-07"),
 }
 
 # ══════════════════════════════════════
