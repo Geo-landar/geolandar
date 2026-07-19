@@ -10,35 +10,91 @@
   --mode-dark:1;
 }
 :root.light-mode{
-  --bg:#f5f5f7;
+  --bg:#ffffff;
+  --bg2:#f5f5f7;
+  --bg3:#ebebeb;
   --bd:#d2d2d7;
   --tx:#1d1d1f;
   --mu:#6e6e73;
-  --cd:rgba(0,0,0,.04);
+  --cd:#ffffff;
+  --a:#f97316;
   --a1:#0071e3;
   --a2:#0077ed;
-  --r:12px;
+  --a3:#10b981;
+  --a4:#8b5cf6;
+  --r:14px;
   --mode-dark:0;
 }
 :root.light-mode body{
-  background:#f5f5f7;
+  background:#ffffff;
+  color:#1d1d1f;
+}
+:root.light-mode nav{
+  background:rgba(255,255,255,.92);
+  border-bottom:1px solid #d2d2d7;
+  backdrop-filter:blur(20px);
+}
+:root.light-mode .ntab{
+  color:#1d1d1f;
+}
+:root.light-mode .ntab.active{
+  background:rgba(0,0,0,.08);
+  color:#0071e3;
+}
+:root.light-mode .logo{
   color:#1d1d1f;
 }
 :root.light-mode .card{
   background:#ffffff;
-  border-color:#d2d2d7;
-  box-shadow:0 2px 12px rgba(0,0,0,.08);
+  border:1px solid #d2d2d7;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
 }
-:root.light-mode nav{
-  background:rgba(245,245,247,.85);
-  border-color:#d2d2d7;
+:root.light-mode .card:hover{
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+}
+:root.light-mode .hero{
+  background:#ffffff;
+}
+:root.light-mode h1,
+:root.light-mode h2,
+:root.light-mode h3{
+  color:#1d1d1f;
+}
+:root.light-mode .intro-phrase{
+  color:#6e6e73;
 }
 :root.light-mode .gpanel{
-  background:rgba(245,245,247,.97);
-  border-color:#d2d2d7;
+  background:#ffffff;
+  border:1px solid #d2d2d7;
+  box-shadow:0 4px 20px rgba(0,0,0,.1);
 }
 :root.light-mode #globe-container{
-  background:radial-gradient(ellipse at center,#e8e8ed 0%,#f5f5f7 100%);
+  background:radial-gradient(ellipse at center,#e8e8ed 0%,#f0f0f5 100%);
+}
+:root.light-mode .gel-type{
+  background:rgba(0,113,227,.1);
+  color:#0071e3;
+}
+:root.light-mode .gel-pays{
+  color:#1d1d1f;
+}
+:root.light-mode .gel-date{
+  color:#6e6e73;
+}
+:root.light-mode input,
+:root.light-mode select{
+  background:#f5f5f7;
+  border-color:#d2d2d7;
+  color:#1d1d1f;
+}
+:root.light-mode .lbtn{
+  color:#1d1d1f;
+  border-color:#d2d2d7;
+}
+:root.light-mode .lbtn.active{
+  background:#0071e3;
+  color:#fff;
+  border-color:#0071e3;
 }
 :root{--bg:#0a0e1a;--bg2:#111827;--bg3:#1a2540;--a:#f97316;--a2:#3b82f6;--a3:#10b981;--a4:#8b5cf6;--tx:#f1f5f9;--mu:#94a3b8;--bd:rgba(255,255,255,.08);--cd:rgba(255,255,255,.04);--r:14px;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -317,7 +373,7 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
       <button class="yarr" onclick="shiftY(1)">→</button>
     </div>
     <div class="cleg">
-      <div class="cli"><div class="cld" style="background:var(--a3)"></div><span id="lc1">Date confirmée</span></div>
+      <div class="cli"><div class="cld" style="background:var(--a3)"></div><span id="lc1">'+(lang==='en'?'Confirmed date':'Date confirmée')+'</span></div>
       <div class="cli"><div class="cld" style="background:var(--a)"></div><span id="lc2">Année connue</span></div>
       <div class="cli"><div class="cld" style="background:var(--mu)"></div><span id="lc3">À confirmer</span></div>
       <div class="cli"><div class="cld" style="background:#6b7280"></div><span id="lc4">Terminée — résultats</span></div>
@@ -357,7 +413,7 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
     Chargement du globe...
   </div>
   <svg id="globe-svg"></svg>
-  <button id="gbtn" onclick="closePanels()">← <span id="gbtxt">Retour</span></button>
+  <button id="gbtn" onclick="closePanels()">← <span id="gbtxt">'+(lang==='en'?'Back':'Retour')+'</span></button>
   <div id="gzoom">
     <button id="gzin" onclick="globeZoom(1)" title="Zoom +">+</button>
     <button id="gzout" onclick="globeZoom(-1)" title="Zoom −">−</button>
@@ -375,8 +431,8 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
   <div class="gleg">
     <div class="gl"><div class="gld" style="background:#10b981"></div><span id="gl5">Résultats dispo</span></div>
     <div class="gl"><div class="gld" style="background:#ef4444"></div><span id="gl1">Cette année</span></div>
-    <div class="gl"><div class="gld" style="background:#8b5cf6"></div><span id="gl2">En 2027</span></div>
-    <div class="gl"><div class="gld" style="background:#3b82f6"></div><span id="gl3">En 2028</span></div>
+    <div class="gl"><div class="gld" style="background:#8b5cf6"></div><span id="gl2">'+(lang==='en'?'In 2027':'En 2027')+'</span></div>
+    <div class="gl"><div class="gld" style="background:#3b82f6"></div><span id="gl3">'+(lang==='en'?'In 2028':'En 2028')+'</span></div>
     <div class="gl"><div class="gld" style="background:#8b5cf6"></div><span id="gl4">Pas d'élection</span></div>
     <div class="gl"><div class="gld" style="background:#1a3055"></div><span id="gl6">Pas d'élection</span></div>
   </div>
@@ -966,6 +1022,7 @@ var E=[
  enjeux:[{i:"🪖",t:"5 bases militaires étrangères — géopolitique",d:"Djibouti accueille les bases militaires des USA, France, Chine, Japon et Italie. Cette position stratégique sur le détroit de Bab-el-Mandeb garantit des revenus mais crée des dépendances."},{i:"💧",t:"Pénurie d'eau — désertification",d:"Djibouti est l'un des pays les plus chauds du monde. La pénurie d'eau chronique menace la population. Le changement climatique aggrave dramatiquement la situation."},{i:"🚢",t:"Port de Djibouti — hub commercial Afrique de l'Est",d:"90% des importations de l'Éthiopie (120M hab.) transitent par Djibouti. Le pays tire des revenus importants de ce rôle de hub logistique. La compétition avec Berbera (Somaliland) s'intensifie."}]},
 
 {id:54,p:'Ethiopie',r:'AF',t:"l",d:"2026-06-00",cert:2,done:true,
+ result:{winner:'Abiy Ahmed',party:'Parti de la Prospérité (PP)',gov:'Abiy Ahmed reconduit — majorité absolue',score:'~90%'},
  fiabilite:{n:2,src:"UA, UE (prévus)",txt:"La Commission électorale éthiopienne a progressé mais l'environnement post-guerre du Tigré reste très tendu. Opposition restreinte dans les régions Amhara et Oromo."},
  ctx:"Abiy Ahmed (prix Nobel de la Paix 2019) cherche un nouveau mandat après la guerre du Tigré (2020-2022) qui a fait 600 000 morts. Accord de paix fragile.",
  enjeux:[{i:"🕊️",t:"Paix fragile après 600 000 morts",d:"L'accord de Pretoria (2022) a stoppé la guerre mais pas la réconciliation. Des violations persistent. Des millions de déplacés n'ont pas pu rentrer. L'accord tient mais reste précaire."},{i:"🏗️",t:"Grand Barrage de la Renaissance — tensions avec l'Égypte",d:"Le barrage sur le Nil bleu menace l'approvisionnement en eau de l'Égypte et du Soudan. Cette dispute risque un conflit régional. Abiy a refusé tout compromis sur la souveraineté hydrique."},{i:"📈",t:"2e économie africaine — mais inégalités massives",d:"L'Éthiopie a connu 10% de croissance annuelle pendant 15 ans. Mais la guerre du Tigré a détruit des infrastructures et la pauvreté reste très répandue dans le nord du pays."}]},
@@ -1976,6 +2033,25 @@ function renderCal(){
     if(q&&e.p.toLowerCase().indexOf(q)<0)return false;
     return true;
   });
+  /* Élections partielles du mois */
+  var now = new Date();
+  var moisCourant = now.getFullYear()+'-'+(String(now.getMonth()+1).padStart(2,'0'));
+  var partielles = E.filter(function(e){
+    return e.partial === true && e.d && e.d.slice(0,7) === moisCourant;
+  });
+  var bannerEl = document.getElementById('partial-banner');
+  var listEl = document.getElementById('partial-list');
+  if(bannerEl && listEl){
+    if(partielles.length > 0){
+      bannerEl.style.display = 'block';
+      listEl.innerHTML = partielles.map(function(e){
+        return '<span style="padding:4px 10px;background:rgba(139,92,246,.2);border-radius:20px;font-size:.75rem;color:#c4b5fd;cursor:pointer;filter:blur(3px);user-select:none;" title="Disponible avec l offre Pro">'+e.p+'</span>';
+      }).join('');
+    } else {
+      bannerEl.style.display = 'none';
+    }
+  }
+
   var g=document.getElementById('egrid');
   if(!list.length){g.innerHTML='<div class="empty">'+(lang==='fr'?'Aucune élection trouvée pour cette période.':'No election found.')+'</div>';return;}
   g.innerHTML=list.map(function(e){
@@ -2116,10 +2192,10 @@ function openCountry(pays){
   // Infos générales
   if(info){
     b+='<div class="msec"><h3>'+(lang==='fr'?'Informations générales':'General information')+'</h3><div class="minds">';
-    if(info.capital)b+='<div class="mind"><div class="mn">Capitale</div><div class="mv" style="font-size:.85rem">'+info.capital+'</div></div>';
-    if(info.langue)b+='<div class="mind"><div class="mn">Langue(s)</div><div class="mv" style="font-size:.85rem">'+info.langue+'</div></div>';
-    if(info.monnaie)b+='<div class="mind"><div class="mn">Monnaie</div><div class="mv" style="font-size:.85rem">'+info.monnaie+'</div></div>';
-    if(info.superficie)b+='<div class="mind"><div class="mn">Superficie</div><div class="mv" style="font-size:.85rem">'+info.superficie+'</div></div>';
+    if(info.capital)b+='<div class="mind"><div class="mn">'+(lang==='en'?'Capital':'Capitale')+'</div><div class="mv" style="font-size:.85rem">'+info.capital+'</div></div>';
+    if(info.langue)b+='<div class="mind"><div class="mn">'+(lang==='en'?'Language(s)':'Langue(s)')+'</div><div class="mv" style="font-size:.85rem">'+info.langue+'</div></div>';
+    if(info.monnaie)b+='<div class="mind"><div class="mn">'+(lang==='en'?'Currency':'Monnaie')+'</div><div class="mv" style="font-size:.85rem">'+info.monnaie+'</div></div>';
+    if(info.superficie)b+='<div class="mind"><div class="mn">'+(lang==='en'?'Area':'Superficie')+'</div><div class="mv" style="font-size:.85rem">'+info.superficie+'</div></div>';
     b+='</div></div>';
   }
   // Indicateurs
@@ -2513,18 +2589,18 @@ function showCountry(pays){
   var _gnL=document.getElementById('gnL');
   var _sp=typeof SPECIAL_STATUS!=='undefined'&&SPECIAL_STATUS[pays];
   if(_sp){
-    _gnL.innerHTML=pays+'<span style="display:block;font-size:.62rem;color:#f59e0b;font-weight:500;margin-top:2px;font-style:italic">('+_sp+')</span>';
+    _gnL.innerHTML=(lang==='en'&&window._paysEN&&window._paysEN[pays]?window._paysEN[pays]:pays)+'<span style="display:block;font-size:.62rem;color:#f59e0b;font-weight:500;margin-top:2px;font-style:italic">('+_sp+')</span>';
   } else {
     _gnL.textContent=pays;
   }
   document.getElementById('gsL').textContent=ind?(ind.s+' · '+ind.pop):'';
   var bL='';
   if(info){
-    bL+='<div class="gpst">'+(lang==='fr'?'Informations':'Information')+'</div>';
-    if(info.capital)bL+='<div class="ginfo"><div class="ginfo-lbl">Capitale</div><div class="ginfo-val">'+info.capital+'</div></div>';
-    if(info.langue)bL+='<div class="ginfo"><div class="ginfo-lbl">Langue(s)</div><div class="ginfo-val">'+info.langue+'</div></div>';
-    if(info.monnaie)bL+='<div class="ginfo"><div class="ginfo-lbl">Monnaie</div><div class="ginfo-val">'+info.monnaie+'</div></div>';
-    if(info.superficie)bL+='<div class="ginfo"><div class="ginfo-lbl">Superficie</div><div class="ginfo-val">'+info.superficie+'</div></div>';
+    bL+='<div class="gpst">'+(lang==='fr'?'Informations':lang==='en'?'Information':'Information')+'</div>';
+    if(info.capital)bL+='<div class="ginfo"><div class="ginfo-lbl">'+(lang==='en'?'Capital':'Capitale')+'</div><div class="ginfo-val">'+info.capital+'</div></div>';
+    if(info.langue)bL+='<div class="ginfo"><div class="ginfo-lbl">'+(lang==='en'?'Language(s)':'Langue(s)')+'</div><div class="ginfo-val">'+info.langue+'</div></div>';
+    if(info.monnaie)bL+='<div class="ginfo"><div class="ginfo-lbl">'+(lang==='en'?'Currency':'Monnaie')+'</div><div class="ginfo-val">'+info.monnaie+'</div></div>';
+    if(info.superficie)bL+='<div class="ginfo"><div class="ginfo-lbl">'+(lang==='en'?'Area':'Superficie')+'</div><div class="ginfo-val">'+info.superficie+'</div></div>';
   }
   if(ind){
     bL+='<div class="gpst" style="margin-top:10px">'+(lang==='fr'?'Indicateurs 2025':'2025 Indicators')+'</div><div class="gindl">';
@@ -2535,7 +2611,7 @@ function showCountry(pays){
   // PANNEAU DROIT — toujours affiché (dirigeant + élections éventuelles)
   document.getElementById('gfR').innerHTML=flagH(pays,30,22);
   document.getElementById('gnR').textContent=pays;
-  document.getElementById('gsR').textContent=lang==='fr'?'Dirigeant & Élections':'Leader & Elections';
+  document.getElementById('gsR').textContent=lang==='fr'?lang==='en'?'Leader & Elections':'Dirigeant & Élections':'Leader & Elections';
   var bR = '';
   // Dirigeant actuel
   bR += leaderHTML(pays, true);
@@ -2553,7 +2629,7 @@ function showCountry(pays){
         bR+='<div class="gelwin">🏆 '+r.winner+'</div><div class="gelsco">'+r.party+' · '+r.score+'</div>';
         if(r.gov)bR+='<div style="font-size:.64rem;color:var(--a3);font-style:italic;margin-top:2px">'+r.gov+'</div>';
         if(r.bars)r.bars.slice(0,3).forEach(function(b){bR+='<div class="gelbr"><span class="gbrnm">'+b.n+'</span><div class="gbrwrap"><div class="gbrfill" style="width:'+b.pct+'%;background:'+(b.won?'#10b981':'#3b82f6')+'"></div></div><span class="gbrpct">'+b.pct+'%</span></div>';});
-        if(src)bR+='<a href="'+src.url+'" target="_blank" rel="noopener" class="gsrc">🔗 '+(lang==='fr'?'Résultats officiels':'Official results')+'</a>';
+        if(src)bR+='<a href="'+src.url+'" target="_blank" rel="noopener" class="gsrc">🔗 '+(lang==='fr'?lang==='en'?'Official results':'Résultats officiels':'Official results')+'</a>';
       }else{
         if(e.ctx)bR+='<div class="gctx">'+e.ctx.substring(0,180)+(e.ctx.length>180?'...':'')+'</div>';
       }
@@ -2644,68 +2720,181 @@ function setLang(l){
     var onclick=b.getAttribute('onclick')||'';
     if(onclick.indexOf("'"+l+"'")>=0) b.classList.add('active');
   });
-  var elems={
-    'intro-phrase': fr?"Dans un monde de plus en plus mondialisé, savoir ce qui se passe chez notre voisin n'est plus une option — c'est ce qui nous fait penser différemment.":"In an increasingly globalized world, knowing what is happening next door is no longer optional — it is what makes us think differently.",
-    'h1-title': null,
-    'hsub': fr?'Présidentielles, législatives, sénatoriales — 196 pays, 2026-2028':'Presidential, legislative, senate — 196 countries, 2026-2028',
-    's1': fr?'Élections recensées':'Elections listed',
-    's2': fr?'Pays couverts':'Countries covered',
-    's3': fr?'Années de couverture':'Years covered',
-    'lc1': fr?'Date confirmée':'Confirmed date',
-    'lc2': fr?'Année connue':'Year known',
-    'lc3': fr?'À confirmer':'To be confirmed',
-    'lc4': fr?'Terminée — résultats':'Ended — results',
-    'pays-sub': fr?'Indicateurs économiques, politiques et sociaux. Cliquez pour les détails et les élections.':'Economic, political and social indicators. Click for details and elections.',
-    'gbtxt': fr?'Retour':'Back',
-    'gl1': fr?'Dans 30j':'In 30d',
-    'gl2': fr?'Dans 3 mois':'In 3 months',
-    'gl3': fr?'Cette année':'This year',
-    'gl5': fr?'Résultats':'Results',
-    'gl6': fr?'Pas d élection':'No election'
+
+  /* Traductions complètes */
+  var T={
+    /* Navigation */
+    'nav-cal':       fr?'📅 Calendrier':'📅 Calendar',
+    'nav-globe':     fr?'🌍 Globe':'🌍 Globe',
+    'nav-pays':      fr?'🗂️ 196 Pays':'🗂️ 196 Countries',
+    /* Hero */
+    'intro-phrase':  fr?"Dans un monde de plus en plus mondialisé, savoir ce qui se passe chez notre voisin n'est plus une option.":"In an increasingly globalized world, knowing what happens next door is no longer optional.",
+    'hsub':          fr?'Présidentielles, législatives, sénatoriales — 196 pays, 2026-2028':'Presidential, legislative, senate elections — 196 countries, 2026-2028',
+    /* Stats */
+    's1':            fr?'Élections recensées':'Elections listed',
+    's2':            fr?'Pays couverts':'Countries covered',
+    's3':            fr?'Années de couverture':'Years covered',
+    /* Légende */
+    'lc1':           fr?'Date confirmée':'Confirmed date',
+    'lc2':           fr?'Année connue':'Year known',
+    'lc3':           fr?'À confirmer':'To be confirmed',
+    'lc4':           fr?'Terminée — résultats':'Ended — results',
+    /* Globe légende */
+    'gl1':           fr?'Cette année':'This year',
+    'gl2':           fr?'En 2027':'In 2027',
+    'gl3':           fr?'En 2028':'In 2028',
+    'gl5':           fr?'Résultats dispo':'Results available',
+    'gl6':           fr?'Pas d élection':'No election',
+    /* Pays page */
+    'pays-title-sub':fr?'Indicateurs économiques, politiques et sociaux.':'Economic, political and social indicators.',
+    'pays-sub':      fr?'Indicateurs économiques, politiques et sociaux. Cliquez pour les détails.':'Economic, political and social indicators. Click for details.',
+    /* Boutons */
+    'gbtxt':         fr?'Retour':'Back',
+    'btn-stop':      fr?'⏸ Pause':'⏸ Pause',
+    /* Filtres */
+    'filter-all-type': fr?'Tous types':'All types',
+    'filter-all-reg':  fr?'Toutes régions':'All regions',
+    'filter-pres':   fr?'Présidentielle':'Presidential',
+    'filter-leg':    fr?'Législative':'Legislative',
+    'filter-sen':    fr?'Sénatoriale':'Senate',
+    /* Encart partielles */
+    'partial-title': fr?'🗳️ ÉLECTIONS PARTIELLES CE MOIS-CI':'🗳️ BY-ELECTIONS THIS MONTH',
+    'partial-badge': fr?'Offre Pro':'Pro Plan',
+    /* Résultats */
+    'res-elu':       fr?'ÉLU(E) / VAINQUEUR':'ELECTED / WINNER',
+    'res-certif':    fr?'Résultats certifiés':'Certified results',
+    'res-contest':   fr?'Résultats contestés':'Contested results',
+    'res-partiel':   fr?'Partiellement reconnu':'Partially recognized',
+    'res-nonrecon':  fr?'Non reconnu / Fraudes':'Not recognized / Fraud',
+    /* Sections pays */
+    'info-capitale': fr?'Capitale':'Capital',
+    'info-langue':   fr?'Langue(s)':'Language(s)',
+    'info-monnaie':  fr?'Monnaie':'Currency',
+    'info-superficie':fr?'Superficie':'Area',
+    'info-pop':      fr?'Population':'Population',
+    'info-pib':      fr?'PIB':'GDP',
+    'info-cho':      fr?'Chômage':'Unemployment',
+    'info-edu':      fr?'Éducation':'Education',
+    'info-san':      fr?'Santé':'Health',
+    'info-dem':      fr?'Démocratie':'Democracy',
+    'info-cor':      fr?'Anti-corruption':'Anti-corruption',
+    /* Sections élections */
+    'sec-elections': fr?'ÉLECTIONS':'ELECTIONS',
+    'sec-dirigeant': fr?'Dirigeant actuel':'Current leader',
+    'sec-indicateurs':fr?'INDICATEURS':'INDICATORS',
   };
-  Object.keys(elems).forEach(function(id){
+
+  /* Appliquer les traductions par ID */
+  Object.keys(T).forEach(function(id){
     var el=document.getElementById(id);
-    if(!el||!elems[id]) return;
-    el.textContent=elems[id];
+    if(el && T[id]) el.textContent=T[id];
   });
+
+  /* Titres avec HTML */
   var ht=document.getElementById('h1-title');
   if(ht) ht.innerHTML=fr?"Toutes les <em>élections</em> du monde":"All the world's <em>elections</em>";
   var pt=document.getElementById('pays-title');
   if(pt) pt.innerHTML=fr?"Les <em>196 pays</em> du monde":"The <em>196 countries</em> of the world";
-  var fi=document.getElementById('fsrch');
-  if(fi) fi.placeholder=fr?'Rechercher un pays...':'Search a country...';
-  var cp=document.getElementById('cpinput');
-  if(cp) cp.placeholder=fr?'Rechercher un pays...':'Search a country...';
-  var oat=document.getElementById('opt-all-types');if(oat)oat.textContent=fr?'Tous types':'All types';
-  var oar=document.getElementById('opt-all-reg');if(oar)oar.textContent=fr?'Toutes régions':'All regions';
-  var oam=document.getElementById('opt-am');if(oam)oam.textContent=fr?'Amérique':'Americas';
-  var op=document.getElementById('opt-p');if(op)op.textContent=fr?'Présidentielle':'Presidential';
-  var ol=document.getElementById('opt-l');if(ol)ol.textContent=fr?'Législative':'Legislative';
-  var oss=document.getElementById('opt-s');if(oss)oss.textContent=fr?'Sénatoriale':'Senate';
-  var om=document.getElementById('opt-m');if(om)om.textContent=fr?'Municipale/Régionale':'Municipal/Regional';
-  var or2=document.getElementById('opt-r');if(or2)or2.textContent=fr?'Référendum':'Referendum';
-  renderYears();renderCal();renderPills();renderPays();
-  if(gSel&&document.getElementById('panL').classList.contains('open')){
-    var pays=document.getElementById('gnL').textContent;
-    if(pays) showCountry(pays);
-  }
+
+  /* Traduction des types d'élection dans les cartes */
+  var typeMap = fr ? {
+    'p':'PRÉSIDENTIELLE','l':'LÉGISLATIVE','s':'SÉNATORIALE',
+    'm':'MUNICIPALE','r':'RÉGIONALE','e':'EUROPÉENNE'
+  } : {
+    'p':'PRESIDENTIAL','l':'LEGISLATIVE','s':'SENATE',
+    'm':'MUNICIPAL','r':'REGIONAL','e':'EUROPEAN'
+  };
+
+  /* Traduction des régions dans les cartes */
+  var regMap = fr ? {
+    'EU':'Europe','AF':'Afrique','AM':'Amérique','AS':'Asie','OC':'Océanie'
+  } : {
+    'EU':'Europe','AF':'Africa','AM':'Americas','AS':'Asia','OC':'Oceania'
+  };
+
+  /* Traduction des noms de pays (EN seulement) */
+  var paysEN = {
+    'Allemagne':'Germany','Belgique':'Belgium','Espagne':'Spain',
+    'Italie':'Italy','Pays-Bas':'Netherlands','Suède':'Sweden',
+    'Norvège':'Norway','Danemark':'Denmark','Finlande':'Finland',
+    'Pologne':'Poland','Tchequie':'Czech Republic','Hongrie':'Hungary',
+    'Roumanie':'Romania','Bulgarie':'Bulgaria','Grece':'Greece',
+    'Autriche':'Austria','Suisse':'Switzerland','Portugal':'Portugal',
+    'Croatie':'Croatia','Slovenie':'Slovenia','Slovaquie':'Slovakia',
+    'Lettonie':'Latvia','Lituanie':'Lithuania','Estonie':'Estonia',
+    'Serbie':'Serbia','Montenegro':'Montenegro','Albanie':'Albania',
+    'Macedoine du Nord':'North Macedonia','Bosnie':'Bosnia',
+    'Kosovo':'Kosovo','Moldavie':'Moldova','Ukraine':'Ukraine',
+    'Belarus':'Belarus','Russie':'Russia','Georgie':'Georgia',
+    'Armenie':'Armenia','Azerbaidjan':'Azerbaijan','Turquie':'Turkey',
+    'Etats-Unis':'United States','Canada':'Canada','Mexique':'Mexico',
+    'Bresil':'Brazil','Argentine':'Argentina','Colombie':'Colombia',
+    'Chili':'Chile','Perou':'Peru','Venezuela':'Venezuela',
+    'Bolivie':'Bolivia','Equateur':'Ecuador','Paraguay':'Paraguay',
+    'Uruguay':'Uruguay','Guyana':'Guyana','Suriname':'Suriname',
+    'Belize':'Belize','Guatemala':'Guatemala','Honduras':'Honduras',
+    'Salvador':'El Salvador','Nicaragua':'Nicaragua',
+    'Costa Rica':'Costa Rica','Panama':'Panama','Cuba':'Cuba',
+    'Haiti':'Haiti','Rep. dominicaine':'Dominican Republic',
+    'Jamaique':'Jamaica','Trinidad & Tobago':'Trinidad & Tobago',
+    'Barbade':'Barbados','Bahamas':'Bahamas',
+    'Antigua-et-Barbuda':'Antigua & Barbuda',
+    'Egypte':'Egypt','Maroc':'Morocco','Tunisie':'Tunisia',
+    'Algerie':'Algeria','Libye':'Libya','Soudan':'Sudan',
+    'Soudan du Sud':'South Sudan','Ethiopie':'Ethiopia',
+    'Kenya':'Kenya','Tanzanie':'Tanzania','Ouganda':'Uganda',
+    'Rwanda':'Rwanda','Nigeria':'Nigeria','Ghana':'Ghana',
+    'Senegal':'Senegal','Mali':'Mali','Burkina Faso':'Burkina Faso',
+    'Niger':'Niger','Tchad':'Chad','Cameroun':'Cameroon',
+    'RD Congo':'DR Congo','Rep. du Congo':'Congo',
+    'Centrafrique':'Central African Republic','Gabon':'Gabon',
+    "Cote d'Ivoire":"Ivory Coast",'Guinee':'Guinea',
+    'Guinee-Bissau':'Guinea-Bissau','Liberia':'Liberia',
+    'Sierra Leone':'Sierra Leone','Benin':'Benin','Togo':'Togo',
+    'Zambie':'Zambia','Zimbabwe':'Zimbabwe','Malawi':'Malawi',
+    'Mozambique':'Mozambique','Namibie':'Namibia','Botswana':'Botswana',
+    'Lesotho':'Lesotho','Eswatini':'Eswatini',
+    'Madagascar':'Madagascar','Comores':'Comoros',
+    'Cap-Vert':'Cape Verde','Sao Tome-et-Principe':'São Tomé & Príncipe',
+    'Mauritanie':'Mauritania','Somalie':'Somalia',
+    'Djibouti':'Djibouti','Erythree':'Eritrea',
+    'Chine':'China','Japon':'Japan','Coree du Sud':'South Korea',
+    'Coree du Nord':'North Korea','Inde':'India','Pakistan':'Pakistan',
+    'Bangladesh':'Bangladesh','Sri Lanka':'Sri Lanka',
+    'Nepal':'Nepal','Bhoutan':'Bhutan','Afghanistan':'Afghanistan',
+    'Iran':'Iran','Irak':'Iraq','Syrie':'Syria','Liban':'Lebanon',
+    'Israel':'Israel','Jordanie':'Jordan',
+    'Arabie Saoudite':'Saudi Arabia',
+    'Emirats arabes':'UAE','Qatar':'Qatar','Koweit':'Kuwait',
+    'Bahrein':'Bahrain','Oman':'Oman','Yemen':'Yemen',
+    'Kazakhstan':'Kazakhstan','Ouzbekistan':'Uzbekistan',
+    'Tadjikistan':'Tajikistan','Kirghizstan':'Kyrgyzstan',
+    'Turkmenistan':'Turkmenistan','Mongolie':'Mongolia',
+    'Myanmar':'Myanmar','Thailande':'Thailand','Vietnam':'Vietnam',
+    'Cambodge':'Cambodia','Laos':'Laos','Malaisie':'Malaysia',
+    'Singapour':'Singapore','Indonesie':'Indonesia',
+    'Philippines':'Philippines','Timor oriental':'East Timor',
+    'Brunei':'Brunei','Taiwan':'Taiwan',
+    'Australie':'Australia','Nouvelle-Zelande':'New Zealand',
+    'Papouasie-NG':'Papua New Guinea','Fidji':'Fiji',
+    'Somaliland':'Somaliland',
+  };
+
+  /* Stocker pour usage dans renderCal et showCountry */
+  window._paysEN = paysEN;
+  window._typeMap = typeMap;
+  window._regMap = regMap;
+
+  /* Recharger le calendrier avec les nouvelles traductions */
+  if(typeof renderCal === 'function') renderCal();
+
+  /* Mettre à jour les noms de pays sur le globe */
+  document.querySelectorAll('.gel-pays').forEach(function(el){
+    var paysFr = el.getAttribute('data-pays');
+    if(!paysFr) return;
+    el.textContent = fr ? paysFr : (paysEN[paysFr] || paysFr);
+  });
 }
-
-/* ══ ACTUALISATION AUTOMATIQUE ══
-   Source 1 : Google Sheets (résultats saisis après validation officielle)
-   Source 2 : Sources officielles de chaque pays (liens directs)
-   Wikipedia : utilisé UNIQUEMENT comme lien de contexte, jamais comme source de données
-══ */
-
-/* Identifiant du Google Sheets
-   INSTRUCTION : Une fois ton Google Sheets importé et publié,
-   remplace '' par l'URL CSV de partage public.
-   Exemple : 'https://docs.google.com/spreadsheets/d/TON_ID/export?format=csv&gid=0'
-   Laisse '' pour désactiver (le site utilise les données statiques du fichier) */
-var SUPABASE_URL = 'https://tmbupyyugedmtmvzadeq.supabase.co';
-var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtYnVweXl1Z2VkbXRtdnphZGVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTA2MjEsImV4cCI6MjA5NDg2NjYyMX0.sSq48z1SV4xVL_FEK0ROyv_A_8pPxOj8W928CMXmAAM';
-
-/* ── Lecture des données depuis Supabase ── */
 function supaFetch(table, params) {
   var url = SUPABASE_URL + '/rest/v1/' + table + '?' + (params || 'select=*');
   return fetch(url, {
@@ -2743,21 +2932,23 @@ function loadElectionsFromSupabase() {
       });
 
       /* ÉTAPE 2: Appliquer les résultats aux élections existantes dans E[] */
+      /* Couvre TOUTES les élections passées sans résultat */
+      /* que ce soit done:true ou done:false dans le fichier */
       Object.keys(meilleurParPays).forEach(function(pays) {
         var row = meilleurParPays[pays];
-        /* Chercher l'élection correspondante dans E[] */
-        /* CRITIQUE: l'élection DOIT être passée */
-        var existing = E.find(function(e) {
-          return e.p === pays && !e.result
-            && e.d && e.d <= today; /* seulement si élection passée */
+        /* Chercher toutes les élections de ce pays sans résultat */
+        var elections = E.filter(function(e) {
+          return e.p === pays        /* même pays */
+            && !e.result             /* pas encore de résultat */
+            && e.d && e.d <= today;  /* élection passée */
         });
-        if (existing) {
+        elections.forEach(function(existing) {
           existing.done = true;
           existing.result = {
             winner: row.winner,
             party: row.party || ''
           };
-        }
+        });
       });
 
       /* ÉTAPE 3: Ajouter les nouvelles élections non encore dans E[] */
@@ -2771,6 +2962,13 @@ function loadElectionsFromSupabase() {
         if (dejaDans) return;
         /* Ajouter la nouvelle élection */
         var newId = Math.max.apply(null, E.map(function(e){return e.id||0;})) + 1;
+        /* Détecter si c'est une élection partielle */
+        var isPartial = row.type && (
+          row.type.toLowerCase().includes('partiel') ||
+          row.type.toLowerCase().includes('by-election') ||
+          row.type.toLowerCase().includes('partielle') ||
+          row.type.toLowerCase().includes('suppleance')
+        );
         var newElection = {
           id: newId,
           p: row.pays,
@@ -2779,6 +2977,7 @@ function loadElectionsFromSupabase() {
           d: row.date,
           cert: 2,
           done: row.done || false,
+          partial: isPartial || false,
         };
         if (row.done && row.winner) {
           newElection.result = {
