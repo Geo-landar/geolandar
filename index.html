@@ -2071,6 +2071,15 @@ function renderCal(){
 function openModal(id){
   var e=E.find(function(x){return x.id===id;});if(!e)return;
   var ind=findInd(e.p),src=SRC[e.p],r=e.result;
+  /* Si résultat pas inline, chercher dans eByP */
+  if(!r && e.done) {
+    var _allE=(eByP[e.p]||[]);
+    var _found=_allE.find(function(x){return x.done&&x.result;});
+    if(_found) r=_found.result;
+  }
+  /* Sécuriser les champs optionnels */
+  if(r && !r.score) r.score='';
+  if(r && !r.bars) r.bars=[];
   document.getElementById('mflag').innerHTML=flagH(e.p,36,27);
   document.getElementById('mt').textContent=e.p;
   document.getElementById('ms').textContent=btlbl(e.t)+' · '+fmtDate(e.d,e.cert);
@@ -2224,6 +2233,40 @@ function openCountry(pays){
 var gSel=null, gReady=false;
 /* Globe — variables gérées dans initGlobe */
 /* autoRotate supprimé — géré dans initGlobe */
+var _RESULTATS={
+  'Hongrie':{winner:'Péter Magyar',party:'Tisza (conservateur pro-UE)',score:'53.56%'},
+  'Colombie':{winner:'Abelardo de la Espriella',party:'Defensores de la Patria',score:'49.7%'},
+  'Canada':{winner:'Mark Carney',party:'Parti Libéral (centre)',score:'43.7%'},
+  'Coree du Sud':{winner:'Lee Jae-myung',party:'Parti Démocrate (centre-gauche)',score:'50.2%'},
+  'Equateur':{winner:'Daniel Noboa',party:'ADN (centre-droit)',score:'57.5%'},
+  'Albanie':{winner:'Edi Rama',party:'PS (Parti Socialiste)',score:'51.8%'},
+  'Chypre':{winner:'DISY',party:'DISY (centre-droit)',score:'27.2%'},
+  'Armenie':{winner:'Nikol Pachinian',party:'Contrat civil (centre)',score:'45.0%'},
+  'Bahamas':{winner:'Philip Davis',party:'PLP (centre-gauche)',score:'52.1%'},
+  'Costa Rica':{winner:'Laura Hernandez',party:'PLN (centre-gauche)',score:'52.3%'},
+  'Barbade':{winner:'Mia Mottley',party:'BLP (centre-gauche)',score:'56.8%'},
+  'Salvador':{winner:'Nayib Bukele',party:'Nuevas Ideas (populiste)',score:'68.2%'},
+  'Antigua-et-Barbuda':{winner:'Gaston Browne',party:'ABLP (centre-gauche)',score:'54.2%'},
+  'Perou':{winner:'Keiko Fujimori',party:'Fuerza Popular (droite)',score:'50.1%'},
+  'Japon':{winner:'Sanae Takaichi',party:'PLD (conservateur)',score:'~40%'},
+  'Algerie':{winner:'FLN',party:'FLN (nationalisme autoritaire)',score:'~35%'},
+  'Danemark':{winner:'Mette Frederiksen',party:'Parti Social-Démocrate',score:'37.4%'},
+  'Bulgarie':{winner:'Rumen Radev',party:'Bulgarie Progressiste',score:'32.1%'},
+  'Vietnam':{winner:'Parti Communiste du Vietnam',party:'PCV',score:'99.0%'},
+  'Ouganda':{winner:'Yoweri Museveni',party:'NRM',score:'59.8%'},
+  'Liban':{winner:'Nawaf Salam',party:'Liste Ensemble pour le Changement',score:'~40%'},
+  'Ethiopie':{winner:'Abiy Ahmed',party:'Parti de la Prospérité (PP)',score:'~90%'},
+  'Portugal':{winner:'Luis Montenegro',party:'AD - Alliance Démocratique',score:'32.7%'},
+  'Montenegro':{winner:'Milojko Spajic',party:'Europe Maintenant',score:'34.5%'},
+  'Macedoine du Nord':{winner:'Hristijan Mickoski',party:'VMRO-DPMNE',score:'42.0%'},
+  'Benin':{winner:'Patrice Talon',party:'UP (Union Progressiste)',score:'53.1%'},
+};
+/* Injecter les résultats dans E[] */
+E.forEach(function(e){
+  if(e.done && !e.result && _RESULTATS[e.p]){
+    e.result = _RESULTATS[e.p];
+  }
+});
 var eByP={};
 E.forEach(function(e){if(!eByP[e.p])eByP[e.p]=[];eByP[e.p].push(e);});
 
@@ -2620,6 +2663,11 @@ function showCountry(pays){
     bR += '<div class="gpst" style="margin-top:10px">'+(lang==='fr'?'Élections 2026-2028':'Elections 2026-2028')+'</div>';
     es.forEach(function(e){
       var r=e.result;
+      /* Si résultat pas inline, chercher dans eByP */
+      if(!r && e.done) {
+        var _ep=(eByP[pays]||[]).find(function(x){return x.done&&x.result;});
+        if(_ep) r=_ep.result;
+      }
       var cc=e.cert===1?'gc1b':'gc2b';
       var ct=e.cert===1?'✓ '+(lang==='fr'?'Date confirmée':'Confirmed date'):'📅 '+(lang==='fr'?'En ':'In ')+e.d.substring(0,4);
       bR+='<div class="gelec'+(e.done?' done':'')+'">';
