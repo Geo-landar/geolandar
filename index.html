@@ -2967,6 +2967,7 @@ function loadElectionsFromSupabase() {
     .then(function(rows) {
       if (!rows || !rows.length) return;
       var added = 0;
+      var updated = false; /* CORRECTIF: suit les résultats mis à jour sur des élections déjà existantes dans E[] (ex: Algérie) */
       var today = new Date().toISOString().slice(0,10);
 
       /* ÉTAPE 1: Dédupliquer par pays — garder le résultat le plus récent */
@@ -2999,6 +3000,7 @@ function loadElectionsFromSupabase() {
             winner: row.winner,
             party: row.party || ''
           };
+          updated = true; /* CORRECTIF: ce pays a reçu un résultat, il faut redessiner le calendrier */
         });
       });
 
@@ -3046,7 +3048,7 @@ function loadElectionsFromSupabase() {
         if(!eByP[e.p]) eByP[e.p]=[];
         eByP[e.p].push(e);
       });
-      if(added>0){ renderCal(); }
+      if(added>0 || updated){ renderCal(); } /* CORRECTIF: avant, seul added>0 déclenchait le refresh — les résultats mis à jour sur des élections déjà connues (Algérie, etc.) restaient invisibles */
       /* Recolorier le globe */
       setTimeout(function(){
         if(typeof gCountriesG!=='undefined'&&gCountriesG){
