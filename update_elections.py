@@ -3,6 +3,8 @@ from supabase import create_client
 from datetime import datetime, date
 import time
 import os
+import json
+import re
 
 # ══════════════════════════════════════
 # CONFIGURATION
@@ -34,12 +36,12 @@ NOMS_PAYS = {
     "République de Corée":"Coree du Sud",
     "République démocratique du Congo":"RD Congo",
     "République dominicaine":"Rep. dominicaine",
-    "République du Congo":"Rep. du Congo","Roumanie":"Roumanie",
-    "Royaume-Uni":"Royaume-Uni","São Tomé-et-Príncipe":"Sao Tome-et-Principe",
-    "Sénégal":"Senegal","Slovaquie":"Slovaquie","Slovénie":"Slovenie",
-    "Somalie":"Somalie","Soudan du Sud":"Soudan du Sud",
-    "Sri Lanka":"Sri Lanka","Suède":"Suede","Syrie":"Syrie",
-    "Tadjikistan":"Tadjikistan","Taïwan":"Taiwan","Tchad":"Tchad",
+    "République du Congo":"Rep. du Congo",
+    "Royaume-Uni":"Royaume-Uni",
+    "São Tomé-et-Príncipe":"Sao Tome-et-Principe",
+    "Sénégal":"Senegal","Slovénie":"Slovenie","Somalie":"Somalie",
+    "Soudan du Sud":"Soudan du Sud","Sri Lanka":"Sri Lanka",
+    "Suède":"Suede","Tadjikistan":"Tadjikistan","Taïwan":"Taiwan",
     "Tchéquie":"Tchequie","Thaïlande":"Thailande",
     "Trinité-et-Tobago":"Trinidad & Tobago","Tunisie":"Tunisie",
     "Turkménistan":"Turkmenistan","Ukraine":"Ukraine",
@@ -52,9 +54,10 @@ NOMS_PAYS = {
     "Ouganda":"Ouganda","Colombie":"Colombie","Chili":"Chili",
     "Argentine":"Argentine","Bolivie":"Bolivie","Venezuela":"Venezuela",
     "Suriname":"Suriname","Guyana":"Guyana","Panama":"Panama",
-    "Guatemala":"Guatemala","Honduras":"Honduras","El Salvador":"Salvador",
-    "Belize":"Belize","Cuba":"Cuba","Barbade":"Barbade",
-    "Bosnie-Herzégovine":"Bosnie","Bosnie":"Bosnie",
+    "Guatemala":"Guatemala","Honduras":"Honduras",
+    "El Salvador":"Salvador","Belize":"Belize","Cuba":"Cuba",
+    "Barbade":"Barbade","Bosnie-Herzégovine":"Bosnie",
+    "Monténégro":"Montenegro","Albanie":"Albanie",
 }
 
 def normaliser(pays):
@@ -85,35 +88,36 @@ RESULTATS_CONNUS = {
     "Vietnam":            ("Parti Communiste du Vietnam","PCV","2026-03-15"),
     "Ouganda":            ("Yoweri Museveni","NRM","2026-01-15"),
     "Liban":              ("Nawaf Salam","Liste Ensemble pour le Changement","2026-05-10"),
-    "Ethiopie":           ("Abiy Ahmed","Parti de la Prosperite (PP)","2026-06-00"),
-    "Portugal":           ("Luis Montenegro","AD - Alliance Democratique (centre-droit)","2025-03-16"),
-    "Montenegro":         ("Milojko Spajic","Europe Maintenant (centre-droit)","2026-03-15"),
-    "Macedoine du Nord":  ("Hristijan Mickoski","VMRO-DPMNE (droite)","2026-04-01"),
+    "Ethiopie":           ("Abiy Ahmed","Parti de la Prosperite (PP)","2026-06-01"),
+    "Portugal":           ("Luis Montenegro","AD - Alliance Democratique","2025-03-16"),
+    "Montenegro":         ("Milojko Spajic","Europe Maintenant","2026-03-15"),
+    "Macedoine du Nord":  ("Hristijan Mickoski","VMRO-DPMNE","2026-04-01"),
     "Benin":              ("Patrice Talon","UP (Union Progressiste)","2026-04-12"),
-    "Perou":              ("Keiko Fujimori","Fuerza Popular (droite)","2026-06-07"),
 }
 
 # ══════════════════════════════════════
-# SOURCE 1 — WIKIDATA (UNE SEULE REQUÊTE GLOBALE)
+# SOURCE 1 — WIKIDATA GLOBAL (1 requête)
 # ══════════════════════════════════════
-QUERY_GLOBAL = """
+QUERY_RESULTATS = """
 SELECT ?paysLabel ?date ?vainqueurLabel ?partiLabel WHERE {
   ?election wdt:P31/wdt:P279* wd:Q40231 .
   ?election wdt:P17 ?pays .
   ?election wdt:P585 ?date .
   ?election wdt:P991 ?vainqueur .
   OPTIONAL { ?vainqueur wdt:P102 ?parti . }
-  FILTER(?date >= "2025-01-01"^^xsd:dateTime)
+  FILTER(?date >= "2024-01-01"^^xsd:dateTime)
   FILTER(?date <= "2027-12-31"^^xsd:dateTime)
   SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". }
 }
 ORDER BY DESC(?date)
-LIMIT 200
+LIMIT 300
 """
 
+# Découverte: inclut élections partielles (by-elections Q15284)
 QUERY_DECOUVERTE = """
-SELECT DISTINCT ?paysLabel ?date WHERE {
-  ?election wdt:P31/wdt:P279* wd:Q40231 .
+SELECT DISTINCT ?paysLabel ?date ?typeLabel ?type WHERE {
+  ?election wdt:P31 ?type .
+  ?type wdt:P279* wd:Q40231 .
   ?election wdt:P17 ?pays .
   ?election wdt:P585 ?date .
   FILTER(?date >= "2025-01-01"^^xsd:dateTime)
@@ -121,75 +125,190 @@ SELECT DISTINCT ?paysLabel ?date WHERE {
   SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". }
 }
 ORDER BY ?date
-LIMIT 300
+LIMIT 400
 """
 
-def fetch_wikidata_global():
-    """Une seule requête pour tous les résultats — beaucoup plus rapide"""
-    print(f"  Requête Wikidata globale...")
-    try:
-        r = requests.get(
-            "https://query.wikidata.org/sparql",
-            params={"query": QUERY_GLOBAL, "format": "json"},
-            headers={"Accept":"application/json","User-Agent":"Geolandar/5.0"},
-            timeout=60
-        )
-        r.raise_for_status()
-        data = r.json()["results"]["bindings"]
-        print(f"  {len(data)} résultats trouvés")
-        # Grouper par pays — garder le plus récent
-        par_pays = {}
-        for row in data:
-            pays_wd = row.get("paysLabel",{}).get("value","")
-            pays = normaliser(pays_wd)
-            winner = row.get("vainqueurLabel",{}).get("value","")
-            party = row.get("partiLabel",{}).get("value","")
-            date_el = row.get("date",{}).get("value","")[:10]
-            if not pays or not winner or winner == "undefined":
-                continue
-            if pays not in par_pays:
-                par_pays[pays] = {"winner":winner,"party":party,"date":date_el}
-        return par_pays
-    except Exception as e:
-        print(f"  Erreur Wikidata: {type(e).__name__}")
-        return {}
+# QIDs des types d'élections partielles
+TYPES_PARTIELLES = [
+    "Q15284",   # by-election (élection partielle générique)
+    "Q1198521", # élection partielle législative
+    "Q82673",   # élection complémentaire
+]
 
-def decouvrir_wikidata():
-    """Découvrir nouvelles élections en une seule requête"""
-    print(f"  Découverte Wikidata...")
+# ══════════════════════════════════════
+# SOURCE COMPLÉMENTAIRE — WIKIDATA PAR VOTES
+# P991 (vainqueur direct) n'existe que sur ~23% des élections référencées.
+# Cette requête déduit le vainqueur via P726 (candidat) + P1111 (votes reçus),
+# en prenant le candidat avec le plus de voix — couvre bien plus de pays.
+# ══════════════════════════════════════
+QUERY_RESULTATS_VOTES = """
+SELECT ?paysLabel ?date ?candLabel ?votes ?partiLabel WHERE {
+  ?election wdt:P31/wdt:P279* wd:Q40231 .
+  ?election wdt:P17 ?pays .
+  ?election wdt:P585 ?date .
+  ?election p:P726 ?candStatement .
+  ?candStatement ps:P726 ?cand .
+  ?candStatement pq:P1111 ?votes .
+  OPTIONAL { ?cand wdt:P102 ?parti . }
+  FILTER(?date >= "2024-01-01"^^xsd:dateTime)
+  FILTER(?date <= "2027-12-31"^^xsd:dateTime)
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". }
+}
+ORDER BY DESC(?date)
+LIMIT 600
+"""
+
+def wikidata_query(query, label=""):
     try:
         r = requests.get(
             "https://query.wikidata.org/sparql",
-            params={"query": QUERY_DECOUVERTE, "format": "json"},
-            headers={"Accept":"application/json","User-Agent":"Geolandar/5.0"},
+            params={"query": query, "format": "json"},
+            headers={"Accept":"application/json","User-Agent":"Geolandar/5.2"},
             timeout=60
         )
         r.raise_for_status()
         data = r.json()["results"]["bindings"]
-        print(f"  {len(data)} élections trouvées sur Wikidata")
-        today = date.today().isoformat()
-        nouvelles = 0
-        for row in data:
-            pays_wd = row.get("paysLabel",{}).get("value","")
-            pays = normaliser(pays_wd)
-            date_el = row.get("date",{}).get("value","")[:10]
-            if not pays or not date_el:
-                continue
-            try:
-                res = supabase.table("elections").select("id")\
-                    .eq("pays",pays).eq("date",date_el).execute()
-                if not res.data:
-                    supabase.table("elections").insert({
-                        "pays":pays,"date":date_el,
-                        "winner":"","party":"","done":False,
-                        "updated_at":datetime.now().isoformat()
-                    }).execute()
-                    nouvelles += 1
-            except:
-                pass
-        print(f"  {nouvelles} nouvelles élections ajoutées")
+        print(f"  Wikidata {label}: {len(data)} résultats")
+        return data
     except Exception as e:
-        print(f"  Erreur découverte: {type(e).__name__}")
+        print(f"  Wikidata erreur {label}: {type(e).__name__}")
+        return []
+
+def fetch_wikidata_resultats():
+    data = wikidata_query(QUERY_RESULTATS, "résultats")
+    par_pays = {}
+    today = date.today().isoformat()
+    for row in data:
+        pays = normaliser(row.get("paysLabel",{}).get("value",""))
+        winner = row.get("vainqueurLabel",{}).get("value","")
+        party = row.get("partiLabel",{}).get("value","")
+        date_el = row.get("date",{}).get("value","")[:10]
+        if not pays or not winner or winner=="undefined": continue
+        if date_el > today: continue
+        if pays not in par_pays:
+            par_pays[pays] = {"winner":winner,"party":party,"date":date_el}
+    return par_pays
+
+def fetch_wikidata_resultats_votes():
+    """Source complémentaire : déduit le vainqueur par le nombre de voix le plus élevé
+    (candidat + votes reçus). Utile pour les élections où P991 (vainqueur direct)
+    n'est pas renseigné sur Wikidata."""
+    data = wikidata_query(QUERY_RESULTATS_VOTES, "résultats (par votes)")
+    par_election = {}
+    today = date.today().isoformat()
+    for row in data:
+        pays = normaliser(row.get("paysLabel",{}).get("value",""))
+        date_el = row.get("date",{}).get("value","")[:10]
+        cand = row.get("candLabel",{}).get("value","")
+        parti = row.get("partiLabel",{}).get("value","")
+        votes_raw = row.get("votes",{}).get("value","")
+        if not pays or not cand or not date_el or date_el > today: continue
+        try:
+            votes = float(votes_raw)
+        except (ValueError, TypeError):
+            continue
+        key = (pays, date_el)
+        if key not in par_election or votes > par_election[key]["votes"]:
+            par_election[key] = {"winner":cand,"party":parti,"votes":votes,"date":date_el}
+    # Garder l'élection la plus récente par pays
+    par_pays = {}
+    for (pays, date_el), info in par_election.items():
+        if pays not in par_pays or date_el > par_pays[pays]["date"]:
+            par_pays[pays] = info
+    return par_pays
+
+def decouvrir_elections():
+    data = wikidata_query(QUERY_DECOUVERTE, "découverte")
+    nouvelles = 0
+    for row in data:
+        pays = normaliser(row.get("paysLabel",{}).get("value",""))
+        date_el = row.get("date",{}).get("value","")[:10]
+        type_qid = row.get("type",{}).get("value","").split("/")[-1]
+        type_label = row.get("typeLabel",{}).get("value","")
+        is_partial = type_qid in TYPES_PARTIELLES or any(
+            k in type_label.lower() for k in ["partielle","by-election","partiel","complementaire"]
+        )
+        if not pays or not date_el: continue
+        try:
+            res = supabase.table("elections").select("id")\
+                .eq("pays",pays).eq("date",date_el).execute()
+            if not res.data:
+                supabase.table("elections").insert({
+                    "pays":pays,"date":date_el,
+                    "winner":"","party":"","done":False,
+                    "partial": is_partial,
+                    "type": type_label,
+                    "updated_at":datetime.now().isoformat()
+                }).execute()
+                marker = " [PARTIELLE]" if is_partial else ""
+                print(f"  + {pays} ({date_el}){marker}")
+                nouvelles += 1
+        except: pass
+    print(f"  {nouvelles} nouvelles élections ajoutées")
+
+# ══════════════════════════════════════
+# SOURCE 2 — WIKIPEDIA (résultats manquants)
+# ══════════════════════════════════════
+def fetch_wikipedia(pays, annee, lang="fr"):
+    """Cherche le résultat d'une élection sur Wikipedia (FR par défaut, EN en repli)"""
+    site = "fr.wikipedia.org" if lang == "fr" else "en.wikipedia.org"
+    query = (f"élection {pays} {annee} résultat vainqueur" if lang == "fr"
+             else f"{pays} election {annee} result winner")
+    headers = {"User-Agent":"Geolandar/5.2 (geo-landar.github.io)"}
+
+    try:
+        r = requests.get(
+            f"https://{site}/w/api.php",
+            params={
+                "action":"query","list":"search",
+                "srsearch":query,
+                "format":"json","srlimit":5,
+                "srprop":"snippet|titlesnippet"
+            },
+            headers=headers, timeout=15
+        )
+        if r.status_code == 200:
+            results = r.json().get("query",{}).get("search",[])
+            for res in results:
+                titre = res["title"]
+                if str(annee) in titre and pays[:4].lower() in titre.lower():
+                    r2 = requests.get(
+                        f"https://{site}/api/rest_v1/page/summary/{titre.replace(' ','_')}",
+                        headers=headers, timeout=15
+                    )
+                    if r2.status_code == 200:
+                        data = r2.json()
+                        extract = data.get("extract","")
+                        winner = extraire_vainqueur(extract, lang)
+                        if winner:
+                            return {"winner":winner,"party":"","source":f"Wikipedia-{lang.upper()}"}
+    except Exception as e:
+        print(f"    Wikipedia({lang}) erreur: {type(e).__name__}")
+    return None
+
+def extraire_vainqueur(texte, lang="fr"):
+    """Extrait le nom du vainqueur depuis un texte Wikipedia (FR ou EN)"""
+    if lang == "fr":
+        patterns = [
+            r"(?:remporte|élu|élu président|vainqueur|gagne)[^\n\.]*?([A-Z][a-zÀ-ÿ]+(?:\s+[A-Z][a-zÀ-ÿ]+){1,3})",
+            r"([A-Z][a-zÀ-ÿ]+(?:\s+[A-Z][a-zÀ-ÿ]+){1,3})\s+(?:remporte|est élu|gagne|l'emporte)",
+            r"élu avec\s+\d+[^\n]*?([A-Z][a-zÀ-ÿ]+(?:\s+[A-Z][a-zÀ-ÿ]+){1,3})",
+        ]
+        mots_exclus = ["Le","La","Les","Un","Une","Dans","Pour","Sur","Avec","Cette"]
+    else:
+        patterns = [
+            r"(?:won by|elected|winner|defeated|re-?elected)[^\n\.]*?([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){1,3})",
+            r"([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){1,3})\s+(?:won|was elected|defeated|secured)",
+        ]
+        mots_exclus = ["The","This","That","With","From","After","Following"]
+    for pattern in patterns:
+        m = re.search(pattern, texte)
+        if m:
+            nom = m.group(1).strip()
+            # Filtrer les faux positifs
+            if nom.split()[0] not in mots_exclus and len(nom) > 4:
+                return nom
+    return None
 
 # ══════════════════════════════════════
 # SUPABASE
@@ -202,11 +321,10 @@ def deja_enregistre(pays):
             w = row.get("winner","")
             if w and w not in ["","undefined","En cours de verification"]:
                 return True
-    except:
-        pass
+    except: pass
     return False
 
-def save(pays, date_el, winner, party, source):
+def save(pays, date_el, winner, party, source=""):
     try:
         supabase.table("elections").upsert({
             "pays":pays,"date":date_el,
@@ -224,18 +342,18 @@ def save(pays, date_el, winner, party, source):
 # ══════════════════════════════════════
 def main():
     print("="*55)
-    print("  GEOLANDAR — Mise à jour v5.1 (optimisée)")
+    print("  GEOLANDAR — Mise à jour automatique v5.3")
     print(f"  {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("="*55)
     today = date.today().isoformat()
     total = 0
 
-    # ÉTAPE 1: Découvrir nouvelles élections (1 requête)
-    print("\n[1] Découverte des élections...")
-    decouvrir_wikidata()
-    time.sleep(2)
+    # ÉTAPE 1: Découvrir nouvelles élections + partielles
+    print("\n[1] Découverte élections (nationales + partielles)...")
+    decouvrir_elections()
+    time.sleep(3)
 
-    # ÉTAPE 2: Résultats connus — écriture directe
+    # ÉTAPE 2: Résultats vérifiés manuellement
     print("\n[2] Résultats vérifiés...")
     for pays,(winner,party,date_el) in RESULTATS_CONNUS.items():
         if not deja_enregistre(pays):
@@ -244,17 +362,48 @@ def main():
         else:
             print(f"  - {pays}: déjà OK")
 
-    # ÉTAPE 3: Wikidata global (1 seule requête pour tout)
-    print("\n[3] Résultats Wikidata (requête globale)...")
+    # ÉTAPE 3: Wikidata (1 requête globale)
+    print("\n[3] Wikidata — résultats globaux (vainqueur direct)...")
     time.sleep(2)
-    resultats_wd = fetch_wikidata_global()
+    resultats_wd = fetch_wikidata_resultats()
     for pays, res in resultats_wd.items():
-        if deja_enregistre(pays):
-            continue
-        if res["date"] > today:
-            continue  # Ne pas écrire de résultat futur
-        if save(pays, res["date"], res["winner"], res["party"], "Wikidata"):
+        if deja_enregistre(pays): continue
+        if res["date"] > today: continue
+        if save(pays,res["date"],res["winner"],res["party"],"Wikidata"):
             total += 1
+
+    # ÉTAPE 3bis: Wikidata — source complémentaire par votes (couvre plus de pays)
+    print("\n[3bis] Wikidata — résultats déduits par votes (complémentaire)...")
+    time.sleep(2)
+    resultats_wd_votes = fetch_wikidata_resultats_votes()
+    for pays, res in resultats_wd_votes.items():
+        if deja_enregistre(pays): continue
+        if res["date"] > today: continue
+        if save(pays,res["date"],res["winner"],res["party"],"Wikidata-votes"):
+            total += 1
+
+    # ÉTAPE 4: Wikipedia — résultats manquants (FR puis EN en repli)
+    print("\n[4] Wikipedia — résultats manquants (FR puis EN)...")
+    try:
+        res = supabase.table("elections").select("pays,date")\
+            .eq("done",False).lte("date",today).execute()
+        sans_resultat = [r for r in res.data if r.get("pays")]
+        print(f"  {len(sans_resultat)} élections sans résultat")
+        for row in sans_resultat[:40]:  # Augmenté de 20 à 40 pays traités par exécution
+            pays = row["pays"]
+            date_el = row.get("date","")
+            if not date_el: continue
+            annee = int(date_el[:4])
+            print(f"  Wikipedia: {pays} ({annee})...")
+            res_wp = fetch_wikipedia(pays, annee, "fr")
+            if not res_wp:
+                res_wp = fetch_wikipedia(pays, annee, "en")
+            if res_wp and res_wp.get("winner"):
+                if save(pays,date_el,res_wp["winner"],res_wp["party"],res_wp.get("source","Wikipedia")):
+                    total += 1
+            time.sleep(0.5)
+    except Exception as e:
+        print(f"  Erreur étape 4: {e}")
 
     print(f"\n{'='*55}")
     print(f"  TOTAL: {total} mises à jour")
