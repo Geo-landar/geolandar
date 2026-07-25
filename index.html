@@ -2261,10 +2261,15 @@ var _RESULTATS={
   'Macedoine du Nord':{winner:'Hristijan Mickoski',party:'VMRO-DPMNE',score:'42.0%'},
   'Benin':{winner:'Patrice Talon',party:'UP (Union Progressiste)',score:'53.1%'},
 };
-/* Injecter les résultats dans E[] */
+/* Injecter les résultats dans E[] — CORRECTIF: basé sur la date passée, plus sur le flag done
+   (avant: une élection avec done:false ne recevait jamais son vainqueur même si _RESULTATS
+   le connaissait déjà — cas de l'Algérie découverte automatiquement avec done:false) */
 E.forEach(function(e){
-  if(e.done && !e.result && _RESULTATS[e.p]){
-    e.result = _RESULTATS[e.p];
+  var dt = daysTo(e.d);
+  var isPast = (dt !== null && dt < 0);
+  if(isPast){
+    if(!e.result && _RESULTATS[e.p]) e.result = _RESULTATS[e.p];
+    e.done = true;
   }
 });
 var eByP={};
