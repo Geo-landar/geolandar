@@ -504,9 +504,9 @@ var SRC={
 'Canada':{url:'https://www.elections.ca',n:'Élections Canada'},
 'Royaume-Uni':{url:'https://www.electoralcommission.org.uk',n:'Electoral Commission UK'},
 'Allemagne':{url:'https://www.bundeswahlleiter.de',n:'Bundeswahlleiter DE'},
-'Espagne':{url:'https://resultados.elecciones.es',n:'Ministerio del Interior ES'},
+'Espagne':{url:'https://infoelectoral.interior.gob.es',n:'Ministerio del Interior ES'},
 'Pologne':{url:'https://pkw.gov.pl',n:'PKW Pologne'},
-'Roumanie':{url:'https://www.bec.ro',n:'Bureau Électoral Central RO'},
+'Roumanie':{url:'https://www.roaep.ro',n:'Autoritatea Electorală Permanentă RO'},
 'Portugal':{url:'https://www.eleicoes.mai.gov.pt',n:'MAI Portugal'},
 'Hongrie':{url:'https://valasztas.hu',n:'NVB Hongrie'},
 'Bulgarie':{url:'https://www.cik.bg',n:'CIK Bulgarie'},
@@ -517,8 +517,8 @@ var SRC={
 'Tchequie':{url:'https://www.volby.cz',n:'Volby.cz CZ'},
 'Ouganda':{url:'https://www.ec.or.ug',n:'EC Ouganda'},
 'Colombie':{url:'https://www.registraduria.gov.co',n:'Registraduría CO'},
-'Zambie':{url:'https://www.ecc.org.zm',n:'Electoral Commission ZM'},
-'Israel':{url:'https://votes.gov.il',n:'Commission Électorale IL'},
+'Zambie':{url:'https://www.elections.org.zm',n:'Electoral Commission ZM'},
+'Israel':{url:'https://www.bechirot.gov.il',n:'Commission Électorale IL'},
 'Bresil':{url:'https://www.tse.jus.br',n:'TSE Brasil'},
 'Mexique':{url:'https://www.ine.mx',n:'INE Mexico'},
 'Inde':{url:'https://eci.gov.in',n:'Election Commission India'},
@@ -532,7 +532,7 @@ var SRC={
 'Kenya':{url:'https://www.iebc.or.ke',n:'IEBC Kenya'},
 'Russie':{url:'https://www.cikrf.ru',n:'Commission Électorale RF'},
 'Liban':{url:'https://www.elections.gov.lb',n:'Ministère Intérieur LB'},
-'Chypre':{url:'https://www.moi.gov.cy/elections',n:'Ministère Intérieur CY'},
+'Chypre':{url:'https://elections.gov.cy',n:'Ministère Intérieur CY'},
 'Lettonie':{url:'https://www.cvk.lv',n:'CVK Lettonie'},
 'Perou':{url:'https://www.onpe.gob.pe',n:'ONPE Pérou'},
 'Bangladesh':{url:'https://www.ecs.gov.bd',n:'Election Commission BD'},
@@ -2260,6 +2260,11 @@ var _RESULTATS={
   'Montenegro':{winner:'Milojko Spajic',party:'Europe Maintenant',score:'34.5%'},
   'Macedoine du Nord':{winner:'Hristijan Mickoski',party:'VMRO-DPMNE',score:'42.0%'},
   'Benin':{winner:'Patrice Talon',party:'UP (Union Progressiste)',score:'53.1%'},
+  /* Ajoutés suite à la revue systématique du 25/07 — données déjà présentes dans LEADERS/ctx */
+  'Chili':{winner:'José Antonio Kast',party:'Parti Républicain (droite conservatrice)',score:''},
+  'Tchequie':{winner:'Andrej Babiš',party:'ANO (droite populiste)',score:''},
+  'Rep. du Congo':{winner:'Denis Sassou Nguesso',party:'PCT (nationaliste)',score:''},
+  'Djibouti':{winner:'Ismail Omar Guelleh',party:'RPP (autoritarisme)',score:''},
 };
 /* Injecter les résultats dans E[] — CORRECTIF: basé sur la date passée OU sur done déjà vrai
    (avant: une élection avec done:false ne recevait jamais son vainqueur même si _RESULTATS
@@ -2548,12 +2553,18 @@ function initGlobe(){
     /* Boutons zoom */
     window.globeToggleRotation=function(){
       var btn=document.getElementById('gzstop');
-      /* gPaused est défini dans initGlobe */
-      if(typeof gPaused !== 'undefined'){
-        gPaused = !gPaused;
-        if(btn) btn.textContent = gPaused ? '▶' : '⏸';
-        if(btn) btn.title = gPaused ? 'Reprendre rotation' : 'Pause rotation';
+      /* CORRECTIF: agir directement sur gTimer (le vrai moteur de rotation)
+         au lieu de basculer une variable gPaused que rien ne lisait */
+      if(gTimer){
+        gTimer.stop();
+        gTimer=null;
+        gPaused=true;
+      } else {
+        if(typeof window._globeStartRotation==='function') window._globeStartRotation();
+        gPaused=false;
       }
+      if(btn) btn.textContent = gPaused ? '▶' : '⏸';
+      if(btn) btn.title = gPaused ? 'Reprendre rotation' : 'Pause rotation';
     };
     window.globeZoom=function(dir){
       var s=proj.scale();
