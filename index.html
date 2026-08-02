@@ -1755,6 +1755,7 @@ function leaderHTML(pays, compact){
       +'<div style="position:absolute;top:-3px;left:'+pct+'%;transform:translateX(-50%);width:10px;height:10px;background:'+color+';border-radius:50%;border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.4)"></div>'
       +'</div></div>'
       +'<div style="font-size:.69rem;color:var(--mu);line-height:1.5;margin-top:6px">'+l.d.substring(0,150)+(l.d.length>150?'...':'')+'</div>'
+      +(l.fiab?fiabiliteHTML({n:l.fiab,src:'Wikidata',txt:fr?'Dirigeant détecté automatiquement depuis Wikidata (chef d\'État / chef du gouvernement).':'Leader automatically detected from Wikidata.'},true):'')
       +'</div>';
   }
   return '<div class="msec"><h3>'+(fr?'Dirigeant actuel':'Current leader')+'</h3>'
@@ -1768,6 +1769,7 @@ function leaderHTML(pays, compact){
     +'<div style="position:absolute;top:-4px;left:'+pct+'%;transform:translateX(-50%);width:14px;height:14px;background:'+color+';border-radius:50%;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.5)"></div>'
     +'</div></div>'
     +'<div style="font-size:.78rem;color:var(--mu);line-height:1.65">'+l.d+'</div>'
+    +(l.fiab?fiabiliteHTML({n:l.fiab,src:'Wikidata',txt:fr?'Dirigeant détecté automatiquement depuis Wikidata (propriétés chef d\'État P35 / chef du gouvernement P6). Un score de 4 signale plusieurs titulaires détectés simultanément (transition ou situation contestée) — à vérifier.':'Leader automatically detected from Wikidata (head of state P35 / head of government P6 properties). A score of 4 flags multiple simultaneous officeholders detected (transition or contested situation) — to verify.'},false):'')
     +'</div></div>';
 }
 
@@ -3389,7 +3391,7 @@ renderYears(); renderCal(); renderPills(); renderPays();
 
 /* Charger les dirigeants depuis Supabase */
 function syncDirigeants(){
-  supaFetch('dirigeants','select=pays,nom,titre,parti,position,description')
+  supaFetch('dirigeants','select=pays,nom,titre,parti,position,description,fiabilite')
     .then(function(rows){
       if(!rows||!rows.length) return;
       rows.forEach(function(row){
@@ -3399,7 +3401,8 @@ function syncDirigeants(){
           t: row.titre||'',
           p: row.parti||'',
           pos: row.position||0,
-          d: row.description||''
+          d: row.description||'',
+          fiab: row.fiabilite||null
         };
       });
       console.log('Dirigeants chargés depuis Supabase: '+rows.length);
