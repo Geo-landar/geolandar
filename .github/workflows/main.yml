@@ -26,3 +26,6 @@ jobs:
 
       - name: Lancer la mise à jour
         run: python update_elections.py
+        
+      - name: Lancer la mise à jour des dirigeants
+        run: python update_dirigeants.py
