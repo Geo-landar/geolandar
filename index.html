@@ -2474,7 +2474,7 @@ function initGlobe(){
 
   /* Projection orthographique */
   var proj=d3.geoOrthographic()
-    .scale(Math.min(W,H)/1.75)
+    .scale(Math.min(W,H)/0.75)
     .translate([W/2,H/2])
     .clipAngle(90)
     .rotate([0,-20]);
@@ -2745,7 +2745,7 @@ function initGlobe(){
       redraw();
     };
     window.globeZoomReset=function(){
-      proj.scale(Math.min(W,H)/1.75);
+      proj.scale(Math.min(W,H)/0.75);
       redraw();
     };
 
@@ -3644,18 +3644,33 @@ function renderSpotlight(){
   card.innerHTML=html;
 }
 
-/* ══ DÉFILEMENT — rétraction de l'encart de présentation pour révéler le globe ══ */
+/* ══ DÉFILEMENT — rétraction de l'encart de présentation pour révéler le globe ══
+   CORRECTIF : la hauteur de #introWrap est désormais calculée à partir de la
+   hauteur réelle de la carte (mesurée après rendu), pas une valeur fixe devinée.
+   Sans ça, la carte pouvait se détacher du "sticky" avant la fin du fondu,
+   laissant un texte fantôme semi-transparent scroller par-dessus le globe. */
+var INTRO_MAXLIFT=140;
+function setupIntroWrap(){
+  var wrap=document.getElementById('introWrap');
+  var card=document.getElementById('introCard');
+  if(!wrap||!card) return;
+  wrap.style.height=(card.offsetHeight+INTRO_MAXLIFT+20)+'px';
+}
+window.addEventListener('load',setupIntroWrap);
+window.addEventListener('resize',setupIntroWrap);
+setTimeout(setupIntroWrap,300);
+
 function handleHomeScroll(){
   var wrap=document.getElementById('introWrap');
   var card=document.getElementById('introCard');
   if(!wrap||!card) return;
   var rect=wrap.getBoundingClientRect();
   var stuck=Math.max(0,60-rect.top);
-  var maxLift=180;
-  var t=Math.min(1,stuck/maxLift);
-  card.style.transform='translateY(-'+(t*40).toFixed(1)+'px) scale('+(1-t*0.06).toFixed(3)+')';
+  var t=Math.min(1,stuck/INTRO_MAXLIFT);
+  card.style.transform='translateY(-'+(t*50).toFixed(1)+'px) scale('+(1-t*0.08).toFixed(3)+')';
   card.style.opacity=(1-t).toFixed(2);
-  card.style.pointerEvents=t>0.85?'none':'auto';
+  card.style.visibility=t>=1?'hidden':'visible';
+  card.style.pointerEvents=t>0.7?'none':'auto';
 }
 var _scrollTicking=false;
 window.addEventListener('scroll',function(){
