@@ -341,7 +341,8 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
 .spotlight-top.centered{flex-direction:column;text-align:center;gap:14px;}
 .spotlight-country{font-family:Syne,sans-serif;font-size:1.9rem;font-weight:800;line-height:1.1;}
 .spotlight-facts{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-bottom:18px;}
-.spotlight-fact{font-size:.82rem;color:var(--mu);display:flex;align-items:center;gap:6px;}
+.spotlight-fact{font-size:.95rem;color:var(--tx);display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:10px;padding:8px 14px;}
+.spotlight-fact span{font-size:1.25rem;}
 .spotlight-date{font-size:.9rem;color:var(--mu);margin-top:2px;}
 .spotlight-winner{font-family:Syne,sans-serif;font-size:1.05rem;font-weight:700;color:var(--a3);margin-bottom:18px;}
 .spotlight-winner.centered{text-align:center;}
@@ -352,15 +353,17 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
 .spotlight-indicators.centered{justify-content:center;}
 .culture-teaser{margin-top:12px;background:rgba(249,115,22,.07);border:1px dashed rgba(249,115,22,.35);border-radius:10px;padding:10px 13px;font-size:.78rem;color:var(--mu);line-height:1.55;}
 .culture-teaser strong{color:var(--a);}
-.spotlight-ind{display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:12px;padding:10px 18px;}
-.spotlight-ind-lbl{font-size:.72rem;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
-.spotlight-ind-val{font-family:Syne,sans-serif;font-weight:800;font-size:1.35rem;}
+.culture-links{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;}
+.culture-link{font-size:.76rem;color:var(--a2);text-decoration:none;padding:6px 13px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:16px;}
+.spotlight-ind{display:flex;flex-direction:column;gap:5px;background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:12px;padding:14px 22px;}
+.spotlight-ind-lbl{font-size:.78rem;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;font-weight:600;}
+.spotlight-ind-val{font-family:Syne,sans-serif;font-weight:800;font-size:1.7rem;}
 .spotlight-dots{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:16px;}
 .spot-dot{width:8px;height:8px;border-radius:50%;background:var(--bd);border:none;cursor:pointer;padding:0;}
 .spot-dot.active{background:var(--a);}
 
-.intro-wrap{height:300px;position:relative;}
-.intro-card{position:sticky;top:60px;max-width:640px;margin:0 auto;padding:40px 28px;text-align:center;background:var(--bg);z-index:6;transition:transform .2s ease-out,opacity .2s ease-out;}
+.intro-wrap{height:320px;position:relative;}
+.intro-card{position:fixed;top:60px;left:0;right:0;max-width:640px;margin:0 auto;padding:40px 28px;text-align:center;background:var(--bg);z-index:6;transition:transform .1s linear,opacity .1s linear;}
 .intro-scrolldown{margin-top:22px;font-size:.75rem;color:var(--mu);animation:bob 2s ease-in-out infinite;}
 @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}
 
@@ -375,6 +378,8 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
 .legend-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px;}
 .legend-name{font-family:Syne,sans-serif;font-weight:700;font-size:.85rem;margin-bottom:2px;}
 .legend-desc{font-size:.76rem;color:var(--mu);line-height:1.5;}
+.continue-btn{display:block;margin:32px auto 0;background:rgba(10,14,26,.6);border:1px solid var(--bd);color:var(--tx);border-radius:20px;padding:8px 18px;font-size:.78rem;cursor:pointer;}
+.continue-btn:hover{border-color:var(--a2);}
 
 .pricing-section{padding:20px 28px 60px;max-width:1000px;margin:0 auto;}
 .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;}
@@ -387,7 +392,7 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
 .price-feats{list-style:none;display:flex;flex-direction:column;gap:9px;}
 .price-feats li{font-size:.82rem;color:var(--mu);padding-left:18px;position:relative;}
 .price-feats li::before{content:'✓';position:absolute;left:0;color:var(--a3);font-weight:700;}
-@media(max-width:640px){nav{padding:0 10px;}.ntab{padding:5px 8px;font-size:.76rem;}.hero,.cal,.pays-wrap{padding-left:12px;padding-right:12px;}.gpl,.gpr{width:calc(100vw - 16px);}.gleg{display:none;}.modal{padding:12px;}.minds{grid-template-columns:1fr;}.intro-wrap{height:260px;}#globeHome{height:100vh;}}
+@media(max-width:640px){nav{padding:0 10px;}.ntab{padding:5px 8px;font-size:.76rem;}.hero,.cal,.pays-wrap{padding-left:12px;padding-right:12px;}.gpl,.gpr{width:calc(100vw - 16px);}.gleg{display:none;}.modal{padding:12px;}.minds{grid-template-columns:1fr;}.intro-wrap{height:280px;}#globeHome{height:100vh;}}
 </style>
 </head>
 <body>
@@ -469,10 +474,11 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
       <div class="legend-item"><div class="legend-dot" style="background:#1d4ed8"></div><div><div class="legend-name" id="legn4">Élection dans 2 ans</div><div class="legend-desc" id="legd4">Le scrutin est prévu à N+2</div></div></div>
       <div class="legend-item"><div class="legend-dot" style="background:#1e3a5f"></div><div><div class="legend-name" id="legn5">Pas d'élection recensée</div><div class="legend-desc" id="legd5">Aucun scrutin prévu sur 2026-2028 pour ce pays</div></div></div>
     </div>
+    <button class="continue-btn" id="legendContinueBtn" onclick="document.getElementById('pricingSection').scrollIntoView({behavior:'smooth'})">↓ <span id="legendContinueTxt">Voir les formules</span></button>
   </div>
 
   <!-- ABONNEMENTS (aperçu, non fonctionnel) -->
-  <div class="pricing-section">
+  <div class="pricing-section" id="pricingSection">
     <h2 class="section-title" id="pricing-title">Formules</h2>
     <p class="section-sub" id="pricing-sub">Aperçu des offres à venir — non actives pour le moment</p>
     <div class="pricing-grid">
@@ -627,7 +633,15 @@ var ISO={
 'Nouvelle-Caledonie':'nc',
 'Antigua-et-Barbuda':'ag',
 'Barbade':'bb','Benin':'bj','Belize':'bz','Somaliland':'so',};
-function flagH(p,w,h){w=w||26;h=h||Math.round(w*.74);var c=ISO[p];if(!c)return '<div class="nfl">'+p.substring(0,2).toUpperCase()+'</div>';return '<img src="https://flagcdn.com/'+w+'x'+h+'/'+c+'.png" alt="'+p+'" width="'+w+'" height="'+h+'" style="border-radius:2px;object-fit:cover;display:block;" loading="lazy" onerror="this.outerHTML=\'<div class=&quot;nfl&quot; style=&quot;width:'+w+'px;height:'+h+'px;font-size:'+Math.max(9,Math.round(w*.28))+'px&quot;>\'+\''+p.substring(0,2).toUpperCase()+'\'+\'</div>\'">';}
+function flagFallback(el,pays,w,h){
+  var d=document.createElement('div');
+  d.className='nfl';
+  d.style.width=w+'px';d.style.height=h+'px';
+  d.style.fontSize=Math.max(9,Math.round(w*.28))+'px';
+  d.textContent=pays.substring(0,2).toUpperCase();
+  if(el&&el.parentNode) el.parentNode.replaceChild(d,el);
+}
+function flagH(p,w,h){w=w||26;h=h||Math.round(w*.74);var c=ISO[p];if(!c)return '<div class="nfl">'+p.substring(0,2).toUpperCase()+'</div>';return '<img src="https://flagcdn.com/'+w+'x'+h+'/'+c+'.png" alt="'+p+'" width="'+w+'" height="'+h+'" style="border-radius:2px;object-fit:cover;display:block;" loading="lazy" onerror="flagFallback(this,\''+p.replace(/'/g,"\\'")+'\','+w+','+h+')">';}
 
 /* ══ SOURCES OFFICIELLES ══ */
 var SRC={
@@ -2366,15 +2380,25 @@ function openCountry(pays){
 /* ══ APERÇU HISTOIRE & CULTURE (teaser offre Medium) ══
    Récupère un court extrait Wikipedia (licence CC BY-SA, réutilisation autorisée
    avec attribution) directement depuis le navigateur du visiteur — aucune donnée
-   à maintenir à la main, couvre les 196 pays automatiquement. */
+   à maintenir à la main, couvre les 196 pays automatiquement. Complété par des
+   liens d'exploration (culture, auteurs, site officiel) générés automatiquement. */
 function openCountryCulture(pays){
   openCountry(pays);
   var mbody=document.getElementById('mbody');
   var boxId='culture-'+Date.now();
   var fr=lang==='fr';
-  var html='<div class="msec"><h3>📖 '+(fr?'Histoire & Culture':'History & Culture')+'</h3>'
+  var qCulture=encodeURIComponent((fr?'Culture ':'Culture of ')+pays);
+  var qAuteurs=encodeURIComponent((fr?'Écrivains littérature ':'Writers literature ')+pays);
+  var qOfficiel=encodeURIComponent(pays+(fr?' site officiel gouvernement':' official government website'));
+  var searchSite=fr?'fr.wikipedia.org':'en.wikipedia.org';
+  var html='<div class="msec"><h3>📖 '+(fr?'En bref — Histoire & Culture':'In brief — History & Culture')+'</h3>'
     +'<div class="ctxbox" id="'+boxId+'">'+(fr?'Chargement…':'Loading…')+'</div>'
-    +'<div class="culture-teaser">🔒 '+(fr?"La formule <strong>Medium</strong> détaille les institutions, le mode de gouvernance et l'histoire complète de chaque pays.":"The <strong>Medium</strong> plan details each country's institutions, governance system and full history.")+'</div>'
+    +'<div class="culture-links">'
+      +'<a href="https://www.google.com/search?q='+qOfficiel+'" target="_blank" rel="noopener" class="culture-link">🏛️ '+(fr?'Site officiel':'Official site')+'</a>'
+      +'<a href="https://'+searchSite+'/w/index.php?search='+qCulture+'" target="_blank" rel="noopener" class="culture-link">🎭 '+(fr?'Culture & société':'Culture & society')+'</a>'
+      +'<a href="https://'+searchSite+'/w/index.php?search='+qAuteurs+'" target="_blank" rel="noopener" class="culture-link">✍️ '+(fr?'Auteurs & littérature':'Authors & literature')+'</a>'
+    +'</div>'
+    +'<div class="culture-teaser">🔒 '+(fr?"La formule <strong>Medium</strong> détaille les institutions, le mode de gouvernance et l'histoire complète de chaque pays — sans avoir à chercher sur plusieurs sites.":"The <strong>Medium</strong> plan details each country's institutions, governance system and full history — without hunting across several sites.")+'</div>'
     +'</div>';
   mbody.insertAdjacentHTML('beforeend', html);
   fetchWikipediaSummary(pays, boxId);
@@ -2391,10 +2415,13 @@ function fetchWikipediaSummary(pays, targetId){
       if(!el) return;
       var extrait=(data.extract||'').trim();
       if(!extrait){ el.textContent=fr?'Aucun résumé disponible.':'No summary available.'; return; }
-      if(extrait.length>420) extrait=extrait.substring(0,420)+'…';
-      el.textContent=extrait;
+      /* Résumé volontairement court (2-3 phrases) — un teaser, pas une copie de l'article */
+      var phrases=extrait.match(/[^.!?]+[.!?]+/g)||[extrait];
+      var court=phrases.slice(0,3).join(' ').trim();
+      if(court.length>320) court=court.substring(0,320)+'…';
+      el.textContent=court;
       var pageUrl=data.content_urls&&data.content_urls.desktop?data.content_urls.desktop.page:('https://'+site+'/wiki/'+encodeURIComponent(titre));
-      el.insertAdjacentHTML('afterend','<a href="'+pageUrl+'" target="_blank" rel="noopener" class="srcbtn" style="margin-top:6px">📖 '+(fr?'Lire la suite sur Wikipedia':'Read more on Wikipedia')+'</a>');
+      el.insertAdjacentHTML('afterend','<a href="'+pageUrl+'" target="_blank" rel="noopener" class="srcbtn" style="margin-top:6px">📖 '+(fr?'Article Wikipedia complet':'Full Wikipedia article')+'</a>');
     })
     .catch(function(){
       var el=document.getElementById(targetId);
@@ -2477,7 +2504,7 @@ function initGlobe(){
     .scale(Math.min(W,H)/0.75)
     .translate([W/2,H/2])
     .clipAngle(90)
-    .rotate([0,-20]);
+    .rotate([-10,-40]);
 
   var pathFn=d3.geoPath().projection(proj);
   gProj=proj; gPathFn=pathFn; gSvg=ds;
@@ -2984,6 +3011,7 @@ function setLang(l){
     'spotlight-eyebrow': fr?'🗳️ Élection partielle ce mois-ci':'🗳️ By-election this month',
     'introScrolldownTxt': fr?'Défiler pour explorer le globe':'Scroll to explore the globe',
     'globeScrollhintTxt': fr?'Défiler ici pour continuer':'Scroll here to continue',
+    'legendContinueTxt': fr?'Voir les formules':'See plans',
     'nav-pays':      fr?'🗂️ 196 Pays':'🗂️ 196 Countries',
     /* Hero */
     'intro-phrase':  fr?"Dans un monde de plus en plus mondialisé, savoir ce qui se passe chez notre voisin n'est plus une option.":"In an increasingly globalized world, knowing what happens next door is no longer optional.",
@@ -3645,32 +3673,20 @@ function renderSpotlight(){
 }
 
 /* ══ DÉFILEMENT — rétraction de l'encart de présentation pour révéler le globe ══
-   CORRECTIF : la hauteur de #introWrap est désormais calculée à partir de la
-   hauteur réelle de la carte (mesurée après rendu), pas une valeur fixe devinée.
-   Sans ça, la carte pouvait se détacher du "sticky" avant la fin du fondu,
-   laissant un texte fantôme semi-transparent scroller par-dessus le globe. */
-var INTRO_MAXLIFT=140;
-function setupIntroWrap(){
-  var wrap=document.getElementById('introWrap');
-  var card=document.getElementById('introCard');
-  if(!wrap||!card) return;
-  wrap.style.height=(card.offsetHeight+INTRO_MAXLIFT+20)+'px';
-}
-window.addEventListener('load',setupIntroWrap);
-window.addEventListener('resize',setupIntroWrap);
-setTimeout(setupIntroWrap,300);
-
+   RECONSTRUIT : l'encart est en position:fixed (overlay), et son fondu/décalage
+   est calculé directement depuis window.scrollY — aucune dépendance au
+   comportement "sticky" du navigateur (qui variait selon les ancêtres DOM),
+   aucune mesure de hauteur à synchroniser. Simple, déterministe, fiable. */
+var INTRO_MAXLIFT=280;
 function handleHomeScroll(){
-  var wrap=document.getElementById('introWrap');
   var card=document.getElementById('introCard');
-  if(!wrap||!card) return;
-  var rect=wrap.getBoundingClientRect();
-  var stuck=Math.max(0,60-rect.top);
-  var t=Math.min(1,stuck/INTRO_MAXLIFT);
-  card.style.transform='translateY(-'+(t*50).toFixed(1)+'px) scale('+(1-t*0.08).toFixed(3)+')';
+  if(!card) return;
+  var y=window.scrollY||window.pageYOffset||0;
+  var t=Math.min(1,Math.max(0,y/INTRO_MAXLIFT));
+  card.style.transform='translateY(-'+(t*60).toFixed(1)+'px) scale('+(1-t*0.08).toFixed(3)+')';
   card.style.opacity=(1-t).toFixed(2);
-  card.style.visibility=t>=1?'hidden':'visible';
-  card.style.pointerEvents=t>0.7?'none':'auto';
+  card.style.pointerEvents=t>0.6?'none':'auto';
+  card.style.display=t>=1?'none':'block';
 }
 var _scrollTicking=false;
 window.addEventListener('scroll',function(){
@@ -3679,6 +3695,7 @@ window.addEventListener('scroll',function(){
     _scrollTicking=true;
   }
 },{passive:true});
+handleHomeScroll();
 
 /* Charger les dirigeants depuis Supabase */
 function syncDirigeants(){
