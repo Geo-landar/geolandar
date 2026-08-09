@@ -3673,20 +3673,28 @@ function renderSpotlight(){
 }
 
 /* ══ DÉFILEMENT — rétraction de l'encart de présentation pour révéler le globe ══
-   RECONSTRUIT : l'encart est en position:fixed (overlay), et son fondu/décalage
-   est calculé directement depuis window.scrollY — aucune dépendance au
-   comportement "sticky" du navigateur (qui variait selon les ancêtres DOM),
-   aucune mesure de hauteur à synchroniser. Simple, déterministe, fiable. */
+   L'encart est en position:fixed pour un fondu fiable piloté par scrollY.
+   CORRECTIF : il restait affiché dès scrollY=0, chevauchant le Pays du mois
+   qui le précède dans la page. Il ne doit apparaître qu'une fois le spotlight
+   dépassé — on calcule donc le seuil de départ depuis la position réelle
+   (offsetTop) de #introWrap dans le document. */
 var INTRO_MAXLIFT=280;
 function handleHomeScroll(){
+  var wrap=document.getElementById('introWrap');
   var card=document.getElementById('introCard');
-  if(!card) return;
+  if(!wrap||!card) return;
   var y=window.scrollY||window.pageYOffset||0;
-  var t=Math.min(1,Math.max(0,y/INTRO_MAXLIFT));
+  var localY=y-wrap.offsetTop; /* défilement DEPUIS le début de la zone intro, pas depuis le haut de page */
+  if(localY<0){
+    /* Encore sur le spotlight : l'encart ne doit ni s'afficher ni chevaucher */
+    card.style.display='none';
+    return;
+  }
+  var t=Math.min(1,Math.max(0,localY/INTRO_MAXLIFT));
+  card.style.display=t>=1?'none':'block';
   card.style.transform='translateY(-'+(t*60).toFixed(1)+'px) scale('+(1-t*0.08).toFixed(3)+')';
   card.style.opacity=(1-t).toFixed(2);
   card.style.pointerEvents=t>0.6?'none':'auto';
-  card.style.display=t>=1?'none':'block';
 }
 var _scrollTicking=false;
 window.addEventListener('scroll',function(){
@@ -3695,6 +3703,8 @@ window.addEventListener('scroll',function(){
     _scrollTicking=true;
   }
 },{passive:true});
+window.addEventListener('resize',handleHomeScroll);
+setTimeout(handleHomeScroll,300);
 handleHomeScroll();
 
 /* Charger les dirigeants depuis Supabase */
