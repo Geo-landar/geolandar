@@ -659,30 +659,30 @@ function flagFallback(el,pays,w,h){
   d.textContent=pays.substring(0,2).toUpperCase();
   if(el&&el.parentNode) el.parentNode.replaceChild(d,el);
 }
-/* Rendu robuste pour les zones critiques (ex: Pays du mois) : contourne les cas où
-   un bloqueur silencieux intercepte l'image SANS déclencher onerror (donc le
-   filet de secours classique ne se déclenche jamais) — on ajoute un délai de
-   secours qui force l'affichage des initiales si rien ne s'est passé après 2.5s. */
-/* Convertit un code ISO à 2 lettres (ex: "ke") en emoji drapeau Unicode
-   (ex: 🇰🇪) — aucune requête réseau, donc aucun risque de blocage par un
-   bloqueur de contenu, contrairement à une image chargée depuis un CDN. */
-function isoToFlagEmoji(iso2){
-  if(!iso2||iso2.length!==2) return '';
-  var points=iso2.toUpperCase().split('').map(function(c){return 127397+c.charCodeAt(0);});
-  return String.fromCodePoint.apply(null,points);
+/* ══ DRAPEAUX — chaîne de secours à deux sources ══
+   Certains réseaux d'entreprise bloquent flagcdn.com (constaté : fonctionne sur
+   tablette personnelle, bloqué sur PC professionnel). raw.githubusercontent.com
+   est presque toujours autorisé même sur les réseaux filtrés (les développeurs
+   en ont besoin au quotidien) — on l'essaie donc en premier, flagcdn.com en
+   repli, et les initiales du pays en tout dernier recours. */
+function flagRetry(el,pays,w,h){
+  var next=el.getAttribute('data-fallback');
+  if(next){
+    el.removeAttribute('data-fallback');
+    el.onerror=function(){ flagFallback(el,pays,w,h); };
+    el.src=next;
+  } else {
+    flagFallback(el,pays,w,h);
+  }
 }
 function renderFlagInto(containerId,pays,w,h){
   var el=document.getElementById(containerId);
   if(!el) return;
   var c=ISO[pays];
-  var emoji=c?isoToFlagEmoji(c):'';
-  if(!emoji){
-    el.innerHTML='<div class="nfl" style="width:'+w+'px;height:'+h+'px;font-size:'+Math.max(9,Math.round(w*.28))+'px">'+pays.substring(0,2).toUpperCase()+'</div>';
-    return;
-  }
-  el.innerHTML='<div class="flag-emoji" style="font-size:'+Math.round(h*.85)+'px;line-height:1;">'+emoji+'</div>';
+  if(!c){ el.innerHTML='<div class="nfl" style="width:'+w+'px;height:'+h+'px;font-size:'+Math.max(9,Math.round(w*.28))+'px">'+pays.substring(0,2).toUpperCase()+'</div>'; return; }
+  el.innerHTML='<img id="'+containerId+'-img" alt="'+pays+'" width="'+w+'" height="'+h+'" style="border-radius:4px;object-fit:cover;display:block;box-shadow:0 2px 10px rgba(0,0,0,.35)" data-fallback="https://flagcdn.com/'+w+'x'+h+'/'+c+'.png" onerror="flagRetry(this,\''+pays.replace(/'/g,"\\'")+'\','+w+','+h+')" src="https://raw.githubusercontent.com/hjnilsson/country-flags/master/svg/'+c+'.svg">';
 }
-function flagH(p,w,h){w=w||26;h=h||Math.round(w*.74);var c=ISO[p];if(!c)return '<div class="nfl">'+p.substring(0,2).toUpperCase()+'</div>';return '<img src="https://flagcdn.com/'+w+'x'+h+'/'+c+'.png" alt="'+p+'" width="'+w+'" height="'+h+'" style="border-radius:2px;object-fit:cover;display:block;" loading="lazy" onerror="flagFallback(this,\''+p.replace(/'/g,"\\'")+'\','+w+','+h+')">';}
+function flagH(p,w,h){w=w||26;h=h||Math.round(w*.74);var c=ISO[p];if(!c)return '<div class="nfl">'+p.substring(0,2).toUpperCase()+'</div>';var cdnUrl='https://flagcdn.com/'+w+'x'+h+'/'+c+'.png';return '<img src="https://raw.githubusercontent.com/hjnilsson/country-flags/master/svg/'+c+'.svg" alt="'+p+'" width="'+w+'" height="'+h+'" style="border-radius:2px;object-fit:cover;display:block;" loading="lazy" data-fallback="'+cdnUrl+'" onerror="flagRetry(this,\''+p.replace(/'/g,"\\'")+'\','+w+','+h+')">';}
 
 /* ══ SOURCES OFFICIELLES ══ */
 var SRC={
