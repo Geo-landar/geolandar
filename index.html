@@ -3312,11 +3312,16 @@ function loadElectionsFromSupabase() {
       /* ÉTAPE 3: Ajouter les nouvelles élections non encore dans E[] */
       rows.forEach(function(row) {
         if (!row.pays || !row.date) return;
-        /* Ignorer les futures et les sans données */
-        if (row.date > today) return;
+        /* CORRECTIF : on n'ignore plus les élections futures — un second tour
+           (ballottage) ou une nouvelle élection découverte a souvent une date
+           dans le futur au moment où elle apparaît sur Wikidata, et doit
+           quand même être ajoutée pour être visible sur le site. */
         if (row.winner === 'undefined') return;
-        /* Vérifier si cette élection existe déjà dans E[] (par pays) */
-        var dejaDans = E.some(function(e){ return e.p === row.pays; });
+        /* CORRECTIF : déduplication par (pays + date), pas par pays seul —
+           sinon un pays ayant déjà une élection enregistrée (ex: 1er tour)
+           ne pouvait plus jamais recevoir une deuxième élection distincte
+           (ballottage, législatives + présidentielles simultanées, etc.) */
+        var dejaDans = E.some(function(e){ return e.p === row.pays && e.d === row.date; });
         if (dejaDans) return;
         /* Ajouter la nouvelle élection */
         var newId = Math.max.apply(null, E.map(function(e){return e.id||0;})) + 1;
