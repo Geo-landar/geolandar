@@ -188,6 +188,9 @@ def wikidata_query(query, label=""):
         print(f"  Wikidata erreur {label}: {type(e).__name__}")
         return []
 
+import re
+QID_BRUT = re.compile(r'^Q\d+$')
+
 def fetch_wikidata_resultats():
     data = wikidata_query(QUERY_RESULTATS, "résultats")
     par_pays = {}
@@ -198,6 +201,9 @@ def fetch_wikidata_resultats():
         party = row.get("partiLabel",{}).get("value","")
         date_el = row.get("date",{}).get("value","")[:10]
         if not pays or not winner or winner=="undefined": continue
+        # GARDE-FOU : rejeter les cas où Wikidata ne connaît pas de nom
+        # traduit et renvoie l'identifiant brut (ex: "Q318547") à la place
+        if QID_BRUT.match(winner.strip()): continue
         if date_el > today: continue
         if pays not in par_pays:
             par_pays[pays] = {"winner":winner,"party":party,"date":date_el}
@@ -217,6 +223,8 @@ def fetch_wikidata_resultats_votes():
         parti = row.get("partiLabel",{}).get("value","")
         votes_raw = row.get("votes",{}).get("value","")
         if not pays or not cand or not date_el or date_el > today: continue
+        # GARDE-FOU : même rejet des identifiants bruts pour les candidats
+        if QID_BRUT.match(cand.strip()): continue
         try:
             votes = float(votes_raw)
         except (ValueError, TypeError):
@@ -274,7 +282,10 @@ def decouvrir_elections():
         is_partial = type_qid in TYPES_PARTIELLES or any(
             k in type_label.lower() for k in ["partielle","by-election","partiel","complementaire"]
         )
-        niveau = "regionale" if any(k in type_label.lower() for k in MOTS_CLES_REGIONAL) else "national"
+        # Une élection partielle (un seul siège à pourvoir) n'a pas la portée
+        # d'un scrutin national complet, même dans un pays par ailleurs
+        # "national" — on la classe donc aussi comme régionale.
+        niveau = "regionale" if (is_partial or any(k in type_label.lower() for k in MOTS_CLES_REGIONAL)) else "national"
         try:
             res = supabase.table("elections").select("id")\
                 .eq("pays",pays).eq("date",date_el).execute()
@@ -282,7 +293,10 @@ def decouvrir_elections():
                 supabase.table("elections").insert({
                     "pays":pays,"date":date_el,
                     "winner":"","party":"","done":False,
-                    "partial": is_partial,
+                    # PAS de champ "partial" — cette colonne n'existe pas dans
+                    # Supabase. Le caractère "partiel" d'une élection est déjà
+                    # déductible du texte de "type" à la lecture (site + SQL),
+                    # inutile de le stocker en double dans un champ séparé.
                     "type": type_label,
                     "cert": cert,
                     "niveau": niveau,
