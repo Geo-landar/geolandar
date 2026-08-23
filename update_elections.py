@@ -147,6 +147,22 @@ MOTS_CLES_REGIONAL = [
     "governor","land election","landtag","cantonal","municipal","local election",
     "municipale","cantonale","départementale","state legislature","assembly election (state)",
     "county","state senate","state house","by-election (state)","legislative assembly of",
+    "mairie","communale","assemblée d'","assemblée de","assemblée régionale",
+    "conseil régional","regional council","conseil départemental","parlement régional",
+]
+
+# GARDE-FOU CRITIQUE : la requête Wikidata (Q40231 et ses sous-classes) est
+# assez large pour capturer des scrutins qui n'ont rien à voir avec la
+# politique nationale — élection d'un président de club sportif, d'une
+# fédération, d'une association, d'une chambre de commerce, etc. Ces
+# entités ne doivent JAMAIS apparaître sur le site, quel que soit le niveau.
+MOTS_CLES_NON_POLITIQUE = [
+    "club"," fc "," cf ","football","soccer","fédération sportive","sports federation",
+    "société","company","corporation","société anonyme","chamber of commerce",
+    "chambre de commerce","association","committee","comité","board of directors",
+    "conseil d'administration","fondation","foundation","syndicat","trade union",
+    "trustee","cooperative","coopérative","church","église","university senate",
+    "sénat universitaire","student union","syndicat étudiant","charity","organisation caritative",
 ]
 
 # ══════════════════════════════════════
@@ -256,6 +272,13 @@ def decouvrir_elections():
         # GARDE-FOU 1 : sans pays, sans date, ou sans type identifié, on
         # n'insère rien plutôt que de créer une ligne incomplète trompeuse
         if not pays or not date_brute or not type_label:
+            ignorees += 1
+            continue
+
+        # GARDE-FOU CRITIQUE : rejeter les entités non-politiques que la
+        # requête large a pu capturer (ex: élection d'un président de club
+        # de football classée par erreur comme "élection" sur Wikidata)
+        if any(k in type_label.lower() for k in MOTS_CLES_NON_POLITIQUE):
             ignorees += 1
             continue
 
@@ -389,12 +412,22 @@ def deja_enregistre(pays):
     return False
 
 def save(pays, date_el, winner, party, source=""):
+    """CORRECTIF : ne complète JAMAIS une élection en créant une nouvelle
+    ligne à la volée — cela contournait tous les garde-fous de
+    decouvrir_elections() (type non vide, exclusion des entités non
+    politiques, exclusion des régionales). save() ne fait désormais
+    qu'UPDATE une ligne déjà existante et déjà validée à la découverte.
+    Si aucune ligne ne correspond, le résultat est ignoré et journalisé."""
     try:
-        supabase.table("elections").upsert({
-            "pays":pays,"date":date_el,
-            "winner":winner,"party":party,"done":True,
-            "updated_at":datetime.now().isoformat()
-        }, on_conflict="pays,date").execute()
+        existe = supabase.table("elections").select("id")\
+            .eq("pays", pays).eq("date", date_el).execute()
+        if not existe.data:
+            print(f"  ⚠ {pays} ({date_el}): résultat trouvé mais aucune élection déjà découverte à cette date — ignoré ({source})")
+            return False
+        supabase.table("elections").update({
+            "winner": winner, "party": party, "done": True,
+            "updated_at": datetime.now().isoformat()
+        }).eq("pays", pays).eq("date", date_el).execute()
         print(f"  ✓ {pays}: {winner} ({source})")
         return True
     except Exception as e:
