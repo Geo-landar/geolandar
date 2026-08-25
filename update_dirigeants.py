@@ -202,8 +202,20 @@ def construire_dirigeants():
         # Fiabilité : plusieurs "titulaires actuels" en même temps sur
         # Wikidata = donnée ambiguë (transition, conflit de succession...)
         ambigu = len(noms) > 1
-        nom = sorted(noms)[0]  # à défaut de mieux, le premier par ordre alphabétique
-        info = infos.get(nom, {})
+
+        # CORRECTIF : en cas d'ambiguïté, choisir le titulaire dont la date
+        # de prise de fonction (P580) est la plus RÉCENTE, pas le premier
+        # par ordre alphabétique. Un ordre alphabétique pouvait faire
+        # remonter un ancien dirigeant dans les pays à forte rotation
+        # politique (ex: plusieurs Premiers ministres en quelques années),
+        # quand l'ancien titulaire n'a pas de date de fin correctement
+        # renseignée sur Wikidata.
+        infos_par_nom = entree["data"].get(info_key, {})
+        def cle_tri(n):
+            d = infos_par_nom.get(n, {}).get("start", "")
+            return d or ""  # chaîne vide = trié en premier (le plus ancien)
+        nom = sorted(noms, key=cle_tri, reverse=True)[0] if ambigu else list(noms)[0]
+        info = infos_par_nom.get(nom, {})
         parti = info.get("parti", "")
         date_debut = fmt_date(info.get("start", ""))
 
