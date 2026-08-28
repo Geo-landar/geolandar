@@ -1,4 +1,6 @@
 import requests
+import re
+QID_BRUT = re.compile(r'^Q\d+$')
 from supabase import create_client
 from datetime import datetime, date
 import os
@@ -111,8 +113,8 @@ def deduire_position(libelles_ideologie, nom_parti):
 # ══════════════════════════════════════
 QUERY_DIRIGEANTS = """
 SELECT ?paysLabel
-       ?hos ?hosLabel ?hosPartyLabel ?hosStart
-       ?hog ?hogLabel ?hogPartyLabel ?hogStart
+       ?hos ?hosLabel ?hosPartyLabel ?hosStart ?hosIdeoLabel
+       ?hog ?hogLabel ?hogPartyLabel ?hogStart ?hogIdeoLabel
 WHERE {
   ?pays wdt:P31 wd:Q3624078.
   OPTIONAL {
@@ -120,14 +122,20 @@ WHERE {
     ?hosStmt ps:P35 ?hos.
     FILTER NOT EXISTS { ?hosStmt pq:P582 ?hosEnd. }
     OPTIONAL { ?hosStmt pq:P580 ?hosStart. }
-    OPTIONAL { ?hos wdt:P102 ?hosPartyItem. ?hosPartyItem rdfs:label ?hosPartyLabel. FILTER(LANG(?hosPartyLabel)="fr"). }
+    OPTIONAL {
+      ?hos wdt:P102 ?hosPartyItem. ?hosPartyItem rdfs:label ?hosPartyLabel. FILTER(LANG(?hosPartyLabel)="fr").
+      OPTIONAL { ?hosPartyItem wdt:P1387 ?hosIdeoItem. ?hosIdeoItem rdfs:label ?hosIdeoLabel. FILTER(LANG(?hosIdeoLabel)="fr"). }
+    }
   }
   OPTIONAL {
     ?pays p:P6 ?hogStmt.
     ?hogStmt ps:P6 ?hog.
     FILTER NOT EXISTS { ?hogStmt pq:P582 ?hogEnd. }
     OPTIONAL { ?hogStmt pq:P580 ?hogStart. }
-    OPTIONAL { ?hog wdt:P102 ?hogPartyItem. ?hogPartyItem rdfs:label ?hogPartyLabel. FILTER(LANG(?hogPartyLabel)="fr"). }
+    OPTIONAL {
+      ?hog wdt:P102 ?hogPartyItem. ?hogPartyItem rdfs:label ?hogPartyLabel. FILTER(LANG(?hogPartyLabel)="fr").
+      OPTIONAL { ?hogPartyItem wdt:P1387 ?hogIdeoItem. ?hogIdeoItem rdfs:label ?hogIdeoLabel. FILTER(LANG(?hogIdeoLabel)="fr"). }
+    }
   }
   SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". }
 }
@@ -179,6 +187,7 @@ def construire_dirigeants():
             entree["data"].setdefault("hos_info", {})[hos_nom] = {
                 "parti": ligne.get("hosPartyLabel", {}).get("value", ""),
                 "start": ligne.get("hosStart", {}).get("value", ""),
+                "ideologie": ligne.get("hosIdeoLabel", {}).get("value", ""),
             }
 
         hog_nom = ligne.get("hogLabel", {}).get("value", "")
@@ -187,6 +196,7 @@ def construire_dirigeants():
             entree["data"].setdefault("hog_info", {})[hog_nom] = {
                 "parti": ligne.get("hogPartyLabel", {}).get("value", ""),
                 "start": ligne.get("hogStart", {}).get("value", ""),
+                "ideologie": ligne.get("hogIdeoLabel", {}).get("value", ""),
             }
 
     resultats = {}
@@ -199,9 +209,17 @@ def construire_dirigeants():
         if not noms:
             continue
 
+        # GARDE-FOU : rejeter les noms qui sont un identifiant Wikidata brut
+        # (ex: "Q3052772") plutôt qu'un vrai nom traduit — même correctif que
+        # celui déjà appliqué à update_elections.py, oublié ici par erreur.
+        infos_par_nom = entree["data"].get(info_key, {})
+        noms_valides = [n for n in noms if not QID_BRUT.match(n.strip())]
+        if not noms_valides:
+            continue  # aucun nom exploitable pour ce pays, on l'ignore
+
         # Fiabilité : plusieurs "titulaires actuels" en même temps sur
         # Wikidata = donnée ambiguë (transition, conflit de succession...)
-        ambigu = len(noms) > 1
+        ambigu = len(noms_valides) > 1
 
         # CORRECTIF : en cas d'ambiguïté, choisir le titulaire dont la date
         # de prise de fonction (P580) est la plus RÉCENTE, pas le premier
@@ -210,17 +228,17 @@ def construire_dirigeants():
         # politique (ex: plusieurs Premiers ministres en quelques années),
         # quand l'ancien titulaire n'a pas de date de fin correctement
         # renseignée sur Wikidata.
-        infos_par_nom = entree["data"].get(info_key, {})
         def cle_tri(n):
             d = infos_par_nom.get(n, {}).get("start", "")
             return d or ""  # chaîne vide = trié en premier (le plus ancien)
-        nom = sorted(noms, key=cle_tri, reverse=True)[0] if ambigu else list(noms)[0]
+        nom = sorted(noms_valides, key=cle_tri, reverse=True)[0] if ambigu else noms_valides[0]
         info = infos_par_nom.get(nom, {})
         parti = info.get("parti", "")
+        ideologie = info.get("ideologie", "")
         date_debut = fmt_date(info.get("start", ""))
 
         titre = "Chef d'État" if role == "hos" else "Chef du gouvernement"
-        position = deduire_position([], parti)
+        position = deduire_position([ideologie] if ideologie else [], parti)
 
         if ambigu:
             fiabilite = 4  # non reconnu / conflit — plusieurs titulaires détectés
