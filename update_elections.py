@@ -163,6 +163,9 @@ MOTS_CLES_NON_POLITIQUE = [
     "conseil d'administration","fondation","foundation","syndicat","trade union",
     "trustee","cooperative","coopérative","church","église","university senate",
     "sénat universitaire","student union","syndicat étudiant","charity","organisation caritative",
+    "à la direction","leadership election","direction du parti","party leadership",
+    "primaire","primary election","congrès du parti","party congress",
+    "chairmanship","chairperson election","secrétaire général du parti",
 ]
 
 # ══════════════════════════════════════
@@ -279,6 +282,14 @@ def decouvrir_elections():
         # requête large a pu capturer (ex: élection d'un président de club
         # de football classée par erreur comme "élection" sur Wikidata)
         if any(k in type_label.lower() for k in MOTS_CLES_NON_POLITIQUE):
+            ignorees += 1
+            continue
+
+        # Un libellé trop générique ("élection" seul, sans aucune précision
+        # de type) signale que Wikidata lui-même ne sait pas classer
+        # précisément ce scrutin — trop risqué pour l'afficher comme une
+        # élection nationale sans autre confirmation.
+        if type_label.strip().lower() in ("élection", "election", "elections", "élections"):
             ignorees += 1
             continue
 
