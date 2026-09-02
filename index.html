@@ -2926,7 +2926,16 @@ function initGlobe(){
 
 /* ══ AFFICHAGE PAYS (Globe) ══ */
 function showCountry(pays){
-  var ind=findInd(pays),es=E.filter(function(e){return e.p===pays;}),src=SRC[pays],info=INFO[pays];
+  var ind=findInd(pays),es_complet=E.filter(function(e){return e.p===pays;}),src=SRC[pays],info=INFO[pays];
+  /* N'afficher que les élections dans la fenêtre 2026-2028 — les données
+     hors fenêtre (ex: 2025 déjà passées) restent en mémoire dans es_complet
+     pour une future fonctionnalité d'historique complet (offre payante),
+     mais ne doivent pas polluer l'affichage principal actuel. */
+  var es=es_complet.filter(function(e){
+    if(!e.d) return true; /* date inconnue : on la garde par prudence */
+    var an=parseInt(String(e.d).slice(0,4));
+    return an>=2026 && an<=2028;
+  });
   // GAUCHE — indicateurs + infos
   document.getElementById('gfL').innerHTML=flagH(pays,30,22);
   var _gnL=document.getElementById('gnL');
