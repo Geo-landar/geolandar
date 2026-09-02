@@ -1933,19 +1933,26 @@ function leaderHTML(pays, compact){
     if(p<=9)  return fr?'Extrême droite':'Far right';
     return fr?'Autoritarisme absolu':'Absolute authoritarianism';
   }
-  var pct = ((l.pos + 10) / 20 * 100).toFixed(0);
-  var color = posColor(l.pos);
-  var label = posLabel(l.pos);
+  var posInconnue = (l.pos===null || l.pos===undefined);
+  var pct = posInconnue ? 50 : ((l.pos + 10) / 20 * 100).toFixed(0);
+  var color = posInconnue ? 'var(--mu)' : posColor(l.pos);
+  var label = posInconnue ? (fr?'Non applicable':'Not applicable') : posLabel(l.pos);
+  var noteInconnue = fr
+    ? 'Aucune affiliation partisane connue (régime de transition, junte militaire, ou indépendant sans parti) — un positionnement gauche-droite ne s\'applique pas ici.'
+    : 'No known party affiliation (transitional regime, military junta, or independent without a party) — a left-right position does not apply here.';
   if(compact){
     return '<div style="background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;margin-bottom:8px">'
       +'<div style="font-size:.66rem;color:var(--mu);margin-bottom:2px">'+(fr?'Dirigeant actuel':'Current leader')+'</div>'
       +'<div style="font-family:Syne,sans-serif;font-size:.85rem;font-weight:700;color:var(--tx)">'+l.n+'</div>'
       +'<div style="font-size:.68rem;color:var(--mu);margin-top:1px">'+l.t+' · '+l.p+'</div>'
       +'<div style="margin-top:7px">'
-      +'<div style="display:flex;justify-content:space-between;font-size:.63rem;color:var(--mu);margin-bottom:3px"><span>'+(fr?'Gauche':'Left')+'</span><span style="color:'+color+';font-weight:700">'+label+'</span><span>'+(fr?'Droite':'Right')+'</span></div>'
+      +(posInconnue
+        ? '<div style="font-size:.66rem;color:var(--mu);font-style:italic;line-height:1.4">'+noteInconnue+'</div>'
+        : '<div style="display:flex;justify-content:space-between;font-size:.63rem;color:var(--mu);margin-bottom:3px"><span>'+(fr?'Gauche':'Left')+'</span><span style="color:'+color+';font-weight:700">'+label+'</span><span>'+(fr?'Droite':'Right')+'</span></div>'
       +'<div style="height:5px;background:linear-gradient(90deg,#dc2626,#8b5cf6,#1e3a8a);border-radius:3px;position:relative">'
       +'<div style="position:absolute;top:-3px;left:'+pct+'%;transform:translateX(-50%);width:10px;height:10px;background:'+color+';border-radius:50%;border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.4)"></div>'
-      +'</div></div>'
+      +'</div>')
+      +'</div>'
       +'<div style="font-size:.69rem;color:var(--mu);line-height:1.5;margin-top:6px">'+l.d.substring(0,150)+(l.d.length>150?'...':'')+'</div>'
       +(l.fiab?fiabiliteHTML({n:l.fiab,src:'Wikidata',txt:fr?'Dirigeant détecté automatiquement depuis Wikidata (chef d\'État / chef du gouvernement).':'Leader automatically detected from Wikidata.'},true):'')
       +'</div>';
@@ -1956,10 +1963,13 @@ function leaderHTML(pays, compact){
     +'<div style="font-size:.75rem;color:var(--mu);margin-bottom:8px">'+l.t+'</div>'
     +'<div style="font-size:.75rem;color:var(--a2);font-weight:600;margin-bottom:10px">'+l.p+'</div>'
     +'<div style="margin-bottom:10px">'
-    +'<div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--mu);margin-bottom:4px"><span>'+(fr?'⬅ Gauche':'⬅ Left')+'</span><span style="color:'+color+';font-weight:700;font-size:.72rem">'+label+'</span><span>'+(fr?'Droite ➡':'Right ➡')+'</span></div>'
+    +(posInconnue
+      ? '<div style="font-size:.74rem;color:var(--mu);font-style:italic;line-height:1.5">'+noteInconnue+'</div>'
+      : '<div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--mu);margin-bottom:4px"><span>'+(fr?'⬅ Gauche':'⬅ Left')+'</span><span style="color:'+color+';font-weight:700;font-size:.72rem">'+label+'</span><span>'+(fr?'Droite ➡':'Right ➡')+'</span></div>'
     +'<div style="height:8px;background:linear-gradient(90deg,#dc2626 0%,#ef4444 20%,#8b5cf6 50%,#3b82f6 70%,#1e3a8a 100%);border-radius:4px;position:relative">'
     +'<div style="position:absolute;top:-4px;left:'+pct+'%;transform:translateX(-50%);width:14px;height:14px;background:'+color+';border-radius:50%;border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.5)"></div>'
-    +'</div></div>'
+    +'</div>')
+    +'</div>'
     +'<div style="font-size:.78rem;color:var(--mu);line-height:1.65">'+l.d+'</div>'
     +(l.fiab?fiabiliteHTML({n:l.fiab,src:'Wikidata',txt:fr?'Dirigeant détecté automatiquement depuis Wikidata (propriétés chef d\'État P35 / chef du gouvernement P6). Un score de 4 signale plusieurs titulaires détectés simultanément (transition ou situation contestée) — à vérifier.':'Leader automatically detected from Wikidata (head of state P35 / head of government P6 properties). A score of 4 flags multiple simultaneous officeholders detected (transition or contested situation) — to verify.'},false):'')
     +'</div></div>';
@@ -3837,7 +3847,7 @@ function syncDirigeants(){
           n: row.nom||'',
           t: row.titre||'',
           p: row.parti||'',
-          pos: row.position||0,
+          pos: (row.position===null||row.position===undefined)?null:row.position,
           d: row.description||'',
           fiab: row.fiabilite||null
         };
