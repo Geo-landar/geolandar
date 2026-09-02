@@ -95,6 +95,93 @@ MOTS_CLES_POSITION = [
     ("communis", -8),
     ("vert", -1), ("green", -1), ("écologis", -1),
     ("autoritar", 7), ("authoritarian", 7),
+
+    # ══ NOMS DE PARTIS RÉELS PAR PAYS ══
+    # Les mots-clés génériques ci-dessus ne suffisent pas : la plupart des
+    # partis dans le monde (ANC, UDA, BJP...) ne contiennent aucun mot
+    # évoquant explicitement une tendance politique. Liste construite à
+    # partir de connaissances générales sur les partis au pouvoir dans le
+    # monde — fiable pour les partis bien documentés, mais non vérifiée
+    # individuellement par recherche pour chacun. En cas de doute réel,
+    # aucune entrée n'est ajoutée : mieux vaut "non applicable" qu'un
+    # score inventé.
+
+    # — EUROPE —
+    ("rassemblement national", 8), ("renaissance", 0),  # RN=droite, Renaissance=centre (Macron)
+    ("la france insoumise", -7), ("parti socialiste français", -5), ("les républicains", 4),
+    ("christlich demokratische", 3), ("sozialdemokratische partei", -3), ("alternative für deutschland", 8),
+    ("die grünen", -1), ("die linke", -6), ("freie demokratische", 1),
+    ("conservative party", 4), ("labour party", -4), ("reform uk", 7), ("liberal democrat", 1),
+    ("fratelli d'italia", 7), (" lega ", 6), ("partito democratico", -3), ("forza italia", 4),
+    ("partido popular", 4), ("psoe", -4), (" vox ", 8), ("sumar", -6),
+    ("prawo i sprawiedliwość", 6), ("koalicja obywatelska", 1),
+    ("fidesz", 7),
+    ("chega", 7), ("psd portugal", 3),
+    ("vvd", 3), ("pvv", 8), ("d66", 0),
+    ("moderaterna", 4), ("sverigedemokraterna", 7), ("socialdemokraterna", -4),
+    ("arbeiderpartiet", -4), ("høyre", 4),
+    ("socialdemokratiet", -3), ("venstre danemark", 3),
+    ("kokoomus", 3), ("sdp finlande", -3),
+    ("fianna fáil", 1), ("fine gael", 2), ("sinn féin", -4),
+    ("nea dimokratia", 4), ("new democracy grèce", 4), ("syriza", -6),
+    ("adalet ve kalkınma", 5), ("akp", 5), ("chp turquie", -3),
+    ("edinaïa rossia", 8), ("united russia", 8),
+    ("ods tchéquie", 3), (" ano ", 0),
+    ("övp", 3), ("fpö", 8), ("spö", -3),
+    ("union démocratique du centre", 6), ("udc suisse", 6), ("parti socialiste suisse", -3),
+
+    # — AMÉRIQUES —
+    ("republican party", 5), ("democratic party", -3),
+    ("morena", -4), ("pan mexique", 4), ("pri mexique", 0),
+    ("la libertad avanza", 8), ("pro argentine", 4),
+    ("frente amplio chile", -5), ("chile vamos", 3),
+    ("fuerza popular", 5), ("perú libre", -6),
+    ("psuv", -7), ("partido socialista unido de venezuela", -7),
+    ("mas bolivie", -6), ("movimiento al socialismo", -6),
+    ("partido colorado", 3), ("frente amplio uruguay", -4),
+    ("nuevas ideas", 5),  # Salvador, Bukele — populisme sécuritaire droite
+
+    # — AFRIQUE —
+    ("all progressives congress", 2),
+    ("mostaqbal watan", 5),
+    ("prosperity party éthiopie", 2),
+    ("new patriotic party", 3), ("national democratic congress", -3),
+    ("pastef", -4),
+    ("chama cha mapinduzi", 3),
+    ("national resistance movement", 5),
+    ("rwandan patriotic front", 5),
+    ("zanu-pf", 6),
+    ("united party for national development", 1),
+    ("swapo", -3),
+    ("mpla angola", -1),
+    ("frelimo", -2),
+    ("rassemblement national démocratique", 4),  # Algérie RND
+
+    # — ASIE —
+    ("communist party of china", -8), ("parti communiste chinois", -8),
+    ("bharatiya janata party", 6), ("indian national congress", -2),
+    ("jiyu-minshuto", 3), ("liberal democratic party japon", 3),
+    ("people power party", 4), ("democratic party of korea", -3),
+    ("gerindra", 3), ("pdi-p", -2),
+    ("pakistan muslim league", 2), ("pakistan peoples party", -2), ("pakistan tehreek-e-insaf", 0),
+    ("bangladesh nationalist party", 3), ("awami league", -2),
+    ("communist party of vietnam", -7),
+    ("pheu thai", -2),
+    ("umno", 3), ("parti keadilan rakyat", -2),
+    ("people's action party", 3),
+    ("likud", 6), ("yesh atid", 0),
+
+    # — OCÉANIE —
+    ("liberal party of australia", 4), ("labor party australien", -3), ("nationals australie", 5),
+    ("national party nouvelle-zélande", 3), ("labour party nouvelle-zélande", -3),
+
+    # — DÉJÀ VÉRIFIÉES INDIVIDUELLEMENT (recherche web) —
+    ("pacto histórico", -6), ("historic pact", -6),  # Colombie, Petro
+    ("african national congress", -3), (" anc ", -3),  # Afrique du Sud
+    ("partido dos trabalhadores", -6), ("workers' party", -6),  # Brésil, Lula
+    ("congolais du travail", 7),  # Congo-Brazzaville — régime personnaliste autoritaire
+    ("botswana democratic party", 3), (" bdp ", 3),  # Botswana
+    ("mouvement patriotique du salut", 5), ("patriotic salvation movement", 5),  # Tchad
 ]
 
 def deduire_position(libelles_ideologie, nom_parti):
