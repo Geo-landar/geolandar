@@ -99,13 +99,19 @@ MOTS_CLES_POSITION = [
 
 def deduire_position(libelles_ideologie, nom_parti):
     """Déduit un score -10/+10 à partir des libellés d'idéologie Wikidata,
-    ou à défaut du nom du parti."""
+    ou à défaut du nom du parti. Retourne None (pas 0) si aucune donnée
+    n'est disponible — un régime militaire/de transition sans parti n'est
+    pas "centriste", c'est juste une donnée manquante. Confondre les deux
+    afficherait à tort un dirigeant autoritaire comme modéré."""
     textes = [t.lower() for t in libelles_ideologie if t] + [(nom_parti or "").lower()]
     for texte in textes:
         for mot, score in MOTS_CLES_POSITION:
             if mot in texte:
                 return score
-    return 0
+    # Aucun mot-clé trouvé : si le parti est vide ou générique (indépendant,
+    # sans étiquette, transition militaire...), on ne sait vraiment rien —
+    # ne pas prétendre "centre" par défaut.
+    return None
 
 # ══════════════════════════════════════
 # REQUÊTE WIKIDATA — chef d'État (P35) et chef de gouvernement (P6)
