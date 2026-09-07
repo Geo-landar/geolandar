@@ -225,8 +225,16 @@ WHERE {
     FILTER NOT EXISTS { ?hosStmt pq:P582 ?hosEnd. }
     OPTIONAL { ?hosStmt pq:P580 ?hosStart. }
     OPTIONAL {
-      ?hos wdt:P102 ?hosPartyItem. ?hosPartyItem rdfs:label ?hosPartyLabel. FILTER(LANG(?hosPartyLabel)="fr").
-      OPTIONAL { ?hosPartyItem wdt:P1387 ?hosIdeoItem. ?hosIdeoItem rdfs:label ?hosIdeoLabel. FILTER(LANG(?hosIdeoLabel)="fr"). }
+      ?hos wdt:P102 ?hosPartyItem.
+      OPTIONAL { ?hosPartyItem rdfs:label ?hosPartyLabelFr. FILTER(LANG(?hosPartyLabelFr)="fr"). }
+      OPTIONAL { ?hosPartyItem rdfs:label ?hosPartyLabelEn. FILTER(LANG(?hosPartyLabelEn)="en"). }
+      BIND(COALESCE(?hosPartyLabelFr, ?hosPartyLabelEn) AS ?hosPartyLabel)
+      OPTIONAL {
+        ?hosPartyItem wdt:P1387 ?hosIdeoItem.
+        OPTIONAL { ?hosIdeoItem rdfs:label ?hosIdeoLabelFr. FILTER(LANG(?hosIdeoLabelFr)="fr"). }
+        OPTIONAL { ?hosIdeoItem rdfs:label ?hosIdeoLabelEn. FILTER(LANG(?hosIdeoLabelEn)="en"). }
+        BIND(COALESCE(?hosIdeoLabelFr, ?hosIdeoLabelEn) AS ?hosIdeoLabel)
+      }
     }
   }
   OPTIONAL {
@@ -235,8 +243,16 @@ WHERE {
     FILTER NOT EXISTS { ?hogStmt pq:P582 ?hogEnd. }
     OPTIONAL { ?hogStmt pq:P580 ?hogStart. }
     OPTIONAL {
-      ?hog wdt:P102 ?hogPartyItem. ?hogPartyItem rdfs:label ?hogPartyLabel. FILTER(LANG(?hogPartyLabel)="fr").
-      OPTIONAL { ?hogPartyItem wdt:P1387 ?hogIdeoItem. ?hogIdeoItem rdfs:label ?hogIdeoLabel. FILTER(LANG(?hogIdeoLabel)="fr"). }
+      ?hog wdt:P102 ?hogPartyItem.
+      OPTIONAL { ?hogPartyItem rdfs:label ?hogPartyLabelFr. FILTER(LANG(?hogPartyLabelFr)="fr"). }
+      OPTIONAL { ?hogPartyItem rdfs:label ?hogPartyLabelEn. FILTER(LANG(?hogPartyLabelEn)="en"). }
+      BIND(COALESCE(?hogPartyLabelFr, ?hogPartyLabelEn) AS ?hogPartyLabel)
+      OPTIONAL {
+        ?hogPartyItem wdt:P1387 ?hogIdeoItem.
+        OPTIONAL { ?hogIdeoItem rdfs:label ?hogIdeoLabelFr. FILTER(LANG(?hogIdeoLabelFr)="fr"). }
+        OPTIONAL { ?hogIdeoItem rdfs:label ?hogIdeoLabelEn. FILTER(LANG(?hogIdeoLabelEn)="en"). }
+        BIND(COALESCE(?hogIdeoLabelFr, ?hogIdeoLabelEn) AS ?hogIdeoLabel)
+      }
     }
   }
   SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". }
