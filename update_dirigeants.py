@@ -199,10 +199,17 @@ def deduire_position(libelles_ideologie, nom_parti):
     n'est disponible — un régime militaire/de transition sans parti n'est
     pas "centriste", c'est juste une donnée manquante. Confondre les deux
     afficherait à tort un dirigeant autoritaire comme modéré."""
-    textes = [t.lower() for t in libelles_ideologie if t] + [(nom_parti or "").lower()]
+    def normaliser(s):
+        # Wikidata utilise souvent l'apostrophe typographique (') plutôt
+        # que l'apostrophe droite ('), ce qui cassait silencieusement des
+        # correspondances comme "Workers' Party" — normalisation nécessaire
+        # avant toute comparaison, sinon un mot-clé pourtant correct ne
+        # matche jamais.
+        return s.lower().replace("\u2019", "'").replace("\u2018", "'")
+    textes = [normaliser(t) for t in libelles_ideologie if t] + [normaliser(nom_parti or "")]
     for texte in textes:
         for mot, score in MOTS_CLES_POSITION:
-            if mot in texte:
+            if normaliser(mot) in texte:
                 return score
     # Aucun mot-clé trouvé : si le parti est vide ou générique (indépendant,
     # sans étiquette, transition militaire...), on ne sait vraiment rien —
