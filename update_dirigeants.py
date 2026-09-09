@@ -245,12 +245,9 @@ WHERE {
       OPTIONAL { ?hogPartyItem wdt:P1387 ?hogIdeoItem. }
     }
   }
-  /* Le service de label natif de Wikidata génère automatiquement
-     ?xLabel pour chaque variable ?x sélectionnée, avec repli fr→en déjà
-     intégré et optimisé — bien plus léger que des OPTIONAL/BIND manuels
-     répétés pour chacun des 196 pays, qui faisaient dépasser le temps
-     imparti par Wikidata et provoquaient un échec silencieux de la
-     requête pour une grande partie des pays. */
+  # Le service de label natif de Wikidata génère automatiquement
+  # ?xLabel pour chaque variable ?x sélectionnée, avec repli fr->en déjà
+  # intégré et optimisé.
   SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". }
 }
 """
