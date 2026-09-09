@@ -144,7 +144,8 @@ MOTS_CLES_POSITION = [
     ("mpla", -1),
     ("frelimo", -2),
     ("rassemblement national démocratique", 4),  # Algérie RND
-    ("pacto histórico", -6), ("historic pact", -6),  # Colombie, Petro
+    ("pacto histórico", -6), ("historic pact", -6),  # Colombie, Petro — parti actuel (depuis 2025)
+    ("colombia humana", -6), ("humane colombia", -6),  # Colombie, Petro — ancien parti (dissous mars 2026)
     ("african national congress", -3), (" anc ", -3),  # Afrique du Sud
     ("congolais du travail", 7),  # Congo-Brazzaville — régime personnaliste autoritaire
     ("botswana democratic party", 3), (" bdp ", 3),  # Botswana
@@ -222,8 +223,8 @@ def deduire_position(libelles_ideologie, nom_parti):
 # ══════════════════════════════════════
 QUERY_DIRIGEANTS = """
 SELECT ?paysLabel
-       ?hos ?hosLabel ?hosPartyLabel ?hosStart ?hosIdeoLabel
-       ?hog ?hogLabel ?hogPartyLabel ?hogStart ?hogIdeoLabel
+       ?hos ?hosLabel ?hosPartyItem ?hosPartyItemLabel ?hosStart ?hosIdeoItem ?hosIdeoItemLabel
+       ?hog ?hogLabel ?hogPartyItem ?hogPartyItemLabel ?hogStart ?hogIdeoItem ?hogIdeoItemLabel
 WHERE {
   ?pays wdt:P31 wd:Q3624078.
   OPTIONAL {
@@ -231,17 +232,8 @@ WHERE {
     ?hosStmt ps:P35 ?hos.
     FILTER NOT EXISTS { ?hosStmt pq:P582 ?hosEnd. }
     OPTIONAL { ?hosStmt pq:P580 ?hosStart. }
-    OPTIONAL {
-      ?hos wdt:P102 ?hosPartyItem.
-      OPTIONAL { ?hosPartyItem rdfs:label ?hosPartyLabelFr. FILTER(LANG(?hosPartyLabelFr)="fr"). }
-      OPTIONAL { ?hosPartyItem rdfs:label ?hosPartyLabelEn. FILTER(LANG(?hosPartyLabelEn)="en"). }
-      BIND(COALESCE(?hosPartyLabelFr, ?hosPartyLabelEn) AS ?hosPartyLabel)
-      OPTIONAL {
-        ?hosPartyItem wdt:P1387 ?hosIdeoItem.
-        OPTIONAL { ?hosIdeoItem rdfs:label ?hosIdeoLabelFr. FILTER(LANG(?hosIdeoLabelFr)="fr"). }
-        OPTIONAL { ?hosIdeoItem rdfs:label ?hosIdeoLabelEn. FILTER(LANG(?hosIdeoLabelEn)="en"). }
-        BIND(COALESCE(?hosIdeoLabelFr, ?hosIdeoLabelEn) AS ?hosIdeoLabel)
-      }
+    OPTIONAL { ?hos wdt:P102 ?hosPartyItem.
+      OPTIONAL { ?hosPartyItem wdt:P1387 ?hosIdeoItem. }
     }
   }
   OPTIONAL {
@@ -249,19 +241,16 @@ WHERE {
     ?hogStmt ps:P6 ?hog.
     FILTER NOT EXISTS { ?hogStmt pq:P582 ?hogEnd. }
     OPTIONAL { ?hogStmt pq:P580 ?hogStart. }
-    OPTIONAL {
-      ?hog wdt:P102 ?hogPartyItem.
-      OPTIONAL { ?hogPartyItem rdfs:label ?hogPartyLabelFr. FILTER(LANG(?hogPartyLabelFr)="fr"). }
-      OPTIONAL { ?hogPartyItem rdfs:label ?hogPartyLabelEn. FILTER(LANG(?hogPartyLabelEn)="en"). }
-      BIND(COALESCE(?hogPartyLabelFr, ?hogPartyLabelEn) AS ?hogPartyLabel)
-      OPTIONAL {
-        ?hogPartyItem wdt:P1387 ?hogIdeoItem.
-        OPTIONAL { ?hogIdeoItem rdfs:label ?hogIdeoLabelFr. FILTER(LANG(?hogIdeoLabelFr)="fr"). }
-        OPTIONAL { ?hogIdeoItem rdfs:label ?hogIdeoLabelEn. FILTER(LANG(?hogIdeoLabelEn)="en"). }
-        BIND(COALESCE(?hogIdeoLabelFr, ?hogIdeoLabelEn) AS ?hogIdeoLabel)
-      }
+    OPTIONAL { ?hog wdt:P102 ?hogPartyItem.
+      OPTIONAL { ?hogPartyItem wdt:P1387 ?hogIdeoItem. }
     }
   }
+  /* Le service de label natif de Wikidata génère automatiquement
+     ?xLabel pour chaque variable ?x sélectionnée, avec repli fr→en déjà
+     intégré et optimisé — bien plus léger que des OPTIONAL/BIND manuels
+     répétés pour chacun des 196 pays, qui faisaient dépasser le temps
+     imparti par Wikidata et provoquaient un échec silencieux de la
+     requête pour une grande partie des pays. */
   SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". }
 }
 """
@@ -310,18 +299,18 @@ def construire_dirigeants():
         if hos_nom and ligne.get("hos"):
             entree["hos"].add(hos_nom)
             entree["data"].setdefault("hos_info", {})[hos_nom] = {
-                "parti": ligne.get("hosPartyLabel", {}).get("value", ""),
+                "parti": ligne.get("hosPartyItemLabel", {}).get("value", ""),
                 "start": ligne.get("hosStart", {}).get("value", ""),
-                "ideologie": ligne.get("hosIdeoLabel", {}).get("value", ""),
+                "ideologie": ligne.get("hosIdeoItemLabel", {}).get("value", ""),
             }
 
         hog_nom = ligne.get("hogLabel", {}).get("value", "")
         if hog_nom and ligne.get("hog"):
             entree["hog"].add(hog_nom)
             entree["data"].setdefault("hog_info", {})[hog_nom] = {
-                "parti": ligne.get("hogPartyLabel", {}).get("value", ""),
+                "parti": ligne.get("hogPartyItemLabel", {}).get("value", ""),
                 "start": ligne.get("hogStart", {}).get("value", ""),
-                "ideologie": ligne.get("hogIdeoLabel", {}).get("value", ""),
+                "ideologie": ligne.get("hogIdeoItemLabel", {}).get("value", ""),
             }
 
     resultats = {}
