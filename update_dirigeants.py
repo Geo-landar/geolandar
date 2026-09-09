@@ -95,7 +95,7 @@ MOTS_CLES_POSITION = [
     # — EUROPE —
     ("rassemblement national", 8), ("renaissance", 0),  # RN=droite, Renaissance=centre (Macron)
     ("la france insoumise", -7), ("parti socialiste français", -5), ("les républicains", 4),
-    ("christlich demokratische", 3), ("sozialdemokratische partei", -3), ("alternative für deutschland", 8),
+    ("christlich demokratische", 3), ("union démocrate", 3), ("sozialdemokratische partei", -3), ("alternative für deutschland", 8),
     ("die grünen", -1), ("die linke", -6), ("freie demokratische", 1),
     ("conservative party", 4), ("labour party", -4), ("reform uk", 7), ("liberal democrat", 1),
     ("fratelli d'italia", 7), (" lega ", 6), ("partito democratico", -3), ("forza italia", 4),
