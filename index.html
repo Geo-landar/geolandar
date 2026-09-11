@@ -183,6 +183,32 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--a),var(--a2));-w
 .gpr{right:12px;transform:translateX(300px);}
 .gpl.open{transform:translateX(0);}
 .gpr.open{transform:translateX(0);}
+/* Panneau institutionnel (bas) — Phase 3 */
+.gpanel-bottom{position:absolute;left:12px;right:12px;bottom:12px;height:38vh;max-height:360px;background:rgba(10,14,26,.97);border:1px solid var(--bd);border-radius:var(--r);backdrop-filter:blur(18px);transform:translateY(120%);transition:transform .33s cubic-bezier(.4,0,.2,1);z-index:15;box-shadow:0 -8px 30px rgba(0,0,0,.4);display:flex;flex-direction:column;overflow:hidden;}
+.gpanel-bottom.open{transform:translateY(0);}
+.gpb-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bd);flex-shrink:0;}
+.gpb-title{font-family:Syne,sans-serif;font-weight:700;font-size:.85rem;}
+.gpb-sub{font-size:.68rem;color:var(--mu);margin-top:1px;}
+.gpb-body{flex:1;overflow-y:auto;padding:14px;display:flex;gap:20px;flex-wrap:wrap;}
+.gpb-schema{flex:0 0 auto;min-width:260px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);border:1px solid var(--bd);border-radius:10px;padding:14px;}
+.gpb-info{flex:1 1 220px;min-width:200px;}
+.gpb-box{border-radius:9px;padding:8px 12px;text-align:center;min-width:100px;font-size:.72rem;}
+.gpb-box b{font-size:.76rem;display:block;}
+.gpb-box-citizen{background:rgba(59,130,246,.08);border:1.5px solid rgba(59,130,246,.3);}
+.gpb-box-parliament{background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.32);}
+.gpb-box-power{background:rgba(249,115,22,.1);border:1.5px solid rgba(249,115,22,.35);}
+.gpb-box-symbolic{background:rgba(148,163,184,.06);border:1.5px dashed rgba(148,163,184,.25);}
+.gpb-box-warn{background:rgba(239,68,68,.08);border:1.5px dashed rgba(239,68,68,.32);}
+.gpb-arrow{text-align:center;color:var(--mu);font-size:.68rem;margin:2px 0;line-height:1.3;}
+.gpb-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:4px 0;}
+.gpb-infrow{margin-bottom:7px;}
+.gpb-infrow .l{font-size:.62rem;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
+.gpb-infrow .v{font-size:.77rem;color:var(--tx);line-height:1.5;margin-top:1px;}
+.gpb-particularite{margin-top:8px;background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);border-radius:9px;padding:8px 11px;}
+.gpb-particularite .l{font-size:.6rem;color:#fb923c;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:3px;}
+.gpb-particularite .v{font-size:.73rem;color:var(--tx);line-height:1.55;}
+.gpb-empty{padding:20px;text-align:center;color:var(--mu);font-size:.78rem;margin:auto;}
+@media(max-width:640px){.gpanel-bottom{left:6px;right:6px;height:46vh;}.gpb-body{flex-direction:column;}}
 .gphdr{display:flex;align-items:center;gap:8px;padding:11px 12px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:rgba(10,14,26,.98);z-index:1;}
 .gpfl img,.gpfl .nfl{width:30px;height:22px;border-radius:2px;display:block;}
 .gpfl .nfl{background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;color:var(--mu);}
@@ -466,6 +492,13 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
     <div class="gpanel gpr" id="panR">
       <div class="gphdr"><div class="gpfl" id="gfR"></div><div><div class="gpname" id="gnR"></div><div class="gpsub" id="gsR"></div></div><button class="gpcls" onclick="closeGP('R')">✕</button></div>
       <div class="gpbody" id="gbR"></div>
+    </div>
+    <div class="gpanel-bottom" id="panBottom">
+      <div class="gpb-hdr">
+        <div><div class="gpb-title" id="gpbTitle">🏛️ Fonctionnement institutionnel</div><div class="gpb-sub" id="gpbSub"></div></div>
+        <button class="gpcls" onclick="closeGP('Bottom')">✕</button>
+      </div>
+      <div class="gpb-body" id="gpbBody"></div>
     </div>
     <div class="gleg">
       <div class="gl"><div class="gld" style="background:#10b981"></div><span id="gl5">Résultats dispo</span></div>
@@ -1975,6 +2008,146 @@ function leaderHTML(pays, compact){
     +'</div></div>';
 }
 
+/* ══ FONCTIONNEMENT INSTITUTIONNEL — Phase 3 (échantillon européen) ══
+   Chaque entrée décrit l'archétype de régime, les chambres du parlement,
+   le rôle du chef de l'État / chef du gouvernement, et une particularité
+   notable. Volontairement limité à un échantillon pour valider le format
+   avant extension aux 196 pays. */
+var INSTITUTIONS={
+"France":{archetype:"semipresidentiel",
+  chambres:[{nom:"Assemblée nationale",sieges:577,mandat:"5 ans",mode:"Scrutin majoritaire à 2 tours"},{nom:"Sénat",sieges:348,mandat:"6 ans",mode:"Suffrage indirect (grands électeurs)"}],
+  chefEtat:{titre:"Président de la République",mode:"Suffrage universel direct",mandat:"5 ans, renouvelable 1 fois",pouvoirs:"Chef des armées, dissout l'Assemblée, nomme le Premier ministre, politique étrangère"},
+  chefGouv:{titre:"Premier ministre",mode:"Nommé par le Président, doit avoir la confiance de l'Assemblée",mandat:"Sans durée fixe",pouvoirs:"Dirige l'action du gouvernement, responsable devant l'Assemblée"},
+  particularite:"Régime hybride : le Président gouverne réellement quand sa majorité contrôle l'Assemblée. En cas de cohabitation, le pouvoir exécutif se déplace vers le Premier ministre."},
+"Allemagne":{archetype:"parlementaire",
+  chambres:[{nom:"Bundestag",sieges:"≈630 (variable)",mandat:"4 ans",mode:"Scrutin proportionnel mixte"},{nom:"Bundesrat",sieges:69,mandat:"Représentants des Länder",mode:"Désignés par les gouvernements régionaux"}],
+  chefEtat:{titre:"Président fédéral",mode:"Élu par l'Assemblée fédérale (Bundestag + délégués des Länder)",mandat:"5 ans, renouvelable 1 fois",pouvoirs:"Rôle largement protocolaire et de représentation"},
+  chefGouv:{titre:"Chancelier fédéral",mode:"Élu par le Bundestag",mandat:"4 ans (durée de la législature)",pouvoirs:"Dirige effectivement le gouvernement et fixe les grandes orientations"},
+  particularite:"Le pouvoir réel est entièrement au Chancelier. Le fédéralisme donne aux 16 Länder un poids institutionnel fort via le Bundesrat."},
+"Royaume-Uni":{archetype:"parlementaire",
+  chambres:[{nom:"Chambre des communes",sieges:650,mandat:"5 ans maximum",mode:"Scrutin majoritaire à 1 tour (uninominal)"},{nom:"Chambre des lords",sieges:"≈780",mandat:"À vie ou héréditaire",mode:"Nommés (pairs à vie) ou hérités"}],
+  chefEtat:{titre:"Monarque",mode:"Héréditaire",mandat:"À vie",pouvoirs:"Rôle cérémoniel ; sanctionne les lois sans les refuser en pratique"},
+  chefGouv:{titre:"Premier ministre",mode:"Chef du parti majoritaire aux Communes, nommé par le Roi",mandat:"Sans durée fixe",pouvoirs:"Dirige le gouvernement, responsable devant les Communes"},
+  particularite:"Pas de constitution écrite unique : le système repose sur des conventions et des textes historiques cumulés depuis la Magna Carta (1215)."},
+"Italie":{archetype:"parlementaire",
+  chambres:[{nom:"Chambre des députés",sieges:400,mandat:"5 ans",mode:"Scrutin mixte majoritaire/proportionnel"},{nom:"Sénat",sieges:200,mandat:"5 ans",mode:"Scrutin mixte majoritaire/proportionnel"}],
+  chefEtat:{titre:"Président de la République",mode:"Élu par le Parlement + délégués régionaux",mandat:"7 ans",pouvoirs:"Garant de la Constitution, peut dissoudre le Parlement en cas de crise"},
+  chefGouv:{titre:"Présidente du Conseil",mode:"Nommée par le Président, doit obtenir la confiance des deux chambres",mandat:"Sans durée fixe",pouvoirs:"Dirige le gouvernement, coordination de l'action ministérielle"},
+  particularite:"Bicamérisme parfait : les deux chambres ont exactement les mêmes pouvoirs, ce qui a longtemps favorisé l'instabilité gouvernementale."},
+"Espagne":{archetype:"parlementaire",
+  chambres:[{nom:"Congrès des députés",sieges:350,mandat:"4 ans",mode:"Scrutin proportionnel par province"},{nom:"Sénat",sieges:265,mandat:"4 ans",mode:"Majoritaire + désignés par les régions"}],
+  chefEtat:{titre:"Monarque",mode:"Héréditaire",mandat:"À vie",pouvoirs:"Rôle cérémoniel et d'arbitrage symbolique"},
+  chefGouv:{titre:"Président du gouvernement",mode:"Investi par le Congrès des députés",mandat:"4 ans (durée de la législature)",pouvoirs:"Dirige le gouvernement, propose les ministres"},
+  particularite:"État fortement décentralisé : 17 communautés autonomes disposent de larges compétences propres (santé, éducation, police dans certains cas)."},
+"Pologne":{archetype:"semipresidentiel",
+  chambres:[{nom:"Sejm",sieges:460,mandat:"4 ans",mode:"Scrutin proportionnel"},{nom:"Sénat",sieges:100,mandat:"4 ans",mode:"Scrutin majoritaire à 1 tour"}],
+  chefEtat:{titre:"Président de la République",mode:"Suffrage universel direct",mandat:"5 ans, renouvelable 1 fois",pouvoirs:"Droit de veto sur les lois, chef des armées, politique étrangère"},
+  chefGouv:{titre:"Premier ministre",mode:"Désigné par le Président, confirmé par le Sejm",mandat:"Sans durée fixe",pouvoirs:"Dirige l'action quotidienne du gouvernement"},
+  particularite:"Cohabitation fréquente entre un président et un Premier ministre de bords politiques opposés — chacun peut alors bloquer l'agenda de l'autre."},
+"Suede":{archetype:"parlementaire",
+  chambres:[{nom:"Riksdag",sieges:349,mandat:"4 ans",mode:"Scrutin proportionnel"}],
+  chefEtat:{titre:"Roi",mode:"Héréditaire",mandat:"À vie",pouvoirs:"Purement représentatif — aucun pouvoir politique depuis 1974"},
+  chefGouv:{titre:"Premier ministre",mode:"Approuvé par le Riksdag (vote de non-opposition)",mandat:"4 ans (durée de la législature)",pouvoirs:"Dirige le gouvernement et l'administration"},
+  particularite:"Monarchie la plus dépouillée de pouvoirs d'Europe : le Roi n'a même plus le droit de nommer formellement le Premier ministre depuis la réforme de 1974."},
+"Suisse":{archetype:"directorial",
+  chambres:[{nom:"Conseil national",sieges:200,mandat:"4 ans",mode:"Scrutin proportionnel par canton"},{nom:"Conseil des États",sieges:46,mandat:"4 ans (majorité)",mode:"2 sièges par canton, mode variable"}],
+  conseilFederal:{titre:"Conseil fédéral",membres:7,mode:"Élus individuellement par l'Assemblée fédérale",mandat:"4 ans",pouvoirs:"Collège de 7 ministres à égalité de pouvoir ; la présidence tourne chaque année entre eux"},
+  particularite:"Système unique au monde : pas de chef de l'État ni de chef du gouvernement distinct — 7 personnes gouvernent collégialement, sans hiérarchie entre elles."},
+"Hongrie":{archetype:"concentre",
+  chambres:[{nom:"Assemblée nationale",sieges:199,mandat:"4 ans",mode:"Scrutin mixte majoritaire/proportionnel"}],
+  chefEtat:{titre:"Président de la République",mode:"Élu par l'Assemblée nationale",mandat:"5 ans, renouvelable 1 fois",pouvoirs:"Rôle largement cérémoniel"},
+  chefGouv:{titre:"Premier ministre",mode:"Élu par l'Assemblée nationale",mandat:"4 ans",pouvoirs:"Concentre l'essentiel du pouvoir exécutif"},
+  particularite:"Sous Orbán (2010-2026), le contrôle du parti sur les médias et la justice avait vidé une partie des contre-pouvoirs de leur substance. La victoire de l'opposition en 2026 ouvre une phase de restauration institutionnelle encore incertaine."},
+"Russie":{archetype:"concentre",
+  chambres:[{nom:"Douma d'État",sieges:450,mandat:"5 ans",mode:"Scrutin mixte — opposition réelle exclue"},{nom:"Conseil de la Fédération",sieges:208,mandat:"Variable",mode:"Représentants des régions, non élus au suffrage direct"}],
+  chefEtat:{titre:"Président de la Fédération",mode:"Suffrage universel direct — scrutins non reconnus comme libres par l'OSCE",mandat:"6 ans, sans limite depuis la réforme de 2020",pouvoirs:"Concentre la quasi-totalité du pouvoir exécutif, judiciaire de facto et militaire"},
+  chefGouv:{titre:"Premier ministre",mode:"Nommé par le Président",mandat:"Sans durée fixe",pouvoirs:"Rôle d'exécution technique, sans autonomie politique réelle"},
+  particularite:"La séparation des pouvoirs prévue par la Constitution de 1993 est vidée de sa substance : justice, médias et processus électoral sont sous contrôle du pouvoir exécutif."},
+};
+var INSTITUTIONS_ARCHETYPE_LABEL={
+  semipresidentiel:{fr:"Régime semi-présidentiel",en:"Semi-presidential system"},
+  parlementaire:{fr:"Régime parlementaire",en:"Parliamentary system"},
+  directorial:{fr:"Régime directorial collégial",en:"Collegial directorial system"},
+  concentre:{fr:"Pouvoir exécutif concentré",en:"Concentrated executive power"}
+};
+function institBox(titre,sous,tone,dashed){
+  var cls='gpb-box gpb-box-'+tone;
+  return '<div class="'+cls+'"'+(dashed?' style="border-style:dashed"':'')+'><b>'+titre+'</b>'+(sous?'<div style="color:var(--mu);margin-top:2px">'+sous+'</div>':'')+'</div>';
+}
+function institArrow(label){
+  return '<div class="gpb-arrow">↓'+(label?'<br>'+label:'')+'</div>';
+}
+function institSchema(c){
+  var fr=lang==='fr';
+  var citoyens=fr?'Citoyens':'Citizens';
+  var vote=fr?'vote':'vote';
+  var html='';
+  if(c.archetype==='parlementaire'){
+    html+=institBox(citoyens,'',"citizen");
+    html+=institArrow(vote);
+    html+='<div class="gpb-row">'+c.chambres.map(function(ch){return institBox(ch.nom,ch.sieges+(fr?' sièges':' seats'),"parliament");}).join('')+'</div>';
+    html+=institArrow(fr?'désigne / soutient':'appoints / supports');
+    html+='<div class="gpb-row">';
+    html+=institBox(c.chefGouv.titre,fr?'Pouvoir exécutif réel':'Real executive power',"power");
+    if(c.chefEtat)html+=institBox(c.chefEtat.titre,fr?'Rôle cérémoniel':'Ceremonial role',"symbolic",true);
+    html+='</div>';
+  } else if(c.archetype==='semipresidentiel'){
+    html+=institBox(citoyens,'',"citizen");
+    html+=institArrow(fr?'vote direct + vote législatif':'direct + legislative vote');
+    html+='<div class="gpb-row" style="align-items:flex-start">';
+    html+=institBox(c.chefEtat.titre,fr?'Élu au suffrage direct':'Directly elected',"power");
+    html+='<div>'+'<div class="gpb-row">'+c.chambres.map(function(ch){return institBox(ch.nom,ch.sieges+(fr?' sièges':' seats'),"parliament");}).join('')+'</div>'
+      +institArrow(fr?'confirme':'confirms')
+      +institBox(c.chefGouv.titre,fr?'Nommé par le président':'Appointed by the president',"default")
+      +'</div>';
+    html+='</div>';
+  } else if(c.archetype==='directorial'){
+    html+=institBox(citoyens,'',"citizen");
+    html+=institArrow(vote);
+    html+='<div class="gpb-row">'+c.chambres.map(function(ch){return institBox(ch.nom,ch.sieges+(fr?' sièges':' seats'),"parliament");}).join('')+'</div>';
+    html+=institArrow(fr?'élisent individuellement':'individually elect');
+    html+=institBox(c.conseilFederal.titre+' — '+c.conseilFederal.membres+(fr?' membres':' members'),fr?'Présidence tournante 1 an':'1-year rotating presidency',"power");
+  } else if(c.archetype==='concentre'){
+    html+=institBox(citoyens,fr?'Scrutin à fiabilité limitée':'Limited electoral reliability',"warn",true);
+    html+=institArrow(vote);
+    html+=institBox(c.chambres[0].nom,c.chambres[0].sieges+(fr?' sièges':' seats'),"parliament");
+    html+=institArrow(fr?'désigne':'appoints');
+    html+=institBox((c.chefGouv?c.chefGouv.titre:c.chefEtat.titre),fr?'Pouvoirs concentrés':'Concentrated powers',"warn",true);
+  }
+  return html;
+}
+function institInfoRow(label,value){
+  if(!value)return '';
+  return '<div class="gpb-infrow"><div class="l">'+label+'</div><div class="v">'+value+'</div></div>';
+}
+function renderInstitutions(pays){
+  var fr=lang==='fr';
+  var data=INSTITUTIONS[pays];
+  var panel=document.getElementById('panBottom');
+  var title=document.getElementById('gpbTitle');
+  var sub=document.getElementById('gpbSub');
+  var body=document.getElementById('gpbBody');
+  if(!data){
+    panel.classList.remove('open');
+    body.innerHTML='';
+    return;
+  }
+  title.textContent=(fr?'🏛️ Fonctionnement institutionnel — ':'🏛️ Institutional structure — ')+pays;
+  sub.textContent=INSTITUTIONS_ARCHETYPE_LABEL[data.archetype][fr?'fr':'en'];
+  var b='<div class="gpb-schema">'+institSchema(data)+'</div>';
+  b+='<div class="gpb-info">';
+  data.chambres.forEach(function(ch){
+    b+=institInfoRow(ch.nom+' — '+ch.sieges+(fr?' sièges':' seats'),(fr?'Mandat : ':'Term: ')+ch.mandat+' · '+ch.mode);
+  });
+  if(data.chefEtat)b+=institInfoRow(data.chefEtat.titre,data.chefEtat.mode+' · '+(fr?'Mandat : ':'Term: ')+data.chefEtat.mandat+' · '+data.chefEtat.pouvoirs);
+  if(data.chefGouv)b+=institInfoRow(data.chefGouv.titre,data.chefGouv.mode+' · '+(fr?'Mandat : ':'Term: ')+data.chefGouv.mandat+' · '+data.chefGouv.pouvoirs);
+  if(data.conseilFederal)b+=institInfoRow(data.conseilFederal.titre,data.conseilFederal.mode+' · '+(fr?'Mandat : ':'Term: ')+data.conseilFederal.mandat+' · '+data.conseilFederal.pouvoirs);
+  b+='<div class="gpb-particularite"><div class="l">'+(fr?'Particularité':'Distinctive feature')+'</div><div class="v">'+data.particularite+'</div></div>';
+  b+='</div>';
+  body.innerHTML=b;
+  panel.classList.add('open');
+}
+
 var POLLS={
   "Colombie":[
     {c:"Óscar Iván Zuluaga",p:"Centro Democrático (droite)",pos:7,s:22},
@@ -3012,6 +3185,8 @@ function showCountry(pays){
   document.getElementById('panR').classList.add('open');
   document.getElementById('panL').classList.add('open');
   document.getElementById('gbtn').style.display='block';
+  // PANNEAU BAS — fonctionnement institutionnel (échantillon européen, Phase 3)
+  renderInstitutions(pays);
 }
 function showUnknownCountry(id){
   document.getElementById('gfL').innerHTML='<div class="nfl">?</div>';
@@ -3021,12 +3196,13 @@ function showUnknownCountry(id){
   document.getElementById('gbL').innerHTML='<div class="nodata">'+msg+'</div>';
   document.getElementById('panL').classList.add('open');
   document.getElementById('panR').classList.remove('open');
+  document.getElementById('panBottom').classList.remove('open');
   document.getElementById('gbtn').style.display='block';
 }
 function closeGP(s){
   document.getElementById('pan'+s).classList.remove('open');
-  var lo=document.getElementById('panL').classList.contains('open'),ro=document.getElementById('panR').classList.contains('open');
-  if(!lo&&!ro){
+  var lo=document.getElementById('panL').classList.contains('open'),ro=document.getElementById('panR').classList.contains('open'),bo=document.getElementById('panBottom').classList.contains('open');
+  if(!lo&&!ro&&!bo){
     document.getElementById('gbtn').style.display='none';
     if(gSel){try{d3.select(gSel).classed('selected',false);}catch(e){} gSel=null;}
     if(typeof window._globeStartRotation==='function') window._globeStartRotation();
@@ -3035,6 +3211,7 @@ function closeGP(s){
 function closePanels(){
   document.getElementById('panL').classList.remove('open');
   document.getElementById('panR').classList.remove('open');
+  document.getElementById('panBottom').classList.remove('open');
   document.getElementById('gbtn').style.display='none';
   if(gSel){try{d3.select(gSel).classed('selected',false);}catch(e){} gSel=null;}
   /* Reprendre la rotation automatique */
@@ -3871,13 +4048,25 @@ function syncDirigeants(){
       if(!rows||!rows.length) return;
       rows.forEach(function(row){
         if(!row.pays) return;
+        var existant = LEADERS[row.pays];
+        var nouvellePos = (row.position===null||row.position===undefined)?null:row.position;
+        /* CORRECTIF : si Supabase ne connaît pas la position (null) mais
+           qu'une entrée statique correcte existe déjà (écrite à la main),
+           on la CONSERVE plutôt que de l'écraser par null. Sans ça, un
+           pays parfaitement classé au chargement (ex: Allemagne, CDU,
+           centre-droit) perdait sa position 2 secondes plus tard, dès que
+           la synchronisation Supabase arrivait avec une donnée moins
+           complète que le pipeline Wikidata n'a pas encore su déterminer. */
+        var posFinale = (nouvellePos===null && existant && existant.pos!==null && existant.pos!==undefined)
+          ? existant.pos
+          : nouvellePos;
         LEADERS[row.pays]={
-          n: row.nom||'',
-          t: row.titre||'',
-          p: row.parti||'',
-          pos: (row.position===null||row.position===undefined)?null:row.position,
-          d: row.description||'',
-          fiab: row.fiabilite||null
+          n: row.nom||(existant?existant.n:'')||'',
+          t: row.titre||(existant?existant.t:'')||'',
+          p: row.parti||(existant?existant.p:'')||'',
+          pos: posFinale,
+          d: row.description||(existant?existant.d:'')||'',
+          fiab: row.fiabilite||(existant?existant.fiab:null)||null
         };
       });
       console.log('Dirigeants chargés depuis Supabase: '+rows.length);
