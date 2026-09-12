@@ -208,6 +208,8 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--a),var(--a2));-w
 .gpb-particularite .l{font-size:.6rem;color:#fb923c;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:3px;}
 .gpb-particularite .v{font-size:.73rem;color:var(--tx);line-height:1.55;}
 .gpb-empty{padding:20px;text-align:center;color:var(--mu);font-size:.78rem;margin:auto;}
+.gpb-regional{flex-basis:100%;}
+.gpb-regional:empty{display:none;}
 @media(max-width:640px){.gpanel-bottom{left:6px;right:6px;height:46vh;}.gpb-body{flex-direction:column;}}
 .gphdr{display:flex;align-items:center;gap:8px;padding:11px 12px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:rgba(10,14,26,.98);z-index:1;}
 .gpfl img,.gpfl .nfl{width:30px;height:22px;border-radius:2px;display:block;}
@@ -523,10 +525,10 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
     <button class="continue-btn" id="legendContinueBtn" onclick="document.getElementById('pricingSection').scrollIntoView({behavior:'smooth'})">↓ <span id="legendContinueTxt">Voir les formules</span></button>
   </div>
 
-  <!-- ABONNEMENTS (aperçu, non fonctionnel) -->
+  <!-- ABONNEMENTS (aperçu indicatif — paiement non actif) -->
   <div class="pricing-section" id="pricingSection">
     <h2 class="section-title" id="pricing-title">Formules</h2>
-    <p class="section-sub" id="pricing-sub">Aperçu des offres à venir — non actives pour le moment</p>
+    <p class="section-sub" id="pricing-sub">🔜 Aperçu des offres à venir — paiement non actif, à titre indicatif</p>
     <div class="pricing-grid">
       <div class="price-card">
         <div class="price-name">Gratuit</div>
@@ -538,11 +540,12 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
         </ul>
       </div>
       <div class="price-card featured">
-        <div class="price-badge">Populaire</div>
+        <div class="price-badge">Bientôt</div>
         <div class="price-name">Medium</div>
         <div class="price-amount">5€<span>/mois</span></div>
         <ul class="price-feats">
           <li>Tout le contenu Gratuit</li>
+          <li>Fiches institutionnelles par pays</li>
           <li>Élections partielles</li>
           <li>Alertes par email</li>
         </ul>
@@ -660,7 +663,7 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
    Passer à "true" le jour où les offres payantes doivent apparaître sur le
    site (rien d'autre à changer, ni à supprimer). Une seule ligne à modifier
    directement sur GitHub, pas besoin d'espace admin séparé. */
-var SHOW_PRICING=false;
+var SHOW_PRICING=true;
 var lang='fr', aYear=new Date().getFullYear(), aReg='';
 /* YEARS dynamique : année courante + 2 suivantes */
 var _cy=new Date().getFullYear();
@@ -2144,8 +2147,169 @@ function renderInstitutions(pays){
   if(data.conseilFederal)b+=institInfoRow(data.conseilFederal.titre,data.conseilFederal.mode+' · '+(fr?'Mandat : ':'Term: ')+data.conseilFederal.mandat+' · '+data.conseilFederal.pouvoirs);
   b+='<div class="gpb-particularite"><div class="l">'+(fr?'Particularité':'Distinctive feature')+'</div><div class="v">'+data.particularite+'</div></div>';
   b+='</div>';
+  b+='<div class="gpb-regional" id="gpbRegional"></div>';
   body.innerHTML=b;
   panel.classList.add('open');
+}
+
+/* ══ ÉCHELON RÉGIONAL — zoom + subdivisions (Phase 3, échantillon) ══
+   Géométries des subdivisions administratives chargées à la volée depuis des
+   jeux de données publics (CORS ouvert) :
+   - France : gregoiredavid/france-geojson (13 régions actuelles, post-2016)
+   - Autres : codeforgermany/click_that_hood (subdivisions de 1er niveau)
+   Le mécanisme (zoom, découpage, clic région) fonctionne pour les 10 pays de
+   l'échantillon ; seules les données de dirigeants régionaux pour la France
+   sont renseignées pour l'instant — à étendre pays par pays une fois validé. */
+var REGIONS_SOURCE={
+  "France":{url:"https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson",nameProp:"nom",type:"Région"},
+  "Allemagne":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/germany.geojson",nameProp:"name",type:"Land"},
+  "Italie":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/italy-regions.geojson",nameProp:"name",type:"Région"},
+  "Espagne":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/spain-communities.geojson",nameProp:"name",type:"Communauté autonome"},
+  "Suisse":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/switzerland.geojson",nameProp:"name",type:"Canton"},
+  "Pologne":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/poland.geojson",nameProp:"name",type:"Voïvodie"},
+  "Suede":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/sweden-counties.geojson",nameProp:"name",type:"Comté (Län)"},
+  "Royaume-Uni":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/united-kingdom-regions.geojson",nameProp:"name",type:"Région"},
+  "Hongrie":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/hungary.geojson",nameProp:"name",type:"Comté (megye)"},
+  "Russie":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/russia.geojson",nameProp:"name_latin",type:"Sujet fédéral"}
+};
+/* Dirigeants régionaux — UNIQUEMENT la France est renseignée pour l'instant.
+   Élus lors des régionales de 2021 (mandat jusqu'en 2028) — à reconfirmer
+   en cas de démission/remaniement d'ici là. */
+var REGIONS_LEADERS={
+  "France":{
+    prerogatives:"Développement économique, gestion des lycées (bâtiments et personnel technique), transports ferroviaires régionaux (TER), formation professionnelle et apprentissage, aménagement du territoire.",
+    disclaimer:"Présidents élus aux régionales de décembre 2021 (mandat jusqu'en 2028) — à vérifier en cas de changement depuis.",
+    liste:{
+      "Île-de-France":{n:"Valérie Pécresse",t:"Présidente du conseil régional",parti:"Libres ! (droite)"},
+      "Centre-Val de Loire":{n:"François Bonneau",t:"Président du conseil régional",parti:"PS (gauche)"},
+      "Bourgogne-Franche-Comté":{n:"Marie-Guite Dufay",t:"Présidente du conseil régional",parti:"PS (gauche)"},
+      "Normandie":{n:"Hervé Morin",t:"Président du conseil régional",parti:"Les Centristes"},
+      "Hauts-de-France":{n:"Xavier Bertrand",t:"Président du conseil régional",parti:"Indépendant (droite)"},
+      "Grand Est":{n:"Franck Leroy",t:"Président du conseil régional",parti:"Renaissance (centre)"},
+      "Pays de la Loire":{n:"Christelle Morançais",t:"Présidente du conseil régional",parti:"LR (droite)"},
+      "Bretagne":{n:"Loïg Chesnais-Girard",t:"Président du conseil régional",parti:"PS (gauche)"},
+      "Nouvelle-Aquitaine":{n:"Alain Rousset",t:"Président du conseil régional",parti:"PS (gauche)"},
+      "Occitanie":{n:"Carole Delga",t:"Présidente du conseil régional",parti:"PS (gauche)"},
+      "Auvergne-Rhône-Alpes":{n:"Laurent Wauquiez",t:"Président du conseil régional",parti:"LR (droite)"},
+      "Provence-Alpes-Côte d'Azur":{n:"Renaud Muselier",t:"Président du conseil régional",parti:"Renaissance-LR (centre-droit)"},
+      "Corse":{n:"Gilles Simeoni",t:"Président du conseil exécutif de Corse",parti:"Femu a Corsica (nationaliste)"}
+    }
+  }
+};
+
+function loadRegions(pays,cb){
+  if(gRegionsCache[pays]){ cb(gRegionsCache[pays]); return; }
+  var src=REGIONS_SOURCE[pays];
+  if(!src){ cb(null); return; }
+  fetch(src.url).then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.json(); })
+    .then(function(geo){ gRegionsCache[pays]=geo; cb(geo); })
+    .catch(function(){ cb(null); });
+}
+
+function zoomToCountry(target,zoomScale){
+  if(!gProj||!gBaseScale) return;
+  var center;
+  if(target&&target.type){ center=d3.geoCentroid(target); }
+  else if(target&&typeof target.lon==='number'){ center=[target.lon,target.lat]; }
+  else { return; }
+  var r0=gProj.rotate(), s0=gProj.scale();
+  var r1=[-center[0],-center[1]];
+  var s1=zoomScale||(gBaseScale*2.6);
+  var ir=d3.interpolate(r0,r1), is=d3.interpolate(s0,s1);
+  d3.transition().duration(850).ease(d3.easeCubicInOut).tween('geolandar-zoomto',function(){
+    return function(t){
+      gProj.rotate(ir(t)); gProj.scale(is(t));
+      if(typeof window._globeRedraw==='function') window._globeRedraw();
+    };
+  });
+}
+function zoomResetGlobeView(){
+  if(!gProj||!gBaseScale) return;
+  var s0=gProj.scale();
+  var is=d3.interpolate(s0,gBaseScale);
+  d3.transition().duration(700).ease(d3.easeCubicInOut).tween('geolandar-zoomout',function(){
+    return function(t){
+      gProj.scale(is(t));
+      if(typeof window._globeRedraw==='function') window._globeRedraw();
+    };
+  });
+}
+function clearRegionsOnGlobe(){
+  if(gRegionsG) gRegionsG.selectAll('.rp').remove();
+}
+var REGION_PALETTE=['#f97316','#3b82f6','#10b981','#8b5cf6','#eab308','#ef4444','#14b8a6','#f472b6','#84cc16','#0ea5e9','#a855f7','#fb7185','#22d3ee','#facc15','#38bdf8','#c084fc'];
+function renderRegionsOnGlobe(pays,geo){
+  if(!gRegionsG||!gPathFn) return;
+  clearRegionsOnGlobe();
+  var src=REGIONS_SOURCE[pays];
+  if(!src) return;
+  gRegionsG.selectAll('.rp')
+    .data(geo.features)
+    .enter().append('path')
+    .attr('class','rp')
+    .attr('d',gPathFn)
+    .attr('fill',function(d,i){return REGION_PALETTE[i%REGION_PALETTE.length];})
+    .attr('fill-opacity',0.38)
+    .attr('stroke','#fff')
+    .attr('stroke-width',0.8)
+    .attr('stroke-opacity',0.7)
+    .style('cursor','pointer')
+    .on('mouseover',function(){
+      if(d3.select(this).attr('data-sel')!=='1') d3.select(this).attr('fill-opacity',0.6);
+    })
+    .on('mouseout',function(){
+      if(d3.select(this).attr('data-sel')!=='1') d3.select(this).attr('fill-opacity',0.38);
+    })
+    .on('click',function(event,d){
+      event.stopPropagation();
+      var nom=d.properties[src.nameProp];
+      gRegionsG.selectAll('.rp').attr('data-sel',null).attr('fill-opacity',0.38).attr('stroke-width',0.8);
+      d3.select(this).attr('data-sel','1').attr('fill-opacity',0.65).attr('stroke-width',1.8);
+      showRegion(pays,nom);
+    });
+}
+
+/* Bascule le panneau droit du dirigeant national vers le dirigeant régional,
+   et complète le panneau institutionnel avec l'échelon régional. */
+function showRegion(pays,nomRegion){
+  gSelectedRegionName=nomRegion;
+  var fr=lang==='fr';
+  var src=REGIONS_SOURCE[pays];
+  var rl=REGIONS_LEADERS[pays];
+  var infoRegion=rl&&rl.liste[nomRegion];
+
+  // PANNEAU DROIT — remplace le dirigeant national par le dirigeant régional
+  document.getElementById('gnR').textContent=nomRegion;
+  document.getElementById('gsR').textContent=(src?src.type:'')+' · '+pays;
+  var bR='<div style="margin-bottom:8px"><button onclick="showCountry(\''+pays.replace(/'/g,"\\'")+'\')" style="background:var(--cd);border:1px solid var(--bd);color:var(--mu);font-size:.68rem;padding:4px 10px;border-radius:14px;cursor:pointer">← '+(fr?'Revenir au niveau national':'Back to national level')+'</button></div>';
+  if(infoRegion){
+    bR+='<div class="gpst">'+(fr?'Dirigeant régional':'Regional leader')+'</div>';
+    bR+='<div style="background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.16);border-radius:10px;padding:10px 12px">';
+    bR+='<div style="font-family:Syne,sans-serif;font-weight:800;font-size:.9rem;margin-bottom:2px">'+infoRegion.n+'</div>';
+    bR+='<div style="font-size:.7rem;color:var(--mu);margin-bottom:5px">'+infoRegion.t+'</div>';
+    bR+='<div style="font-size:.73rem;color:var(--a2);font-weight:600">'+infoRegion.parti+'</div>';
+    bR+='</div>';
+    if(rl.disclaimer)bR+='<div style="font-size:.66rem;color:var(--mu);font-style:italic;margin-top:7px;line-height:1.5">⚠️ '+rl.disclaimer+'</div>';
+  } else {
+    bR+='<div class="nodata">'+(fr?'Dirigeant régional non encore renseigné pour cet échantillon.':'Regional leader not yet documented for this sample.')+'</div>';
+  }
+  document.getElementById('gbR').innerHTML=bR;
+
+  // PANNEAU BAS — ajoute la section échelon régional sous le schéma national
+  var slot=document.getElementById('gpbRegional');
+  if(slot){
+    var b='<div style="border-top:1px solid var(--bd);margin-top:10px;padding-top:10px">';
+    b+='<div class="l" style="font-size:.62rem;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">'+(fr?'Échelon régional — ':'Regional level — ')+(src?src.type:'')+' : '+nomRegion+'</div>';
+    if(infoRegion){
+      b+='<div class="v" style="font-size:.77rem;color:var(--tx);margin-bottom:4px"><b>'+infoRegion.n+'</b> — '+infoRegion.t+' ('+infoRegion.parti+')</div>';
+    }
+    if(rl&&rl.prerogatives){
+      b+='<div class="v" style="font-size:.74rem;color:var(--mu);line-height:1.6">'+(fr?'Prérogatives : ':'Powers: ')+rl.prerogatives+'</div>';
+    } else if(!infoRegion){
+      b+='<div class="v" style="font-size:.74rem;color:var(--mu);line-height:1.6">'+(fr?'Prérogatives spécifiques non encore renseignées pour cet échantillon.':'Specific powers not yet documented for this sample.')+'</div>';
+    }
+    slot.innerHTML=b;
+  }
 }
 
 var POLLS={
@@ -2539,10 +2703,13 @@ function openModal(id){
     });
     b+='</div></div>';
   }
-  // LIENS — source officielle + Wikipedia en secondaire
+  // LIENS — source officielle + presse + encyclopédie, pour croiser les données
   if(!e.done&&src){
+    var qNews=encodeURIComponent(e.p+' élection '+(e.d?e.d.substring(0,4):''));
+    var newsHost=lang==='fr'?'hl=fr-FR&gl=FR&ceid=FR:fr':'hl=en-US&gl=US&ceid=US:en';
     b+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">';
     b+='<a href="'+src.url+'" target="_blank" rel="noopener" class="srcbtn">🏛️ '+src.n+'</a>';
+    b+='<a href="https://news.google.com/search?q='+qNews+'&'+newsHost+'" target="_blank" rel="noopener" class="srcbtn" style="background:rgba(16,185,129,.07);border-color:rgba(16,185,129,.2);color:var(--a3)">📰 '+(lang==='fr'?'Actualités récentes':'Recent news')+'</a>';
     b+='<a href="https://fr.wikipedia.org/wiki/'+encodeURIComponent((lang==='fr'?e.p:e.p)+(e.d?' '+e.d.substring(0,4):''))+'" target="_blank" rel="noopener" class="srcbtn" style="background:rgba(148,163,184,.07);border-color:rgba(148,163,184,.2);color:var(--mu)">📖 Wikipedia (contexte)</a>';
     b+='</div>';
   }
@@ -2625,16 +2792,21 @@ function openCountryCulture(pays){
   var mbody=document.getElementById('mbody');
   var boxId='culture-'+Date.now();
   var fr=lang==='fr';
-  var qCulture=encodeURIComponent((fr?'Culture ':'Culture of ')+pays);
-  var qAuteurs=encodeURIComponent((fr?'Écrivains littérature ':'Writers literature ')+pays);
+  var qCulture=encodeURIComponent((fr?'Culture société ':'Culture society ')+pays);
+  var qFactbook=encodeURIComponent('site:cia.gov/the-world-factbook '+pays);
+  var qBritannica=encodeURIComponent('site:britannica.com '+pays);
   var qOfficiel=encodeURIComponent(pays+(fr?' site officiel gouvernement':' official government website'));
-  var searchSite=fr?'fr.wikipedia.org':'en.wikipedia.org';
+  var qNews=encodeURIComponent(pays);
+  var newsHost=fr?'hl=fr-FR&gl=FR&ceid=FR:fr':'hl=en-US&gl=US&ceid=US:en';
+  var wikiSite=fr?'fr.wikipedia.org':'en.wikipedia.org';
   var html='<div class="msec"><h3>📖 '+(fr?'En bref — Histoire & Culture':'In brief — History & Culture')+'</h3>'
     +'<div class="ctxbox" id="'+boxId+'">'+(fr?'Chargement…':'Loading…')+'</div>'
     +'<div class="culture-links">'
       +'<a href="https://www.google.com/search?q='+qOfficiel+'" target="_blank" rel="noopener" class="culture-link">🏛️ '+(fr?'Site officiel':'Official site')+'</a>'
-      +'<a href="https://'+searchSite+'/w/index.php?search='+qCulture+'" target="_blank" rel="noopener" class="culture-link">🎭 '+(fr?'Culture & société':'Culture & society')+'</a>'
-      +'<a href="https://'+searchSite+'/w/index.php?search='+qAuteurs+'" target="_blank" rel="noopener" class="culture-link">✍️ '+(fr?'Auteurs & littérature':'Authors & literature')+'</a>'
+      +'<a href="https://www.google.com/search?q='+qFactbook+'" target="_blank" rel="noopener" class="culture-link">🌍 CIA World Factbook</a>'
+      +'<a href="https://www.google.com/search?q='+qBritannica+'" target="_blank" rel="noopener" class="culture-link">📚 Britannica</a>'
+      +'<a href="https://news.google.com/search?q='+qNews+'&'+newsHost+'" target="_blank" rel="noopener" class="culture-link">📰 '+(fr?'Actualités récentes':'Recent news')+'</a>'
+      +'<a href="https://www.google.com/search?q='+qCulture+'" target="_blank" rel="noopener" class="culture-link">🎭 '+(fr?'Culture & société':'Culture & society')+'</a>'
     +'</div>'
     +'<div class="culture-teaser">🔒 '+(fr?"La formule <strong>Medium</strong> détaille les institutions, le mode de gouvernance et l'histoire complète de chaque pays — sans avoir à chercher sur plusieurs sites.":"The <strong>Medium</strong> plan details each country's institutions, governance system and full history — without hunting across several sites.")+'</div>'
     +'</div>';
@@ -2659,7 +2831,11 @@ function fetchWikipediaSummary(pays, targetId){
       if(court.length>320) court=court.substring(0,320)+'…';
       el.textContent=court;
       var pageUrl=data.content_urls&&data.content_urls.desktop?data.content_urls.desktop.page:('https://'+site+'/wiki/'+encodeURIComponent(titre));
-      el.insertAdjacentHTML('afterend','<a href="'+pageUrl+'" target="_blank" rel="noopener" class="srcbtn" style="margin-top:6px">📖 '+(fr?'Article Wikipedia complet':'Full Wikipedia article')+'</a>');
+      var note=document.createElement('div');
+      note.style.cssText='font-size:.62rem;color:var(--mu);margin-top:6px;font-style:italic';
+      note.textContent=(fr?'Source de ce résumé : Wikipedia (licence CC BY-SA) — ':'This summary\'s source: Wikipedia (CC BY-SA licence) — ')+(fr?'à croiser avec les sources ci-dessus':'cross-check with the sources above');
+      el.insertAdjacentElement('afterend',note);
+      note.insertAdjacentHTML('afterend','<a href="'+pageUrl+'" target="_blank" rel="noopener" class="srcbtn" style="margin-top:4px">📖 '+(fr?'Article Wikipedia complet':'Full Wikipedia article')+'</a>');
     })
     .catch(function(){
       var el=document.getElementById(targetId);
@@ -2728,6 +2904,10 @@ var gLastT=0, gFrameN=0, gSel2=null;
 var gSvg=null, gProj=null, gPathFn=null, gTimer=null, gSphPath=null;
 var gGratPath=null, gMarkersG=null, gCountriesG=null;
 
+/* ══ VARIABLES ZOOM RÉGIONAL — Phase 3 (échantillon) ══ */
+var gRegionsG=null, gBaseScale=null, gZoomedPays=null, gSelectedRegionName=null;
+var gRegionsCache={};
+
 /* Couleur de fond du globe selon le thème actif */
 function globeSphereColor(){
   return document.documentElement.classList.contains('light-mode') ? '#f8f9fa' : '#06111e';
@@ -2788,8 +2968,10 @@ function initGlobe(){
   var ds=d3.select('#globe-svg');
 
   /* Projection orthographique */
+  var baseScale=Math.min(W,H)/0.75;
+  gBaseScale=baseScale;
   var proj=d3.geoOrthographic()
-    .scale(Math.min(W,H)/0.75)
+    .scale(baseScale)
     .translate([W/2,H/2])
     .clipAngle(90)
     .rotate([-10,-40]);
@@ -2827,6 +3009,10 @@ function initGlobe(){
   /* Groupe pays */
   var countriesG=ds.append('g').attr('class','cg');
   gCountriesG=countriesG;
+
+  /* Groupe subdivisions régionales — Phase 3 (par-dessus les pays, sous les marqueurs) */
+  var regionsG=ds.append('g').attr('class','rg');
+  gRegionsG=regionsG;
 
   /* Groupe marqueurs (par-dessus les pays) */
   var markersG=ds.append('g').attr('class','mg');
@@ -2881,7 +3067,7 @@ function initGlobe(){
         var pays=ISO3[String(d.id).padStart(3,'0')];
         if(!pays) return;
         if(gTimer){gTimer.stop();gTimer=null;}
-        showCountry(pays);
+        showCountry(pays,d);
       });
 
     /* Marqueurs petites îles */
@@ -2949,7 +3135,7 @@ function initGlobe(){
       }).on('click',function(event){
         event.stopPropagation();
         if(gTimer){gTimer.stop();gTimer=null;}
-        showCountry(s.p);
+        showCountry(s.p,{lon:s.lon,lat:s.lat});
       });
     });
 
@@ -2959,6 +3145,7 @@ function initGlobe(){
       sphRing.attr('d',pathFn({type:'Sphere'}));
       gratPath.attr('d',pathFn(d3.geoGraticule()()));
       countriesG.selectAll('.cp').attr('d',pathFn);
+      regionsG.selectAll('.rp').attr('d',pathFn);
       /* Marqueurs : positionner et masquer si derrière */
       var rot=proj.rotate();
       var center=[-rot[0],-rot[1]];
@@ -3103,6 +3290,8 @@ function initGlobe(){
 
     /* Exposer startRotation pour closePanels */
     window._globeStartRotation=startRotation;
+    /* Exposer redraw pour le zoom régional (Phase 3) */
+    window._globeRedraw=redraw;
 
   }).catch(function(){
     if(loadEl) loadEl.textContent='Erreur de chargement.';
@@ -3110,7 +3299,7 @@ function initGlobe(){
 }
 
 /* ══ AFFICHAGE PAYS (Globe) ══ */
-function showCountry(pays){
+function showCountry(pays,zoomTarget){
   var ind=findInd(pays),es_complet=E.filter(function(e){return e.p===pays;}),src=SRC[pays],info=INFO[pays];
   /* N'afficher que les élections dans la fenêtre 2026-2028 — les données
      hors fenêtre (ex: 2025 déjà passées) restent en mémoire dans es_complet
@@ -3187,6 +3376,19 @@ function showCountry(pays){
   document.getElementById('gbtn').style.display='block';
   // PANNEAU BAS — fonctionnement institutionnel (échantillon européen, Phase 3)
   renderInstitutions(pays);
+
+  // ÉCHELON RÉGIONAL — zoom + subdivisions (échantillon, Phase 3)
+  gZoomedPays=pays; gSelectedRegionName=null;
+  var rsrc=REGIONS_SOURCE[pays];
+  if(rsrc){
+    if(zoomTarget) zoomToCountry(zoomTarget);
+    loadRegions(pays,function(geo){
+      if(!geo||gZoomedPays!==pays) return; // le pays a changé pendant le chargement
+      renderRegionsOnGlobe(pays,geo);
+    });
+  } else {
+    clearRegionsOnGlobe();
+  }
 }
 function showUnknownCountry(id){
   document.getElementById('gfL').innerHTML='<div class="nfl">?</div>';
@@ -3198,6 +3400,8 @@ function showUnknownCountry(id){
   document.getElementById('panR').classList.remove('open');
   document.getElementById('panBottom').classList.remove('open');
   document.getElementById('gbtn').style.display='block';
+  gZoomedPays=null; gSelectedRegionName=null;
+  clearRegionsOnGlobe();
 }
 function closeGP(s){
   document.getElementById('pan'+s).classList.remove('open');
@@ -3205,6 +3409,9 @@ function closeGP(s){
   if(!lo&&!ro&&!bo){
     document.getElementById('gbtn').style.display='none';
     if(gSel){try{d3.select(gSel).classed('selected',false);}catch(e){} gSel=null;}
+    clearRegionsOnGlobe();
+    zoomResetGlobeView();
+    gZoomedPays=null; gSelectedRegionName=null;
     if(typeof window._globeStartRotation==='function') window._globeStartRotation();
   }
 }
@@ -3214,6 +3421,9 @@ function closePanels(){
   document.getElementById('panBottom').classList.remove('open');
   document.getElementById('gbtn').style.display='none';
   if(gSel){try{d3.select(gSel).classed('selected',false);}catch(e){} gSel=null;}
+  clearRegionsOnGlobe();
+  zoomResetGlobeView();
+  gZoomedPays=null; gSelectedRegionName=null;
   /* Reprendre la rotation automatique */
   if(typeof window._globeStartRotation==='function') window._globeStartRotation();
 }
@@ -3287,7 +3497,7 @@ function setLang(l){
     'legd5': fr?'Aucun scrutin prévu sur 2026-2028 pour ce pays':'No vote planned for 2026-2028 for this country',
     /* Abonnements */
     'pricing-title': fr?'Formules':'Plans',
-    'pricing-sub':   fr?'Aperçu des offres à venir — non actives pour le moment':'Preview of upcoming plans — not active yet',
+    'pricing-sub':   fr?'🔜 Aperçu des offres à venir — paiement non actif, à titre indicatif':'🔜 Preview of upcoming plans — payment not active, for reference only',
     /* Spotlight */
     'spotlight-eyebrow': fr?'🗳️ Élection partielle ce mois-ci':'🗳️ By-election this month',
     'introScrolldownTxt': fr?'Défiler pour explorer le globe':'Scroll to explore the globe',
