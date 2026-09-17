@@ -183,34 +183,6 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--a),var(--a2));-w
 .gpr{right:12px;transform:translateX(300px);}
 .gpl.open{transform:translateX(0);}
 .gpr.open{transform:translateX(0);}
-/* Panneau institutionnel (bas) — Phase 3 */
-.gpanel-bottom{position:absolute;left:12px;right:12px;bottom:12px;height:38vh;max-height:360px;background:rgba(10,14,26,.97);border:1px solid var(--bd);border-radius:var(--r);backdrop-filter:blur(18px);transform:translateY(120%);transition:transform .33s cubic-bezier(.4,0,.2,1);z-index:15;box-shadow:0 -8px 30px rgba(0,0,0,.4);display:flex;flex-direction:column;overflow:hidden;}
-.gpanel-bottom.open{transform:translateY(0);}
-.gpb-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bd);flex-shrink:0;}
-.gpb-title{font-family:Syne,sans-serif;font-weight:700;font-size:.85rem;}
-.gpb-sub{font-size:.68rem;color:var(--mu);margin-top:1px;}
-.gpb-body{flex:1;overflow-y:auto;padding:14px;display:flex;gap:20px;flex-wrap:wrap;}
-.gpb-schema{flex:0 0 auto;min-width:260px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);border:1px solid var(--bd);border-radius:10px;padding:14px;}
-.gpb-info{flex:1 1 220px;min-width:200px;}
-.gpb-box{border-radius:9px;padding:8px 12px;text-align:center;min-width:100px;font-size:.72rem;}
-.gpb-box b{font-size:.76rem;display:block;}
-.gpb-box-citizen{background:rgba(59,130,246,.08);border:1.5px solid rgba(59,130,246,.3);}
-.gpb-box-parliament{background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.32);}
-.gpb-box-power{background:rgba(249,115,22,.1);border:1.5px solid rgba(249,115,22,.35);}
-.gpb-box-symbolic{background:rgba(148,163,184,.06);border:1.5px dashed rgba(148,163,184,.25);}
-.gpb-box-warn{background:rgba(239,68,68,.08);border:1.5px dashed rgba(239,68,68,.32);}
-.gpb-arrow{text-align:center;color:var(--mu);font-size:.68rem;margin:2px 0;line-height:1.3;}
-.gpb-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:4px 0;}
-.gpb-infrow{margin-bottom:7px;}
-.gpb-infrow .l{font-size:.62rem;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
-.gpb-infrow .v{font-size:.77rem;color:var(--tx);line-height:1.5;margin-top:1px;}
-.gpb-particularite{margin-top:8px;background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);border-radius:9px;padding:8px 11px;}
-.gpb-particularite .l{font-size:.6rem;color:#fb923c;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:3px;}
-.gpb-particularite .v{font-size:.73rem;color:var(--tx);line-height:1.55;}
-.gpb-empty{padding:20px;text-align:center;color:var(--mu);font-size:.78rem;margin:auto;}
-.gpb-regional{flex-basis:100%;}
-.gpb-regional:empty{display:none;}
-@media(max-width:640px){.gpanel-bottom{left:6px;right:6px;height:46vh;}.gpb-body{flex-direction:column;}}
 .gphdr{display:flex;align-items:center;gap:8px;padding:11px 12px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:rgba(10,14,26,.98);z-index:1;}
 .gpfl img,.gpfl .nfl{width:30px;height:22px;border-radius:2px;display:block;}
 .gpfl .nfl{background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;color:var(--mu);}
@@ -494,13 +466,6 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
     <div class="gpanel gpr" id="panR">
       <div class="gphdr"><div class="gpfl" id="gfR"></div><div><div class="gpname" id="gnR"></div><div class="gpsub" id="gsR"></div></div><button class="gpcls" onclick="closeGP('R')">✕</button></div>
       <div class="gpbody" id="gbR"></div>
-    </div>
-    <div class="gpanel-bottom" id="panBottom">
-      <div class="gpb-hdr">
-        <div><div class="gpb-title" id="gpbTitle">🏛️ Fonctionnement institutionnel</div><div class="gpb-sub" id="gpbSub"></div></div>
-        <button class="gpcls" onclick="closeGP('Bottom')">✕</button>
-      </div>
-      <div class="gpb-body" id="gpbBody"></div>
     </div>
     <div class="gleg">
       <div class="gl"><div class="gld" style="background:#10b981"></div><span id="gl5">Résultats dispo</span></div>
@@ -2011,307 +1976,6 @@ function leaderHTML(pays, compact){
     +'</div></div>';
 }
 
-/* ══ FONCTIONNEMENT INSTITUTIONNEL — Phase 3 (échantillon européen) ══
-   Chaque entrée décrit l'archétype de régime, les chambres du parlement,
-   le rôle du chef de l'État / chef du gouvernement, et une particularité
-   notable. Volontairement limité à un échantillon pour valider le format
-   avant extension aux 196 pays. */
-var INSTITUTIONS={
-"France":{archetype:"semipresidentiel",
-  chambres:[{nom:"Assemblée nationale",sieges:577,mandat:"5 ans",mode:"Scrutin majoritaire à 2 tours"},{nom:"Sénat",sieges:348,mandat:"6 ans",mode:"Suffrage indirect (grands électeurs)"}],
-  chefEtat:{titre:"Président de la République",mode:"Suffrage universel direct",mandat:"5 ans, renouvelable 1 fois",pouvoirs:"Chef des armées, dissout l'Assemblée, nomme le Premier ministre, politique étrangère"},
-  chefGouv:{titre:"Premier ministre",mode:"Nommé par le Président, doit avoir la confiance de l'Assemblée",mandat:"Sans durée fixe",pouvoirs:"Dirige l'action du gouvernement, responsable devant l'Assemblée"},
-  particularite:"Régime hybride : le Président gouverne réellement quand sa majorité contrôle l'Assemblée. En cas de cohabitation, le pouvoir exécutif se déplace vers le Premier ministre."},
-"Allemagne":{archetype:"parlementaire",
-  chambres:[{nom:"Bundestag",sieges:"≈630 (variable)",mandat:"4 ans",mode:"Scrutin proportionnel mixte"},{nom:"Bundesrat",sieges:69,mandat:"Représentants des Länder",mode:"Désignés par les gouvernements régionaux"}],
-  chefEtat:{titre:"Président fédéral",mode:"Élu par l'Assemblée fédérale (Bundestag + délégués des Länder)",mandat:"5 ans, renouvelable 1 fois",pouvoirs:"Rôle largement protocolaire et de représentation"},
-  chefGouv:{titre:"Chancelier fédéral",mode:"Élu par le Bundestag",mandat:"4 ans (durée de la législature)",pouvoirs:"Dirige effectivement le gouvernement et fixe les grandes orientations"},
-  particularite:"Le pouvoir réel est entièrement au Chancelier. Le fédéralisme donne aux 16 Länder un poids institutionnel fort via le Bundesrat."},
-"Royaume-Uni":{archetype:"parlementaire",
-  chambres:[{nom:"Chambre des communes",sieges:650,mandat:"5 ans maximum",mode:"Scrutin majoritaire à 1 tour (uninominal)"},{nom:"Chambre des lords",sieges:"≈780",mandat:"À vie ou héréditaire",mode:"Nommés (pairs à vie) ou hérités"}],
-  chefEtat:{titre:"Monarque",mode:"Héréditaire",mandat:"À vie",pouvoirs:"Rôle cérémoniel ; sanctionne les lois sans les refuser en pratique"},
-  chefGouv:{titre:"Premier ministre",mode:"Chef du parti majoritaire aux Communes, nommé par le Roi",mandat:"Sans durée fixe",pouvoirs:"Dirige le gouvernement, responsable devant les Communes"},
-  particularite:"Pas de constitution écrite unique : le système repose sur des conventions et des textes historiques cumulés depuis la Magna Carta (1215)."},
-"Italie":{archetype:"parlementaire",
-  chambres:[{nom:"Chambre des députés",sieges:400,mandat:"5 ans",mode:"Scrutin mixte majoritaire/proportionnel"},{nom:"Sénat",sieges:200,mandat:"5 ans",mode:"Scrutin mixte majoritaire/proportionnel"}],
-  chefEtat:{titre:"Président de la République",mode:"Élu par le Parlement + délégués régionaux",mandat:"7 ans",pouvoirs:"Garant de la Constitution, peut dissoudre le Parlement en cas de crise"},
-  chefGouv:{titre:"Présidente du Conseil",mode:"Nommée par le Président, doit obtenir la confiance des deux chambres",mandat:"Sans durée fixe",pouvoirs:"Dirige le gouvernement, coordination de l'action ministérielle"},
-  particularite:"Bicamérisme parfait : les deux chambres ont exactement les mêmes pouvoirs, ce qui a longtemps favorisé l'instabilité gouvernementale."},
-"Espagne":{archetype:"parlementaire",
-  chambres:[{nom:"Congrès des députés",sieges:350,mandat:"4 ans",mode:"Scrutin proportionnel par province"},{nom:"Sénat",sieges:265,mandat:"4 ans",mode:"Majoritaire + désignés par les régions"}],
-  chefEtat:{titre:"Monarque",mode:"Héréditaire",mandat:"À vie",pouvoirs:"Rôle cérémoniel et d'arbitrage symbolique"},
-  chefGouv:{titre:"Président du gouvernement",mode:"Investi par le Congrès des députés",mandat:"4 ans (durée de la législature)",pouvoirs:"Dirige le gouvernement, propose les ministres"},
-  particularite:"État fortement décentralisé : 17 communautés autonomes disposent de larges compétences propres (santé, éducation, police dans certains cas)."},
-"Pologne":{archetype:"semipresidentiel",
-  chambres:[{nom:"Sejm",sieges:460,mandat:"4 ans",mode:"Scrutin proportionnel"},{nom:"Sénat",sieges:100,mandat:"4 ans",mode:"Scrutin majoritaire à 1 tour"}],
-  chefEtat:{titre:"Président de la République",mode:"Suffrage universel direct",mandat:"5 ans, renouvelable 1 fois",pouvoirs:"Droit de veto sur les lois, chef des armées, politique étrangère"},
-  chefGouv:{titre:"Premier ministre",mode:"Désigné par le Président, confirmé par le Sejm",mandat:"Sans durée fixe",pouvoirs:"Dirige l'action quotidienne du gouvernement"},
-  particularite:"Cohabitation fréquente entre un président et un Premier ministre de bords politiques opposés — chacun peut alors bloquer l'agenda de l'autre."},
-"Suede":{archetype:"parlementaire",
-  chambres:[{nom:"Riksdag",sieges:349,mandat:"4 ans",mode:"Scrutin proportionnel"}],
-  chefEtat:{titre:"Roi",mode:"Héréditaire",mandat:"À vie",pouvoirs:"Purement représentatif — aucun pouvoir politique depuis 1974"},
-  chefGouv:{titre:"Premier ministre",mode:"Approuvé par le Riksdag (vote de non-opposition)",mandat:"4 ans (durée de la législature)",pouvoirs:"Dirige le gouvernement et l'administration"},
-  particularite:"Monarchie la plus dépouillée de pouvoirs d'Europe : le Roi n'a même plus le droit de nommer formellement le Premier ministre depuis la réforme de 1974."},
-"Suisse":{archetype:"directorial",
-  chambres:[{nom:"Conseil national",sieges:200,mandat:"4 ans",mode:"Scrutin proportionnel par canton"},{nom:"Conseil des États",sieges:46,mandat:"4 ans (majorité)",mode:"2 sièges par canton, mode variable"}],
-  conseilFederal:{titre:"Conseil fédéral",membres:7,mode:"Élus individuellement par l'Assemblée fédérale",mandat:"4 ans",pouvoirs:"Collège de 7 ministres à égalité de pouvoir ; la présidence tourne chaque année entre eux"},
-  particularite:"Système unique au monde : pas de chef de l'État ni de chef du gouvernement distinct — 7 personnes gouvernent collégialement, sans hiérarchie entre elles."},
-"Hongrie":{archetype:"concentre",
-  chambres:[{nom:"Assemblée nationale",sieges:199,mandat:"4 ans",mode:"Scrutin mixte majoritaire/proportionnel"}],
-  chefEtat:{titre:"Président de la République",mode:"Élu par l'Assemblée nationale",mandat:"5 ans, renouvelable 1 fois",pouvoirs:"Rôle largement cérémoniel"},
-  chefGouv:{titre:"Premier ministre",mode:"Élu par l'Assemblée nationale",mandat:"4 ans",pouvoirs:"Concentre l'essentiel du pouvoir exécutif"},
-  particularite:"Sous Orbán (2010-2026), le contrôle du parti sur les médias et la justice avait vidé une partie des contre-pouvoirs de leur substance. La victoire de l'opposition en 2026 ouvre une phase de restauration institutionnelle encore incertaine."},
-"Russie":{archetype:"concentre",
-  chambres:[{nom:"Douma d'État",sieges:450,mandat:"5 ans",mode:"Scrutin mixte — opposition réelle exclue"},{nom:"Conseil de la Fédération",sieges:208,mandat:"Variable",mode:"Représentants des régions, non élus au suffrage direct"}],
-  chefEtat:{titre:"Président de la Fédération",mode:"Suffrage universel direct — scrutins non reconnus comme libres par l'OSCE",mandat:"6 ans, sans limite depuis la réforme de 2020",pouvoirs:"Concentre la quasi-totalité du pouvoir exécutif, judiciaire de facto et militaire"},
-  chefGouv:{titre:"Premier ministre",mode:"Nommé par le Président",mandat:"Sans durée fixe",pouvoirs:"Rôle d'exécution technique, sans autonomie politique réelle"},
-  particularite:"La séparation des pouvoirs prévue par la Constitution de 1993 est vidée de sa substance : justice, médias et processus électoral sont sous contrôle du pouvoir exécutif."},
-};
-var INSTITUTIONS_ARCHETYPE_LABEL={
-  semipresidentiel:{fr:"Régime semi-présidentiel",en:"Semi-presidential system"},
-  parlementaire:{fr:"Régime parlementaire",en:"Parliamentary system"},
-  directorial:{fr:"Régime directorial collégial",en:"Collegial directorial system"},
-  concentre:{fr:"Pouvoir exécutif concentré",en:"Concentrated executive power"}
-};
-function institBox(titre,sous,tone,dashed){
-  var cls='gpb-box gpb-box-'+tone;
-  return '<div class="'+cls+'"'+(dashed?' style="border-style:dashed"':'')+'><b>'+titre+'</b>'+(sous?'<div style="color:var(--mu);margin-top:2px">'+sous+'</div>':'')+'</div>';
-}
-function institArrow(label){
-  return '<div class="gpb-arrow">↓'+(label?'<br>'+label:'')+'</div>';
-}
-function institSchema(c){
-  var fr=lang==='fr';
-  var citoyens=fr?'Citoyens':'Citizens';
-  var vote=fr?'vote':'vote';
-  var html='';
-  if(c.archetype==='parlementaire'){
-    html+=institBox(citoyens,'',"citizen");
-    html+=institArrow(vote);
-    html+='<div class="gpb-row">'+c.chambres.map(function(ch){return institBox(ch.nom,ch.sieges+(fr?' sièges':' seats'),"parliament");}).join('')+'</div>';
-    html+=institArrow(fr?'désigne / soutient':'appoints / supports');
-    html+='<div class="gpb-row">';
-    html+=institBox(c.chefGouv.titre,fr?'Pouvoir exécutif réel':'Real executive power',"power");
-    if(c.chefEtat)html+=institBox(c.chefEtat.titre,fr?'Rôle cérémoniel':'Ceremonial role',"symbolic",true);
-    html+='</div>';
-  } else if(c.archetype==='semipresidentiel'){
-    html+=institBox(citoyens,'',"citizen");
-    html+=institArrow(fr?'vote direct + vote législatif':'direct + legislative vote');
-    html+='<div class="gpb-row" style="align-items:flex-start">';
-    html+=institBox(c.chefEtat.titre,fr?'Élu au suffrage direct':'Directly elected',"power");
-    html+='<div>'+'<div class="gpb-row">'+c.chambres.map(function(ch){return institBox(ch.nom,ch.sieges+(fr?' sièges':' seats'),"parliament");}).join('')+'</div>'
-      +institArrow(fr?'confirme':'confirms')
-      +institBox(c.chefGouv.titre,fr?'Nommé par le président':'Appointed by the president',"default")
-      +'</div>';
-    html+='</div>';
-  } else if(c.archetype==='directorial'){
-    html+=institBox(citoyens,'',"citizen");
-    html+=institArrow(vote);
-    html+='<div class="gpb-row">'+c.chambres.map(function(ch){return institBox(ch.nom,ch.sieges+(fr?' sièges':' seats'),"parliament");}).join('')+'</div>';
-    html+=institArrow(fr?'élisent individuellement':'individually elect');
-    html+=institBox(c.conseilFederal.titre+' — '+c.conseilFederal.membres+(fr?' membres':' members'),fr?'Présidence tournante 1 an':'1-year rotating presidency',"power");
-  } else if(c.archetype==='concentre'){
-    html+=institBox(citoyens,fr?'Scrutin à fiabilité limitée':'Limited electoral reliability',"warn",true);
-    html+=institArrow(vote);
-    html+=institBox(c.chambres[0].nom,c.chambres[0].sieges+(fr?' sièges':' seats'),"parliament");
-    html+=institArrow(fr?'désigne':'appoints');
-    html+=institBox((c.chefGouv?c.chefGouv.titre:c.chefEtat.titre),fr?'Pouvoirs concentrés':'Concentrated powers',"warn",true);
-  }
-  return html;
-}
-function institInfoRow(label,value){
-  if(!value)return '';
-  return '<div class="gpb-infrow"><div class="l">'+label+'</div><div class="v">'+value+'</div></div>';
-}
-function renderInstitutions(pays){
-  var fr=lang==='fr';
-  var data=INSTITUTIONS[pays];
-  var panel=document.getElementById('panBottom');
-  var title=document.getElementById('gpbTitle');
-  var sub=document.getElementById('gpbSub');
-  var body=document.getElementById('gpbBody');
-  if(!data){
-    panel.classList.remove('open');
-    body.innerHTML='';
-    return;
-  }
-  title.textContent=(fr?'🏛️ Fonctionnement institutionnel — ':'🏛️ Institutional structure — ')+pays;
-  sub.textContent=INSTITUTIONS_ARCHETYPE_LABEL[data.archetype][fr?'fr':'en'];
-  var b='<div class="gpb-schema">'+institSchema(data)+'</div>';
-  b+='<div class="gpb-info">';
-  data.chambres.forEach(function(ch){
-    b+=institInfoRow(ch.nom+' — '+ch.sieges+(fr?' sièges':' seats'),(fr?'Mandat : ':'Term: ')+ch.mandat+' · '+ch.mode);
-  });
-  if(data.chefEtat)b+=institInfoRow(data.chefEtat.titre,data.chefEtat.mode+' · '+(fr?'Mandat : ':'Term: ')+data.chefEtat.mandat+' · '+data.chefEtat.pouvoirs);
-  if(data.chefGouv)b+=institInfoRow(data.chefGouv.titre,data.chefGouv.mode+' · '+(fr?'Mandat : ':'Term: ')+data.chefGouv.mandat+' · '+data.chefGouv.pouvoirs);
-  if(data.conseilFederal)b+=institInfoRow(data.conseilFederal.titre,data.conseilFederal.mode+' · '+(fr?'Mandat : ':'Term: ')+data.conseilFederal.mandat+' · '+data.conseilFederal.pouvoirs);
-  b+='<div class="gpb-particularite"><div class="l">'+(fr?'Particularité':'Distinctive feature')+'</div><div class="v">'+data.particularite+'</div></div>';
-  b+='</div>';
-  b+='<div class="gpb-regional" id="gpbRegional"></div>';
-  body.innerHTML=b;
-  panel.classList.add('open');
-}
-
-/* ══ ÉCHELON RÉGIONAL — zoom + subdivisions (Phase 3, échantillon) ══
-   Géométries des subdivisions administratives chargées à la volée depuis des
-   jeux de données publics (CORS ouvert) :
-   - France : gregoiredavid/france-geojson (13 régions actuelles, post-2016)
-   - Autres : codeforgermany/click_that_hood (subdivisions de 1er niveau)
-   Le mécanisme (zoom, découpage, clic région) fonctionne pour les 10 pays de
-   l'échantillon ; seules les données de dirigeants régionaux pour la France
-   sont renseignées pour l'instant — à étendre pays par pays une fois validé. */
-var REGIONS_SOURCE={
-  "France":{url:"https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson",nameProp:"nom",type:"Région"},
-  "Allemagne":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/germany.geojson",nameProp:"name",type:"Land"},
-  "Italie":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/italy-regions.geojson",nameProp:"name",type:"Région"},
-  "Espagne":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/spain-communities.geojson",nameProp:"name",type:"Communauté autonome"},
-  "Suisse":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/switzerland.geojson",nameProp:"name",type:"Canton"},
-  "Pologne":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/poland.geojson",nameProp:"name",type:"Voïvodie"},
-  "Suede":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/sweden-counties.geojson",nameProp:"name",type:"Comté (Län)"},
-  "Royaume-Uni":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/united-kingdom-regions.geojson",nameProp:"name",type:"Région"},
-  "Hongrie":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/hungary.geojson",nameProp:"name",type:"Comté (megye)"},
-  "Russie":{url:"https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/russia.geojson",nameProp:"name_latin",type:"Sujet fédéral"}
-};
-/* Dirigeants régionaux — UNIQUEMENT la France est renseignée pour l'instant.
-   Élus lors des régionales de 2021 (mandat jusqu'en 2028) — à reconfirmer
-   en cas de démission/remaniement d'ici là. */
-var REGIONS_LEADERS={
-  "France":{
-    prerogatives:"Développement économique, gestion des lycées (bâtiments et personnel technique), transports ferroviaires régionaux (TER), formation professionnelle et apprentissage, aménagement du territoire.",
-    disclaimer:"Présidents élus aux régionales de décembre 2021 (mandat jusqu'en 2028) — à vérifier en cas de changement depuis.",
-    liste:{
-      "Île-de-France":{n:"Valérie Pécresse",t:"Présidente du conseil régional",parti:"Libres ! (droite)"},
-      "Centre-Val de Loire":{n:"François Bonneau",t:"Président du conseil régional",parti:"PS (gauche)"},
-      "Bourgogne-Franche-Comté":{n:"Marie-Guite Dufay",t:"Présidente du conseil régional",parti:"PS (gauche)"},
-      "Normandie":{n:"Hervé Morin",t:"Président du conseil régional",parti:"Les Centristes"},
-      "Hauts-de-France":{n:"Xavier Bertrand",t:"Président du conseil régional",parti:"Indépendant (droite)"},
-      "Grand Est":{n:"Franck Leroy",t:"Président du conseil régional",parti:"Renaissance (centre)"},
-      "Pays de la Loire":{n:"Christelle Morançais",t:"Présidente du conseil régional",parti:"LR (droite)"},
-      "Bretagne":{n:"Loïg Chesnais-Girard",t:"Président du conseil régional",parti:"PS (gauche)"},
-      "Nouvelle-Aquitaine":{n:"Alain Rousset",t:"Président du conseil régional",parti:"PS (gauche)"},
-      "Occitanie":{n:"Carole Delga",t:"Présidente du conseil régional",parti:"PS (gauche)"},
-      "Auvergne-Rhône-Alpes":{n:"Laurent Wauquiez",t:"Président du conseil régional",parti:"LR (droite)"},
-      "Provence-Alpes-Côte d'Azur":{n:"Renaud Muselier",t:"Président du conseil régional",parti:"Renaissance-LR (centre-droit)"},
-      "Corse":{n:"Gilles Simeoni",t:"Président du conseil exécutif de Corse",parti:"Femu a Corsica (nationaliste)"}
-    }
-  }
-};
-
-function loadRegions(pays,cb){
-  if(gRegionsCache[pays]){ cb(gRegionsCache[pays]); return; }
-  var src=REGIONS_SOURCE[pays];
-  if(!src){ cb(null); return; }
-  fetch(src.url).then(function(r){ if(!r.ok) throw new Error('http '+r.status); return r.json(); })
-    .then(function(geo){ gRegionsCache[pays]=geo; cb(geo); })
-    .catch(function(){ cb(null); });
-}
-
-function zoomToCountry(target,zoomScale){
-  if(!gProj||!gBaseScale) return;
-  var center;
-  if(target&&target.type){ center=d3.geoCentroid(target); }
-  else if(target&&typeof target.lon==='number'){ center=[target.lon,target.lat]; }
-  else { return; }
-  var r0=gProj.rotate(), s0=gProj.scale();
-  var r1=[-center[0],-center[1]];
-  var s1=zoomScale||(gBaseScale*2.6);
-  var ir=d3.interpolate(r0,r1), is=d3.interpolate(s0,s1);
-  d3.transition().duration(850).ease(d3.easeCubicInOut).tween('geolandar-zoomto',function(){
-    return function(t){
-      gProj.rotate(ir(t)); gProj.scale(is(t));
-      if(typeof window._globeRedraw==='function') window._globeRedraw();
-    };
-  });
-}
-function zoomResetGlobeView(){
-  if(!gProj||!gBaseScale) return;
-  var s0=gProj.scale();
-  var is=d3.interpolate(s0,gBaseScale);
-  d3.transition().duration(700).ease(d3.easeCubicInOut).tween('geolandar-zoomout',function(){
-    return function(t){
-      gProj.scale(is(t));
-      if(typeof window._globeRedraw==='function') window._globeRedraw();
-    };
-  });
-}
-function clearRegionsOnGlobe(){
-  if(gRegionsG) gRegionsG.selectAll('.rp').remove();
-}
-var REGION_PALETTE=['#f97316','#3b82f6','#10b981','#8b5cf6','#eab308','#ef4444','#14b8a6','#f472b6','#84cc16','#0ea5e9','#a855f7','#fb7185','#22d3ee','#facc15','#38bdf8','#c084fc'];
-function renderRegionsOnGlobe(pays,geo){
-  if(!gRegionsG||!gPathFn) return;
-  clearRegionsOnGlobe();
-  var src=REGIONS_SOURCE[pays];
-  if(!src) return;
-  gRegionsG.selectAll('.rp')
-    .data(geo.features)
-    .enter().append('path')
-    .attr('class','rp')
-    .attr('d',gPathFn)
-    .attr('fill',function(d,i){return REGION_PALETTE[i%REGION_PALETTE.length];})
-    .attr('fill-opacity',0.38)
-    .attr('stroke','#fff')
-    .attr('stroke-width',0.8)
-    .attr('stroke-opacity',0.7)
-    .style('cursor','pointer')
-    .on('mouseover',function(){
-      if(d3.select(this).attr('data-sel')!=='1') d3.select(this).attr('fill-opacity',0.6);
-    })
-    .on('mouseout',function(){
-      if(d3.select(this).attr('data-sel')!=='1') d3.select(this).attr('fill-opacity',0.38);
-    })
-    .on('click',function(event,d){
-      event.stopPropagation();
-      var nom=d.properties[src.nameProp];
-      gRegionsG.selectAll('.rp').attr('data-sel',null).attr('fill-opacity',0.38).attr('stroke-width',0.8);
-      d3.select(this).attr('data-sel','1').attr('fill-opacity',0.65).attr('stroke-width',1.8);
-      showRegion(pays,nom);
-    });
-}
-
-/* Bascule le panneau droit du dirigeant national vers le dirigeant régional,
-   et complète le panneau institutionnel avec l'échelon régional. */
-function showRegion(pays,nomRegion){
-  gSelectedRegionName=nomRegion;
-  var fr=lang==='fr';
-  var src=REGIONS_SOURCE[pays];
-  var rl=REGIONS_LEADERS[pays];
-  var infoRegion=rl&&rl.liste[nomRegion];
-
-  // PANNEAU DROIT — remplace le dirigeant national par le dirigeant régional
-  document.getElementById('gnR').textContent=nomRegion;
-  document.getElementById('gsR').textContent=(src?src.type:'')+' · '+pays;
-  var bR='<div style="margin-bottom:8px"><button onclick="showCountry(\''+pays.replace(/'/g,"\\'")+'\')" style="background:var(--cd);border:1px solid var(--bd);color:var(--mu);font-size:.68rem;padding:4px 10px;border-radius:14px;cursor:pointer">← '+(fr?'Revenir au niveau national':'Back to national level')+'</button></div>';
-  if(infoRegion){
-    bR+='<div class="gpst">'+(fr?'Dirigeant régional':'Regional leader')+'</div>';
-    bR+='<div style="background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.16);border-radius:10px;padding:10px 12px">';
-    bR+='<div style="font-family:Syne,sans-serif;font-weight:800;font-size:.9rem;margin-bottom:2px">'+infoRegion.n+'</div>';
-    bR+='<div style="font-size:.7rem;color:var(--mu);margin-bottom:5px">'+infoRegion.t+'</div>';
-    bR+='<div style="font-size:.73rem;color:var(--a2);font-weight:600">'+infoRegion.parti+'</div>';
-    bR+='</div>';
-    if(rl.disclaimer)bR+='<div style="font-size:.66rem;color:var(--mu);font-style:italic;margin-top:7px;line-height:1.5">⚠️ '+rl.disclaimer+'</div>';
-  } else {
-    bR+='<div class="nodata">'+(fr?'Dirigeant régional non encore renseigné pour cet échantillon.':'Regional leader not yet documented for this sample.')+'</div>';
-  }
-  document.getElementById('gbR').innerHTML=bR;
-
-  // PANNEAU BAS — ajoute la section échelon régional sous le schéma national
-  var slot=document.getElementById('gpbRegional');
-  if(slot){
-    var b='<div style="border-top:1px solid var(--bd);margin-top:10px;padding-top:10px">';
-    b+='<div class="l" style="font-size:.62rem;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">'+(fr?'Échelon régional — ':'Regional level — ')+(src?src.type:'')+' : '+nomRegion+'</div>';
-    if(infoRegion){
-      b+='<div class="v" style="font-size:.77rem;color:var(--tx);margin-bottom:4px"><b>'+infoRegion.n+'</b> — '+infoRegion.t+' ('+infoRegion.parti+')</div>';
-    }
-    if(rl&&rl.prerogatives){
-      b+='<div class="v" style="font-size:.74rem;color:var(--mu);line-height:1.6">'+(fr?'Prérogatives : ':'Powers: ')+rl.prerogatives+'</div>';
-    } else if(!infoRegion){
-      b+='<div class="v" style="font-size:.74rem;color:var(--mu);line-height:1.6">'+(fr?'Prérogatives spécifiques non encore renseignées pour cet échantillon.':'Specific powers not yet documented for this sample.')+'</div>';
-    }
-    slot.innerHTML=b;
-  }
-}
-
 var POLLS={
   "Colombie":[
     {c:"Óscar Iván Zuluaga",p:"Centro Democrático (droite)",pos:7,s:22},
@@ -2904,10 +2568,6 @@ var gLastT=0, gFrameN=0, gSel2=null;
 var gSvg=null, gProj=null, gPathFn=null, gTimer=null, gSphPath=null;
 var gGratPath=null, gMarkersG=null, gCountriesG=null;
 
-/* ══ VARIABLES ZOOM RÉGIONAL — Phase 3 (échantillon) ══ */
-var gRegionsG=null, gBaseScale=null, gZoomedPays=null, gSelectedRegionName=null;
-var gRegionsCache={};
-
 /* Couleur de fond du globe selon le thème actif */
 function globeSphereColor(){
   return document.documentElement.classList.contains('light-mode') ? '#f8f9fa' : '#06111e';
@@ -2968,10 +2628,8 @@ function initGlobe(){
   var ds=d3.select('#globe-svg');
 
   /* Projection orthographique */
-  var baseScale=Math.min(W,H)/0.75;
-  gBaseScale=baseScale;
   var proj=d3.geoOrthographic()
-    .scale(baseScale)
+    .scale(Math.min(W,H)/0.75)
     .translate([W/2,H/2])
     .clipAngle(90)
     .rotate([-10,-40]);
@@ -3009,10 +2667,6 @@ function initGlobe(){
   /* Groupe pays */
   var countriesG=ds.append('g').attr('class','cg');
   gCountriesG=countriesG;
-
-  /* Groupe subdivisions régionales — Phase 3 (par-dessus les pays, sous les marqueurs) */
-  var regionsG=ds.append('g').attr('class','rg');
-  gRegionsG=regionsG;
 
   /* Groupe marqueurs (par-dessus les pays) */
   var markersG=ds.append('g').attr('class','mg');
@@ -3067,7 +2721,7 @@ function initGlobe(){
         var pays=ISO3[String(d.id).padStart(3,'0')];
         if(!pays) return;
         if(gTimer){gTimer.stop();gTimer=null;}
-        showCountry(pays,d);
+        showCountry(pays);
       });
 
     /* Marqueurs petites îles */
@@ -3135,7 +2789,7 @@ function initGlobe(){
       }).on('click',function(event){
         event.stopPropagation();
         if(gTimer){gTimer.stop();gTimer=null;}
-        showCountry(s.p,{lon:s.lon,lat:s.lat});
+        showCountry(s.p);
       });
     });
 
@@ -3145,7 +2799,6 @@ function initGlobe(){
       sphRing.attr('d',pathFn({type:'Sphere'}));
       gratPath.attr('d',pathFn(d3.geoGraticule()()));
       countriesG.selectAll('.cp').attr('d',pathFn);
-      regionsG.selectAll('.rp').attr('d',pathFn);
       /* Marqueurs : positionner et masquer si derrière */
       var rot=proj.rotate();
       var center=[-rot[0],-rot[1]];
@@ -3290,8 +2943,6 @@ function initGlobe(){
 
     /* Exposer startRotation pour closePanels */
     window._globeStartRotation=startRotation;
-    /* Exposer redraw pour le zoom régional (Phase 3) */
-    window._globeRedraw=redraw;
 
   }).catch(function(){
     if(loadEl) loadEl.textContent='Erreur de chargement.';
@@ -3299,7 +2950,7 @@ function initGlobe(){
 }
 
 /* ══ AFFICHAGE PAYS (Globe) ══ */
-function showCountry(pays,zoomTarget){
+function showCountry(pays){
   var ind=findInd(pays),es_complet=E.filter(function(e){return e.p===pays;}),src=SRC[pays],info=INFO[pays];
   /* N'afficher que les élections dans la fenêtre 2026-2028 — les données
      hors fenêtre (ex: 2025 déjà passées) restent en mémoire dans es_complet
@@ -3374,21 +3025,6 @@ function showCountry(pays,zoomTarget){
   document.getElementById('panR').classList.add('open');
   document.getElementById('panL').classList.add('open');
   document.getElementById('gbtn').style.display='block';
-  // PANNEAU BAS — fonctionnement institutionnel (échantillon européen, Phase 3)
-  renderInstitutions(pays);
-
-  // ÉCHELON RÉGIONAL — zoom + subdivisions (échantillon, Phase 3)
-  gZoomedPays=pays; gSelectedRegionName=null;
-  var rsrc=REGIONS_SOURCE[pays];
-  if(rsrc){
-    if(zoomTarget) zoomToCountry(zoomTarget);
-    loadRegions(pays,function(geo){
-      if(!geo||gZoomedPays!==pays) return; // le pays a changé pendant le chargement
-      renderRegionsOnGlobe(pays,geo);
-    });
-  } else {
-    clearRegionsOnGlobe();
-  }
 }
 function showUnknownCountry(id){
   document.getElementById('gfL').innerHTML='<div class="nfl">?</div>';
@@ -3398,32 +3034,22 @@ function showUnknownCountry(id){
   document.getElementById('gbL').innerHTML='<div class="nodata">'+msg+'</div>';
   document.getElementById('panL').classList.add('open');
   document.getElementById('panR').classList.remove('open');
-  document.getElementById('panBottom').classList.remove('open');
   document.getElementById('gbtn').style.display='block';
-  gZoomedPays=null; gSelectedRegionName=null;
-  clearRegionsOnGlobe();
 }
 function closeGP(s){
   document.getElementById('pan'+s).classList.remove('open');
-  var lo=document.getElementById('panL').classList.contains('open'),ro=document.getElementById('panR').classList.contains('open'),bo=document.getElementById('panBottom').classList.contains('open');
-  if(!lo&&!ro&&!bo){
+  var lo=document.getElementById('panL').classList.contains('open'),ro=document.getElementById('panR').classList.contains('open');
+  if(!lo&&!ro){
     document.getElementById('gbtn').style.display='none';
     if(gSel){try{d3.select(gSel).classed('selected',false);}catch(e){} gSel=null;}
-    clearRegionsOnGlobe();
-    zoomResetGlobeView();
-    gZoomedPays=null; gSelectedRegionName=null;
     if(typeof window._globeStartRotation==='function') window._globeStartRotation();
   }
 }
 function closePanels(){
   document.getElementById('panL').classList.remove('open');
   document.getElementById('panR').classList.remove('open');
-  document.getElementById('panBottom').classList.remove('open');
   document.getElementById('gbtn').style.display='none';
   if(gSel){try{d3.select(gSel).classed('selected',false);}catch(e){} gSel=null;}
-  clearRegionsOnGlobe();
-  zoomResetGlobeView();
-  gZoomedPays=null; gSelectedRegionName=null;
   /* Reprendre la rotation automatique */
   if(typeof window._globeStartRotation==='function') window._globeStartRotation();
 }
