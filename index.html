@@ -530,9 +530,9 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
   <footer>
     <div class="flogo">⚡ Geolandar</div>
     <div class="fn" style="display:flex;gap:14px;flex-wrap:wrap;">
-      <span>Mentions légales</span>
-      <span>Politique de confidentialité</span>
-      <span>CGV</span>
+      <span id="ftr-legal">Mentions légales</span>
+      <span id="ftr-privacy">Politique de confidentialité</span>
+      <span id="ftr-cgv">CGV</span>
     </div>
     <div class="fn">© 2026 Geolandar</div>
   </footer>
@@ -584,7 +584,7 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
   </div>
   <footer>
     <div class="flogo">⚡ Geolandar</div>
-    <div class="fn">Sources : Reuters, AFP, Wikipedia, Banque Mondiale, IFES — 2026</div>
+    <div class="fn" id="ftr-src-cal">Sources : Reuters, AFP, Wikipedia, Banque Mondiale, IFES — 2026</div>
     <div class="fn">© 2026 Geolandar</div>
   </footer>
 </div>
@@ -602,7 +602,7 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
   </div>
   <footer>
     <div class="flogo">⚡ Geolandar</div>
-    <div class="fn">Sources : Banque Mondiale, V-Dem, Transparency International — 2025</div>
+    <div class="fn" id="ftr-src-pays">Sources : Banque Mondiale, V-Dem, Transparency International — 2025</div>
     <div class="fn">© 2026 Geolandar</div>
   </footer>
 </div>
@@ -1699,6 +1699,20 @@ var ILF={pib:'PIB',cho:'Chômage',edu:'Éducation',san:'Santé',dem:'Démocratie
 var ILE={pib:'GDP',cho:'Unemployment',edu:'Education',san:'Healthcare',dem:'Democracy',cor:'Anti-corruption'};
 function ilbl(k){return(lang==='fr'?ILF:ILE)[k]||k;}
 function regLbl(r){var fr={EU:'Europe',AM:'Amérique',AF:'Afrique',AS:'Asie',OC:'Océanie'};var en={EU:'Europe',AM:'Americas',AF:'Africa',AS:'Asia',OC:'Oceania'};return(lang==='fr'?fr:en)[r]||r;}
+var REGIME_EN={
+  'Confédération':'Confederation','Fédération monarchique':'Monarchic federation',
+  'Fédération':'Federation','Grand-duché':'Grand Duchy','Junte militaire':'Military junta',
+  'Monarchie absolue islamique':'Islamic absolute monarchy','Monarchie absolue':'Absolute monarchy',
+  'Monarchie const.':'Constitutional monarchy','Monarchie fédérale':'Federal monarchy',
+  'Monarchie':'Monarchy','Rép. autoritaire':'Authoritarian republic','Rép. fédérale':'Federal republic',
+  'Rép. islamique':'Islamic republic','Rép. populaire':"People's republic",
+  'Rép. socialiste':'Socialist republic','République':'Republic','Sultanat':'Sultanate',
+  'Territoire français':'French territory','Transition militaire':'Military transition',
+  'Émirat islamique':'Islamic emirate','État en guerre':'State at war',
+  'État en transition':'Transitional state','État fragmenté':'Fragmented state',
+  'État plurinational':'Plurinational state','État totalitaire':'Totalitarian state'
+};
+function regimeLbl(s){ return lang==='fr'?s:(REGIME_EN[s]||s); }
 
 /* ══ CALENDRIER ══ */
 var LEADERS = {
@@ -2402,7 +2416,7 @@ function renderPays(){
     el.className='cc';
     el.onclick=function(){openCountry(cv.p);};
     var html='<div class="cctop"><div class="ccflag">'+flagH(cv.p,28,21)+'</div>';
-    html+='<div><div class="ccn">'+cv.p+'</div><div class="ccr">'+cv.s+' · '+cv.pop+'</div></div></div>';
+    html+='<div><div class="ccn">'+cv.p+'</div><div class="ccr">'+regimeLbl(cv.s)+' · '+cv.pop+'</div></div></div>';
     html+='<div class="inds">'+ks.map(function(k){var v=cv.i[k];return '<div class="irow"><div class="itop"><span class="inm">'+ilbl(k)+'</span><span class="ival" style="color:'+col(v.s)+'">'+v.v+'</span></div><div class="ibar"><div class="ibf" style="width:'+v.s+'%;background:'+col(v.s)+'"></div></div></div>';}).join('')+'</div>';
     el.innerHTML=html;
     g.appendChild(el);
@@ -2413,7 +2427,7 @@ function openCountry(pays){
   var src=SRC[pays],info=INFO[pays];
   document.getElementById('mflag').innerHTML=flagH(pays,36,27);
   document.getElementById('mt').textContent=pays;
-  document.getElementById('ms').textContent=c.s+' · '+c.pop;
+  document.getElementById('ms').textContent=regimeLbl(c.s)+' · '+c.pop;
   var b='';
   // Infos générales
   if(info){
@@ -2425,7 +2439,7 @@ function openCountry(pays){
     b+='</div></div>';
   }
   // Indicateurs
-  b+='<div class="msec"><h3>Indicateurs</h3><div class="minds">';
+  b+='<div class="msec"><h3>'+(lang==="fr"?"Indicateurs":"Indicators")+'</h3><div class="minds">';
   IK.forEach(function(k){var v=c.i[k];b+='<div class="mind"><div class="mn">'+ilbl(k)+'</div><div class="mv" style="color:'+col(v.s)+'">'+v.v+'</div></div>';});
   b+='</div></div>';
   // Élections
@@ -2567,6 +2581,40 @@ var gLastT=0, gFrameN=0, gSel2=null;
 /* ══ VARIABLES GLOBE ══ */
 var gSvg=null, gProj=null, gPathFn=null, gTimer=null, gSphPath=null;
 var gGratPath=null, gMarkersG=null, gCountriesG=null;
+var gBaseScale=null;
+
+/* Zoom animé sur un pays au clic — version publique : zoom uniquement,
+   pas de découpage régional (réservé à la version de développement tant
+   que les données ne sont pas validées). */
+function zoomToCountry(target,zoomScale,onEnd){
+  if(!gProj||!gBaseScale) return;
+  var center;
+  if(target&&target.type){ center=d3.geoCentroid(target); }
+  else if(target&&typeof target.lon==='number'){ center=[target.lon,target.lat]; }
+  else { return; }
+  var r0=gProj.rotate(), s0=gProj.scale();
+  var r1=[-center[0],-center[1]];
+  var s1=zoomScale||(gBaseScale*1.8);
+  var ir=d3.interpolate(r0,r1), is=d3.interpolate(s0,s1);
+  var tr=d3.transition().duration(850).ease(d3.easeCubicInOut).tween('geolandar-zoomto',function(){
+    return function(t){
+      gProj.rotate(ir(t)); gProj.scale(is(t));
+      if(typeof window._globeRedraw==='function') window._globeRedraw();
+    };
+  });
+  if(onEnd) tr.on('end',onEnd);
+}
+function zoomResetGlobeView(){
+  if(!gProj||!gBaseScale) return;
+  var s0=gProj.scale();
+  var is=d3.interpolate(s0,gBaseScale);
+  d3.transition().duration(700).ease(d3.easeCubicInOut).tween('geolandar-zoomout',function(){
+    return function(t){
+      gProj.scale(is(t));
+      if(typeof window._globeRedraw==='function') window._globeRedraw();
+    };
+  });
+}
 
 /* Couleur de fond du globe selon le thème actif */
 function globeSphereColor(){
@@ -2628,8 +2676,10 @@ function initGlobe(){
   var ds=d3.select('#globe-svg');
 
   /* Projection orthographique */
+  var baseScale=Math.min(W,H)/0.75;
+  gBaseScale=baseScale;
   var proj=d3.geoOrthographic()
-    .scale(Math.min(W,H)/0.75)
+    .scale(baseScale)
     .translate([W/2,H/2])
     .clipAngle(90)
     .rotate([-10,-40]);
@@ -2655,9 +2705,10 @@ function initGlobe(){
     .attr('stroke','none');
   gSphPath=sphBack;
 
-  /* Graticule */
+  /* Graticule — géométrie calculée une seule fois puis réutilisée */
+  var graticuleData=d3.geoGraticule()();
   var gratPath=ds.append('path')
-    .datum(d3.geoGraticule()())
+    .datum(graticuleData)
     .attr('d',pathFn)
     .attr('fill','none')
     .attr('stroke','rgba(255,255,255,0.06)')
@@ -2721,7 +2772,7 @@ function initGlobe(){
         var pays=ISO3[String(d.id).padStart(3,'0')];
         if(!pays) return;
         if(gTimer){gTimer.stop();gTimer=null;}
-        showCountry(pays);
+        showCountry(pays,d);
       });
 
     /* Marqueurs petites îles */
@@ -2789,7 +2840,7 @@ function initGlobe(){
       }).on('click',function(event){
         event.stopPropagation();
         if(gTimer){gTimer.stop();gTimer=null;}
-        showCountry(s.p);
+        showCountry(s.p,{lon:s.lon,lat:s.lat});
       });
     });
 
@@ -2797,7 +2848,7 @@ function initGlobe(){
     function redraw(){
       sphBack.attr('d',pathFn({type:'Sphere'}));
       sphRing.attr('d',pathFn({type:'Sphere'}));
-      gratPath.attr('d',pathFn(d3.geoGraticule()()));
+      gratPath.attr('d',pathFn(graticuleData));
       countriesG.selectAll('.cp').attr('d',pathFn);
       /* Marqueurs : positionner et masquer si derrière */
       var rot=proj.rotate();
@@ -2831,7 +2882,13 @@ function initGlobe(){
     }
     startRotation();
 
-    /* Drag pour rotation manuelle */
+    /* Drag pour rotation manuelle — throttlé à une frame d'affichage */
+    var _rafPending={};
+    function throttledRedraw(key){
+      if(_rafPending[key]) return;
+      _rafPending[key]=true;
+      requestAnimationFrame(function(){ redraw(); _rafPending[key]=false; });
+    }
     ds.call(d3.drag()
       .on('start',function(){
         if(gTimer){gTimer.stop();gTimer=null;}
@@ -2839,7 +2896,7 @@ function initGlobe(){
       .on('drag',function(event){
         var r=proj.rotate();
         proj.rotate([r[0]+event.dx*.35,r[1]-event.dy*.35]);
-        redraw();
+        throttledRedraw('drag');
       })
       .on('end',function(){
         /* Reprendre si aucun panneau ouvert */
@@ -2892,7 +2949,7 @@ function initGlobe(){
     ds.node().addEventListener('gesturechange',function(e){
       e.preventDefault();
       proj.scale(Math.max(80,Math.min(Math.min(W,H)*5,pinchScale0*e.scale)));
-      redraw();
+      throttledRedraw('gesture');
     },{passive:false});
     ds.node().addEventListener('gestureend',function(e){
       e.preventDefault();
@@ -2923,7 +2980,7 @@ function initGlobe(){
           e.touches[0].clientY-e.touches[1].clientY
         );
         proj.scale(Math.max(80,Math.min(Math.min(W,H)*5,lastScalePinch*(dist/lastDist))));
-        redraw();
+        throttledRedraw('touch');
       }
     },{passive:false});
     ds.node().addEventListener('touchend',function(e){
@@ -2943,6 +3000,7 @@ function initGlobe(){
 
     /* Exposer startRotation pour closePanels */
     window._globeStartRotation=startRotation;
+    window._globeRedraw=redraw;
 
   }).catch(function(){
     if(loadEl) loadEl.textContent='Erreur de chargement.';
@@ -2950,7 +3008,7 @@ function initGlobe(){
 }
 
 /* ══ AFFICHAGE PAYS (Globe) ══ */
-function showCountry(pays){
+function showCountry(pays,zoomTarget){
   var ind=findInd(pays),es_complet=E.filter(function(e){return e.p===pays;}),src=SRC[pays],info=INFO[pays];
   /* N'afficher que les élections dans la fenêtre 2026-2028 — les données
      hors fenêtre (ex: 2025 déjà passées) restent en mémoire dans es_complet
@@ -2970,7 +3028,7 @@ function showCountry(pays){
   } else {
     _gnL.textContent=pays;
   }
-  document.getElementById('gsL').textContent=ind?(ind.s+' · '+ind.pop):'';
+  document.getElementById('gsL').textContent=ind?(regimeLbl(ind.s)+' · '+ind.pop):'';
   var bL='';
   if(info){
     bL+='<div class="gpst">'+(lang==='fr'?'Informations':lang==='en'?'Information':'Information')+'</div>';
@@ -3025,6 +3083,8 @@ function showCountry(pays){
   document.getElementById('panR').classList.add('open');
   document.getElementById('panL').classList.add('open');
   document.getElementById('gbtn').style.display='block';
+  // Zoom sur le pays cliqué (pas de découpage régional côté public)
+  if(zoomTarget) zoomToCountry(zoomTarget);
 }
 function showUnknownCountry(id){
   document.getElementById('gfL').innerHTML='<div class="nfl">?</div>';
@@ -3042,6 +3102,7 @@ function closeGP(s){
   if(!lo&&!ro){
     document.getElementById('gbtn').style.display='none';
     if(gSel){try{d3.select(gSel).classed('selected',false);}catch(e){} gSel=null;}
+    zoomResetGlobeView();
     if(typeof window._globeStartRotation==='function') window._globeStartRotation();
   }
 }
@@ -3050,6 +3111,7 @@ function closePanels(){
   document.getElementById('panR').classList.remove('open');
   document.getElementById('gbtn').style.display='none';
   if(gSel){try{d3.select(gSel).classed('selected',false);}catch(e){} gSel=null;}
+  zoomResetGlobeView();
   /* Reprendre la rotation automatique */
   if(typeof window._globeStartRotation==='function') window._globeStartRotation();
 }
@@ -3185,6 +3247,15 @@ function setLang(l){
     'sec-elections': fr?'ÉLECTIONS':'ELECTIONS',
     'sec-dirigeant': fr?'Dirigeant actuel':'Current leader',
     'sec-indicateurs':fr?'INDICATEURS':'INDICATORS',
+    /* Options de filtres (calendrier) — manquaient à la traduction */
+    'opt-all-types': fr?'Tous types':'All types',
+    'opt-p':         fr?'Présidentielle':'Presidential',
+    'opt-l':         fr?'Législative':'Legislative',
+    'opt-s':         fr?'Sénatoriale':'Senate',
+    'opt-m':         fr?'Municipale/Régionale':'Municipal/Regional',
+    'opt-r':         fr?'Référendum':'Referendum',
+    'opt-all-reg':   fr?'Toutes régions':'All regions',
+    'opt-am':        fr?'Amérique':'Americas',
   };
 
   /* Appliquer les traductions par ID */
@@ -3198,6 +3269,13 @@ function setLang(l){
   if(ht) ht.innerHTML=fr?"Toutes les <em>élections</em> du monde":"All the world's <em>elections</em>";
   var pt=document.getElementById('pays-title');
   if(pt) pt.innerHTML=fr?"Les <em>196 pays</em> du monde":"The <em>196 countries</em> of the world";
+
+  /* Placeholders des champs de recherche — non couverts par la boucle T
+     (textContent ne s'applique pas à un <input>) */
+  var fsrch=document.getElementById('fsrch');
+  if(fsrch) fsrch.placeholder=fr?'Rechercher un pays...':'Search for a country...';
+  var cpinput=document.getElementById('cpinput');
+  if(cpinput) cpinput.placeholder=fr?'Rechercher un pays...':'Search for a country...';
 
   /* Traduction des types d'élection dans les cartes */
   var typeMap = fr ? {
