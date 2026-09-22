@@ -1344,9 +1344,9 @@ var E=[
  ctx:"Midterms sous Milei. 'Anarco-capitaliste' au pouvoir depuis 2023. Inflation passée de 211% à 40%. Dollarisation en débat. Le Congrès s'oppose à plusieurs réformes.",
  enjeux:[{i:"💰",t:"Inflation 211% → 40% : la cure de choc fonctionne-t-elle ?",d:"Milei a imposé une austérité radicale (coupes de 30% des dépenses publiques). L'inflation a chuté mais la récession et la pauvreté ont augmenté à court terme. Les midterms valideront ou non cette thérapie de choc."},{i:"💵",t:"Dollarisation — abandonner le peso ?",d:"Milei a proposé de remplacer le peso argentin par le dollar américain. Cette mesure radicale divise les économistes. Elle nécessite des réserves que l'Argentine n'a pas encore."},{i:"🏛️",t:"Conflit avec le Congrès — réformes bloquées",d:"Sans majorité au Congrès, Milei gouverne par décrets. L'opposition bloque plusieurs de ses réformes phares (privatisations, dérégulation). Ces midterms détermineront si Milei obtient une majorité législative."}]},
 
-{id:65,p:'Maroc',r:'AF',t:"l",d:"2027-09-00",cert:2,done:false,
- fiabilite:{n:1,src:"Junta Electoral MA (prévu)",txt:"Le Maroc dispose d'un système électoral encadré. Le rôle prééminent du Palais dans la vie politique doit être noté dans l'évaluation de la compétition réelle."},
- ctx:"Élections législatives dans une monarchie constitutionnelle. Le RNI (centre) de Aziz Akhannouch domine depuis 2021. Croissance économique mais inégalités persistantes. Candidature co-organisateur Coupe du Monde 2030.",
+{id:65,p:'Maroc',r:'AF',t:"l",d:"2026-09-23",cert:1,done:false,
+ fiabilite:{n:1,src:"Ministère de l'Intérieur MA — décret n°2.26.190",txt:"Date fixée par décret officiel dès le 5 mars 2026. Le Maroc dispose d'un système électoral encadré. Le rôle prééminent du Palais dans la vie politique doit être noté dans l'évaluation de la compétition réelle."},
+ ctx:"Élections législatives dans une monarchie constitutionnelle — 395 sièges à la Chambre des représentants. Le RNI (centre) de Aziz Akhannouch domine depuis 2021. Croissance économique mais inégalités persistantes. Candidature co-organisateur Coupe du Monde 2030.",
  enjeux:[{i:"⚽",t:"Coupe du Monde 2030 — co-organisateur",d:"Le Maroc co-organise la Coupe du Monde 2030 avec l'Espagne et le Portugal. Ce projet nécessite 20 Md$ d'investissements en stades, transport et hôtels. Un défi colossal pour l'économie marocaine."},{i:"💧",t:"Stress hydrique — sécheresse chronique",d:"Le Maroc traverse des sécheresses historiques. Les barrages sont à 30% de leur capacité. L'agriculture, qui emploie 40% de la population active, est directement menacée par le manque d'eau."},{i:"🌍",t:"Sahara occidental — question résolue ?",d:"Les États-Unis sous Trump ont reconnu la souveraineté marocaine sur le Sahara occidental. Cette reconnaissance change le contexte géopolitique et renforce la position du Maroc dans la région."}]},
 
 {id:66,p:'Turquie',r:'EU',t:"l",d:"2027-06-00",cert:2,done:false,
@@ -2586,10 +2586,26 @@ var gBaseScale=null;
 /* Zoom animé sur un pays au clic — version publique : zoom uniquement,
    pas de découpage régional (réservé à la version de développement tant
    que les données ne sont pas validées). */
+/* Pour un pays fragmenté (territoires d'outre-mer très éloignés — France
+   avec la Guyane, Royaume-Uni, Pays-Bas, Danemark, USA...), le centroïde de
+   TOUTE la géométrie peut tomber en pleine mer, loin du territoire
+   principal. On centre plutôt sur le plus grand fragment (par aire). */
+function bestCentroid(feature){
+  if(!feature||!feature.geometry) return d3.geoCentroid(feature);
+  var geom=feature.geometry;
+  if(geom.type!=='MultiPolygon'||geom.coordinates.length<=1) return d3.geoCentroid(feature);
+  var best=null,bestArea=-1;
+  geom.coordinates.forEach(function(poly){
+    var f={type:'Feature',geometry:{type:'Polygon',coordinates:poly}};
+    var area=Math.abs(d3.geoArea(f));
+    if(area>bestArea){ bestArea=area; best=f; }
+  });
+  return d3.geoCentroid(best);
+}
 function zoomToCountry(target,zoomScale,onEnd){
   if(!gProj||!gBaseScale) return;
   var center;
-  if(target&&target.type){ center=d3.geoCentroid(target); }
+  if(target&&target.type){ center=bestCentroid(target); }
   else if(target&&typeof target.lon==='number'){ center=[target.lon,target.lat]; }
   else { return; }
   var r0=gProj.rotate(), s0=gProj.scale();
@@ -3442,6 +3458,32 @@ function loadElectionsFromSupabase() {
             party: row.party || ''
           };
           updated = true; /* CORRECTIF: ce pays a reçu un résultat, il faut redessiner le calendrier */
+        });
+      });
+
+      /* ÉTAPE 2.5 (NOUVEAU — audit du 22/09/2026) : corriger les dates
+         codées en dur qui n'ont jamais été confirmées officiellement.
+         Cas concret qui a révélé le problème : le Maroc était codé en dur
+         avec "2027-09-00" (cert:2, estimation approximative faite à la
+         rédaction) alors que la date officielle réelle, fixée par décret
+         dès mars 2026, est le 23 septembre 2026. Tant qu'aucune correction
+         automatique n'existait, une date approximative erronée codée en dur
+         ne pouvait JAMAIS être corrigée par Supabase — l'étape 3 ci-dessous
+         ne fait qu'ajouter les nouvelles élections, elle ne remplace jamais
+         une date existante. Règle : on ne corrige que les entrées dont la
+         date n'a jamais été confirmée (cert 2 ou 3) et qui ne sont pas
+         encore passées — jamais une date déjà confirmée (cert:1), pour ne
+         pas écraser une donnée fiable avec une donnée Wikidata plus bruitée. */
+      rows.forEach(function(row) {
+        if (!row.pays || !row.date || !row.type) return;
+        var candidats = E.filter(function(e){
+          return e.p === row.pays && e.t === row.type && e.cert !== 1 && !e.done && e.d !== row.date;
+        });
+        candidats.forEach(function(e){
+          console.warn('[Geolandar] Date corrigée automatiquement pour '+e.p+' ('+e.t+') : '+e.d+' -> '+row.date);
+          e.d = row.date;
+          e.cert = 1;
+          updated = true;
         });
       });
 
