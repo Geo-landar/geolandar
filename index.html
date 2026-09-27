@@ -334,7 +334,8 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
 /* ══ NOUVELLE PAGE ACCUEIL ══ */
 .spotlight-wrap{padding:0;max-width:900px;margin:20px auto 0;}
 .spotlight-eyebrow{font-family:Syne,sans-serif;font-size:.78rem;font-weight:800;color:var(--a);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;}
-.spotlight-card{background:linear-gradient(135deg,rgba(249,115,22,.14),rgba(59,130,246,.1));border:1.5px solid rgba(249,115,22,.35);border-radius:22px;padding:32px 34px;box-shadow:0 12px 40px rgba(249,115,22,.1);}
+.spotlight-card{background:linear-gradient(135deg,rgba(249,115,22,.14),rgba(59,130,246,.1));border:1.5px solid rgba(249,115,22,.35);border-radius:22px;padding:32px 34px;box-shadow:0 12px 40px rgba(249,115,22,.1);min-height:260px;display:flex;flex-direction:column;justify-content:center;overflow:hidden;}
+.spotlight-ctx{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 .spotlight-flag{flex-shrink:0;line-height:0;}
 .spotlight-flag img{box-shadow:0 2px 10px rgba(0,0,0,.35);border-radius:4px!important;}
 .spotlight-top{display:flex;align-items:center;gap:18px;margin-bottom:20px;}
@@ -510,8 +511,10 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
         <div class="price-amount">5€<span>/mois</span></div>
         <ul class="price-feats">
           <li>Tout le contenu Gratuit</li>
-          <li>Fiches institutionnelles par pays</li>
+          <li>Fonctionnement institutionnel complet de chaque pays (régime, chambres, prérogatives)</li>
+          <li>Résultats des élections régionales et composition des parlements par pays</li>
           <li>Élections partielles</li>
+          <li>Newsletter (à venir)</li>
           <li>Alertes par email</li>
         </ul>
       </div>
@@ -3944,6 +3947,19 @@ function renderSpotlight(){
 
   _spotlightSlides=[renderPaysSlide];
   if(electionVedette) _spotlightSlides.push(renderElectionSlide);
+
+  /* Fixer la hauteur de la carte à la plus grande des variantes réellement
+     rendues (pas une estimation) : sans ça, "Pays du mois" et "Élection à
+     la une" n'ont pas le même contenu et la carte change de taille en
+     changeant de slide, ce qui pousse tout ce qui suit — dont le globe —
+     vers le haut ou le bas toutes les 10 secondes. */
+  card.style.height='';
+  var maxH=0;
+  _spotlightSlides.forEach(function(fn){
+    fn();
+    maxH=Math.max(maxH,card.scrollHeight);
+  });
+  card.style.height=maxH+'px';
 
   /* Points de navigation */
   dotsEl.innerHTML='';
