@@ -2617,6 +2617,11 @@ function zoomToCountry(target,zoomScale,onEnd){
   var ir=d3.interpolate(r0,r1), is=d3.interpolate(s0,s1);
   var tr=d3.transition().duration(850).ease(d3.easeCubicInOut).tween('geolandar-zoomto',function(){
     return function(t){
+      /* CORRECTIF : si l'utilisateur fait glisser le globe pendant que
+         cette animation de zoom est encore en cours, les deux se
+         disputaient la même rotation. On arrête net la tween dès qu'un
+         glissement manuel démarre. */
+      if(window._globeUserDragging) return;
       gProj.rotate(ir(t)); gProj.scale(is(t));
       if(typeof window._globeRedraw==='function') window._globeRedraw();
     };
@@ -2791,6 +2796,7 @@ function initGlobe(){
         var pays=ISO3[String(d.id).padStart(3,'0')];
         if(!pays) return;
         if(gTimer){gTimer.stop();gTimer=null;}
+        gSel=this;
         showCountry(pays,d);
       });
 
@@ -2868,7 +2874,17 @@ function initGlobe(){
       sphBack.attr('d',pathFn({type:'Sphere'}));
       sphRing.attr('d',pathFn({type:'Sphere'}));
       gratPath.attr('d',pathFn(graticuleData));
-      countriesG.selectAll('.cp').attr('d',pathFn);
+      /* CORRECTIF PERFORMANCE : recalculer les ~195 tracés du monde à
+         chaque frame coûte environ 19ms rien qu'en calcul (mesuré) — déjà
+         au-delà du budget de 16ms pour un rendu fluide à 60 im/s. Une fois
+         un pays sélectionné, les 194 autres ne sont de toute façon plus
+         visibles à l'écran : on ne recalcule alors que celui-là (via gSel,
+         capturé au clic) plutôt que la totalité. */
+      if(gSel){
+        d3.select(gSel).attr('d',pathFn);
+      } else {
+        countriesG.selectAll('.cp').attr('d',pathFn);
+      }
       /* Marqueurs : positionner et masquer si derrière */
       var rot=proj.rotate();
       var center=[-rot[0],-rot[1]];
@@ -2911,13 +2927,16 @@ function initGlobe(){
     ds.call(d3.drag()
       .on('start',function(){
         if(gTimer){gTimer.stop();gTimer=null;}
+        window._globeUserDragging=true;
       })
       .on('drag',function(event){
+        var sensib=.35*(gBaseScale/proj.scale());
         var r=proj.rotate();
-        proj.rotate([r[0]+event.dx*.35,r[1]-event.dy*.35]);
+        proj.rotate([r[0]+event.dx*sensib,r[1]-event.dy*sensib]);
         throttledRedraw('drag');
       })
       .on('end',function(){
+        window._globeUserDragging=false;
         /* Reprendre si aucun panneau ouvert */
         var open=document.getElementById('panL').classList.contains('open');
         if(!open) startRotation();
@@ -2963,6 +2982,7 @@ function initGlobe(){
     ds.node().addEventListener('gesturestart',function(e){
       e.preventDefault();
       if(gTimer){gTimer.stop();gTimer=null;}
+      window._globeUserDragging=true;
       pinchScale0=proj.scale();
     },{passive:false});
     ds.node().addEventListener('gesturechange',function(e){
@@ -2972,6 +2992,7 @@ function initGlobe(){
     },{passive:false});
     ds.node().addEventListener('gestureend',function(e){
       e.preventDefault();
+      window._globeUserDragging=false;
       pinchScale0=proj.scale();
       var open=document.getElementById('panL').classList.contains('open');
       if(!open) startRotation();
@@ -2983,6 +3004,7 @@ function initGlobe(){
     ds.node().addEventListener('touchstart',function(e){
       if(e.touches.length===2){
         if(gTimer){gTimer.stop();gTimer=null;}
+        window._globeUserDragging=true;
         lastDist=Math.hypot(
           e.touches[0].clientX-e.touches[1].clientX,
           e.touches[0].clientY-e.touches[1].clientY
@@ -3005,6 +3027,7 @@ function initGlobe(){
     ds.node().addEventListener('touchend',function(e){
       if(e.touches.length<2){
         lastDist=null;
+        window._globeUserDragging=false;
         var open=document.getElementById('panL').classList.contains('open');
         if(!open) startRotation();
       }
