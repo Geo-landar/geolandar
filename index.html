@@ -244,9 +244,9 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--a),var(--a2));-w
 /* PAYS */
 .pays-wrap{padding:0 28px 60px;}
 .rpills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;}
-.rp{padding:4px 12px;border-radius:18px;border:1px solid var(--bd);background:transparent;color:var(--mu);font-size:.76rem;cursor:pointer;transition:all .2s;font-family:DM Sans,sans-serif;}
-.rp:hover{border-color:var(--a2);color:var(--tx);}
-.rp.active{background:var(--a2);border-color:var(--a2);color:#fff;}
+.region-pill{padding:4px 12px;border-radius:18px;border:1px solid var(--bd);background:transparent;color:var(--mu);font-size:.76rem;cursor:pointer;transition:all .2s;font-family:DM Sans,sans-serif;}
+.region-pill:hover{border-color:var(--a2);color:var(--tx);}
+.region-pill.active{background:var(--a2);border-color:var(--a2);color:#fff;}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:9px;}
 .cc{background:var(--cd);border:1px solid var(--bd);border-radius:var(--r);padding:12px;cursor:pointer;transition:all .2s;}
 .cc:hover{border-color:rgba(59,130,246,.35);transform:translateY(-1px);}
@@ -2404,7 +2404,7 @@ function findInd(pays){return PAYS.find(function(c){return c.p===pays;})||null;}
 /* ══ 196 PAYS ══ */
 var REGS=[{k:'',fr:'Toutes régions',en:'All regions'},{k:'EU',fr:'Europe',en:'Europe'},{k:'AM',fr:'Amérique',en:'Americas'},{k:'AF',fr:'Afrique',en:'Africa'},{k:'AS',fr:'Asie',en:'Asia'},{k:'OC',fr:'Océanie',en:'Oceania'}];
 function renderPills(){
-  var pillsEl=document.getElementById('rpills');pillsEl.innerHTML='';REGS.forEach(function(r){var btn=document.createElement('button');btn.className='rp'+(aReg===r.k?' active':'');btn.textContent=lang==='fr'?r.fr:r.en;btn.onclick=function(){setReg(r.k);};pillsEl.appendChild(btn);});
+  var pillsEl=document.getElementById('rpills');pillsEl.innerHTML='';REGS.forEach(function(r){var btn=document.createElement('button');btn.className='region-pill'+(aReg===r.k?' active':'');btn.textContent=lang==='fr'?r.fr:r.en;btn.onclick=function(){setReg(r.k);};pillsEl.appendChild(btn);});
 }
 function setReg(r){aReg=r;renderPills();renderPays();}
 function renderPays(){
@@ -2870,20 +2870,56 @@ function initGlobe(){
     });
 
     /* Fonction de mise à jour de TOUT le globe */
+    var gDragFrameCount=0;
+    /* Voir l'explication complète dans index.html : certains pays (France
+       avec la Guyane) ont une géométrie en plusieurs morceaux dispersés
+       aux quatre coins du globe, instables en projection orthographique
+       près de la limite visible. Le filtrage se recalcule à chaque frame
+       par rapport au centre de vue ACTUEL (pas figé au clic), pour pouvoir
+       naviguer librement vers n'importe quel territoire sans rien casser,
+       dans un sens comme dans l'autre. */
+    function filterFeatureNearPoint(feature,refPoint,maxDeg){
+      if(!feature||feature.geometry.type!=='MultiPolygon') return feature;
+      var allCoords=feature.geometry.coordinates;
+      if(allCoords.length<=1) return feature;
+      var maxRad=(maxDeg||50)*Math.PI/180;
+      var kept=allCoords.filter(function(poly){
+        var c=d3.geoCentroid({type:'Feature',geometry:{type:'Polygon',coordinates:poly}});
+        return d3.geoDistance(c,refPoint)<=maxRad;
+      });
+      if(!kept.length){
+        var best=null,bestDist=Infinity;
+        allCoords.forEach(function(poly){
+          var c=d3.geoCentroid({type:'Feature',geometry:{type:'Polygon',coordinates:poly}});
+          var dist=d3.geoDistance(c,refPoint);
+          if(dist<bestDist){bestDist=dist;best=poly;}
+        });
+        kept=[best];
+      }
+      return {type:'Feature',properties:feature.properties,id:feature.id,geometry:{type:'MultiPolygon',coordinates:kept}};
+    }
+    function updateSelectedCountryPath(){
+      if(!gZoomedPays||!gDragSelNode||!gDragSelDatum) return;
+      var rot=proj.rotate();
+      var viewCenter=[-rot[0],-rot[1]];
+      gDragSelNode.attr('d',pathFn(filterFeatureNearPoint(gDragSelDatum,viewCenter,50)));
+    }
     function redraw(){
       sphBack.attr('d',pathFn({type:'Sphere'}));
       sphRing.attr('d',pathFn({type:'Sphere'}));
       gratPath.attr('d',pathFn(graticuleData));
-      /* CORRECTIF PERFORMANCE : recalculer les ~195 tracés du monde à
-         chaque frame coûte environ 19ms rien qu'en calcul (mesuré) — déjà
-         au-delà du budget de 16ms pour un rendu fluide à 60 im/s. Une fois
-         un pays sélectionné, les 194 autres ne sont de toute façon plus
-         visibles à l'écran : on ne recalcule alors que celui-là (via gSel,
-         capturé au clic) plutôt que la totalité. */
-      if(gSel){
-        d3.select(gSel).attr('d',pathFn);
-      } else {
+      /* Troisième version, après deux essais écartés (voir index.html pour
+         le détail complet) : le pays sélectionné est recalculé à CHAQUE
+         frame (jamais de retard sur ce qui importe le plus). Le reste du
+         monde (195 pays, ~19ms/frame mesurés) reste TOUJOURS VISIBLE mais
+         n'est recalculé qu'une frame sur trois pendant un geste actif —
+         léger flou de mouvement en arrière-plan, jamais de disparition ni
+         de forme fausse. */
+      gDragFrameCount++;
+      updateSelectedCountryPath();
+      if(!gZoomedPays||!gDragSelNode||gDragFrameCount%3===0){
         countriesG.selectAll('.cp').attr('d',pathFn);
+        updateSelectedCountryPath();
       }
       /* Marqueurs : positionner et masquer si derrière */
       var rot=proj.rotate();
@@ -2924,10 +2960,30 @@ function initGlobe(){
       _rafPending[key]=true;
       requestAnimationFrame(function(){ redraw(); _rafPending[key]=false; });
     }
+    var gDragSelNode=null;
+    var gDragSelDatum=null;
+    /* Recherche fraîche du tracé du pays zoomé — jamais de référence mise
+       en cache. Le filtrage par territoire proche (voir
+       filterFeatureNearPoint plus haut) se recalcule à chaque frame dans
+       updateSelectedCountryPath — pas ici, une fois pour toutes. */
+    function findDragSelNode(){
+      gDragSelNode=null;
+      gDragSelDatum=null;
+      if(!gZoomedPays) return;
+      countriesG.selectAll('.cp').each(function(d){
+        var iso=ISO3[String(d.id).padStart(3,'0')];
+        if(iso===gZoomedPays){
+          gDragSelNode=d3.select(this);
+          gDragSelDatum=d;
+        }
+      });
+    }
     ds.call(d3.drag()
       .on('start',function(){
         if(gTimer){gTimer.stop();gTimer=null;}
         window._globeUserDragging=true;
+        gDragFrameCount=0;
+        findDragSelNode();
       })
       .on('drag',function(event){
         var sensib=.35*(gBaseScale/proj.scale());
@@ -2937,6 +2993,8 @@ function initGlobe(){
       })
       .on('end',function(){
         window._globeUserDragging=false;
+        findDragSelNode();
+        redraw();
         /* Reprendre si aucun panneau ouvert */
         var open=document.getElementById('panL').classList.contains('open');
         if(!open) startRotation();
@@ -2984,6 +3042,8 @@ function initGlobe(){
       if(gTimer){gTimer.stop();gTimer=null;}
       window._globeUserDragging=true;
       pinchScale0=proj.scale();
+      gDragFrameCount=0;
+      findDragSelNode();
     },{passive:false});
     ds.node().addEventListener('gesturechange',function(e){
       e.preventDefault();
@@ -2994,6 +3054,8 @@ function initGlobe(){
       e.preventDefault();
       window._globeUserDragging=false;
       pinchScale0=proj.scale();
+      findDragSelNode();
+      redraw();
       var open=document.getElementById('panL').classList.contains('open');
       if(!open) startRotation();
     },{passive:false});
@@ -3010,6 +3072,8 @@ function initGlobe(){
           e.touches[0].clientY-e.touches[1].clientY
         );
         lastScalePinch=proj.scale();
+        gDragFrameCount=0;
+        findDragSelNode();
         e.preventDefault();
       }
     },{passive:false});
@@ -3028,6 +3092,8 @@ function initGlobe(){
       if(e.touches.length<2){
         lastDist=null;
         window._globeUserDragging=false;
+        findDragSelNode();
+        redraw();
         var open=document.getElementById('panL').classList.contains('open');
         if(!open) startRotation();
       }
