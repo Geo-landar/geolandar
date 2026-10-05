@@ -2585,6 +2585,10 @@ var gLastT=0, gFrameN=0, gSel2=null;
 var gSvg=null, gProj=null, gPathFn=null, gTimer=null, gSphPath=null;
 var gGratPath=null, gMarkersG=null, gCountriesG=null;
 var gBaseScale=null;
+/* CORRECTIF : variable utilisée par le globe mais jamais déclarée dans la
+   version publique -> erreur au premier dessin, le globe s'arrêtait
+   (« Erreur de chargement »), plus de rotation ni de zoom visible. */
+var gZoomedPays=null;
 
 /* Zoom animé sur un pays au clic — version publique : zoom uniquement,
    pas de découpage régional (réservé à la version de développement tant
@@ -3111,6 +3115,7 @@ function initGlobe(){
     /* Exposer startRotation pour closePanels */
     window._globeStartRotation=startRotation;
     window._globeRedraw=redraw;
+    window._globeFindSel=findDragSelNode;
 
   }).catch(function(){
     if(loadEl) loadEl.textContent='Erreur de chargement.';
@@ -3194,7 +3199,12 @@ function showCountry(pays,zoomTarget){
   document.getElementById('panL').classList.add('open');
   document.getElementById('gbtn').style.display='block';
   // Zoom sur le pays cliqué (pas de découpage régional côté public)
-  if(zoomTarget) zoomToCountry(zoomTarget);
+  if(zoomTarget){
+    gZoomedPays=pays;
+    zoomToCountry(zoomTarget,null,function(){
+      if(typeof window._globeFindSel==='function') window._globeFindSel();
+    });
+  }
 }
 function showUnknownCountry(id){
   document.getElementById('gfL').innerHTML='<div class="nfl">?</div>';
@@ -3212,6 +3222,7 @@ function closeGP(s){
   if(!lo&&!ro){
     document.getElementById('gbtn').style.display='none';
     if(gSel){try{d3.select(gSel).classed('selected',false);}catch(e){} gSel=null;}
+    gZoomedPays=null;
     zoomResetGlobeView();
     if(typeof window._globeStartRotation==='function') window._globeStartRotation();
   }
@@ -3221,6 +3232,7 @@ function closePanels(){
   document.getElementById('panR').classList.remove('open');
   document.getElementById('gbtn').style.display='none';
   if(gSel){try{d3.select(gSel).classed('selected',false);}catch(e){} gSel=null;}
+  gZoomedPays=null;
   zoomResetGlobeView();
   /* Reprendre la rotation automatique */
   if(typeof window._globeStartRotation==='function') window._globeStartRotation();
