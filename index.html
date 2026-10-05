@@ -2605,6 +2605,7 @@ function bestCentroid(feature){
   });
   return d3.geoCentroid(best);
 }
+window._globeAnimToken=0;
 function zoomToCountry(target,zoomScale,onEnd){
   if(!gProj||!gBaseScale) return;
   var center;
@@ -2615,8 +2616,12 @@ function zoomToCountry(target,zoomScale,onEnd){
   var r1=[-center[0],-center[1]];
   var s1=zoomScale||(gBaseScale*1.8);
   var ir=d3.interpolate(r0,r1), is=d3.interpolate(s0,s1);
+  var myTok=++window._globeAnimToken;
   var tr=d3.transition().duration(850).ease(d3.easeCubicInOut).tween('geolandar-zoomto',function(){
     return function(t){
+      /* Animation annulée par un geste : elle ne touche plus jamais la
+         rotation, même après le relâchement. */
+      if(myTok!==window._globeAnimToken) return;
       /* CORRECTIF : si l'utilisateur fait glisser le globe pendant que
          cette animation de zoom est encore en cours, les deux se
          disputaient la même rotation. On arrête net la tween dès qu'un
@@ -2632,8 +2637,10 @@ function zoomResetGlobeView(){
   if(!gProj||!gBaseScale) return;
   var s0=gProj.scale();
   var is=d3.interpolate(s0,gBaseScale);
+  var myTok=++window._globeAnimToken;
   d3.transition().duration(700).ease(d3.easeCubicInOut).tween('geolandar-zoomout',function(){
     return function(t){
+      if(myTok!==window._globeAnimToken) return;
       gProj.scale(is(t));
       if(typeof window._globeRedraw==='function') window._globeRedraw();
     };
@@ -2908,19 +2915,13 @@ function initGlobe(){
       sphBack.attr('d',pathFn({type:'Sphere'}));
       sphRing.attr('d',pathFn({type:'Sphere'}));
       gratPath.attr('d',pathFn(graticuleData));
-      /* Troisième version, après deux essais écartés (voir index.html pour
-         le détail complet) : le pays sélectionné est recalculé à CHAQUE
-         frame (jamais de retard sur ce qui importe le plus). Le reste du
-         monde (195 pays, ~19ms/frame mesurés) reste TOUJOURS VISIBLE mais
-         n'est recalculé qu'une frame sur trois pendant un geste actif —
-         léger flou de mouvement en arrière-plan, jamais de disparition ni
-         de forme fausse. */
+      /* CORRECTIF : tout le globe est recalculé à CHAQUE frame, avec la
+         même rotation. Avant, le pays sélectionné avançait à chaque frame
+         mais les autres pays seulement une frame sur trois : le pays
+         semblait se détacher de ses frontières pendant le glissement. */
       gDragFrameCount++;
+      countriesG.selectAll('.cp').attr('d',pathFn);
       updateSelectedCountryPath();
-      if(!gZoomedPays||!gDragSelNode||gDragFrameCount%3===0){
-        countriesG.selectAll('.cp').attr('d',pathFn);
-        updateSelectedCountryPath();
-      }
       /* Marqueurs : positionner et masquer si derrière */
       var rot=proj.rotate();
       var center=[-rot[0],-rot[1]];
@@ -2981,7 +2982,7 @@ function initGlobe(){
     ds.call(d3.drag()
       .on('start',function(){
         if(gTimer){gTimer.stop();gTimer=null;}
-        window._globeUserDragging=true;
+        window._globeUserDragging=true; window._globeAnimToken++;
         gDragFrameCount=0;
         findDragSelNode();
       })
@@ -3004,6 +3005,7 @@ function initGlobe(){
     /* Zoom molette */
     ds.node().addEventListener('wheel',function(event){
       event.preventDefault();
+      window._globeAnimToken++;
       var s=proj.scale();
       proj.scale(Math.max(80,Math.min(Math.min(W,H)*5,s-event.deltaY*2)));
       redraw();
@@ -3040,7 +3042,7 @@ function initGlobe(){
     ds.node().addEventListener('gesturestart',function(e){
       e.preventDefault();
       if(gTimer){gTimer.stop();gTimer=null;}
-      window._globeUserDragging=true;
+      window._globeUserDragging=true; window._globeAnimToken++;
       pinchScale0=proj.scale();
       gDragFrameCount=0;
       findDragSelNode();
@@ -3066,7 +3068,7 @@ function initGlobe(){
     ds.node().addEventListener('touchstart',function(e){
       if(e.touches.length===2){
         if(gTimer){gTimer.stop();gTimer=null;}
-        window._globeUserDragging=true;
+        window._globeUserDragging=true; window._globeAnimToken++;
         lastDist=Math.hypot(
           e.touches[0].clientX-e.touches[1].clientX,
           e.touches[0].clientY-e.touches[1].clientY
@@ -3985,13 +3987,17 @@ function renderSpotlight(){
      ex: Zambie si c'est bien la prochaine échéance connue) */
   var ym=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   var partielles=E.filter(function(e){return e.partial===true && e.d && e.d.slice(0,7)===ym;});
-  var electionVedette=null;
+  /* CORRECTIF : plusieurs élections le même jour -> une case chacune. */
+  var electionsVedette=[];
   if(partielles.length){
-    electionVedette=partielles[0];
+    electionsVedette=partielles.slice();
   } else {
     var candidates=E.filter(function(e){ var d=daysTo(e.d); return !e.done && d!==null && d>=0; });
     candidates.sort(function(a,b){ return daysTo(a.d)-daysTo(b.d); });
-    if(candidates.length) electionVedette=candidates[0];
+    if(candidates.length){
+      var dMin=daysTo(candidates[0].d);
+      electionsVedette=candidates.filter(function(e){ return daysTo(e.d)===dMin; });
+    }
   }
 
   function renderPaysSlide(){
@@ -4015,8 +4021,7 @@ function renderSpotlight(){
     renderFlagInto('spotlightFlagBox',paysMois.p,88,66);
   }
 
-  function renderElectionSlide(){
-    var e=electionVedette;
+  function renderElectionSlide(e){
     if(eyebrow) eyebrow.textContent=(partielles.length?(fr?'🗳️ Élection partielle ce mois-ci':'🗳️ By-election this month'):(fr?'🗳️ Élection à la une':'🗳️ Featured election'));
     var html='<div class="spotlight-top centered"><div class="spotlight-flag" id="spotlightFlagBox"></div><div class="spotlight-country">'+e.p+'</div></div>';
     html+='<div class="spotlight-facts"><div class="spotlight-fact"><span>📅</span>'+fmtDate(e.d,e.cert)+'</div><div class="spotlight-fact"><span>🗳️</span>'+btlbl(e.t)+'</div></div>';
@@ -4035,7 +4040,9 @@ function renderSpotlight(){
   }
 
   _spotlightSlides=[renderPaysSlide];
-  if(electionVedette) _spotlightSlides.push(renderElectionSlide);
+  electionsVedette.forEach(function(ev){
+    _spotlightSlides.push(function(){ renderElectionSlide(ev); });
+  });
 
   /* Fixer la hauteur de la carte à la plus grande des variantes réellement
      rendues (pas une estimation) : sans ça, "Pays du mois" et "Élection à
