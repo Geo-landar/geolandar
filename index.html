@@ -327,6 +327,11 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--a),var(--a2));-w
 .enj-icon{flex-shrink:0;font-size:1rem;}
 .enj-txt{color:var(--tx);}
 .enj-txt strong{color:var(--a2);}
+.ftr-link{color:var(--mu);text-decoration:none;font-size:.69rem;}
+.ftr-link:hover{color:var(--a);text-decoration:underline;}
+.ftr-links{display:flex;gap:14px;flex-wrap:wrap;}
+.cf-in{background:var(--cd);border:1px solid var(--bd);border-radius:8px;padding:9px 11px;color:var(--tx);font:inherit;font-size:.82rem;}
+.cf-in:focus{outline:none;border-color:var(--a);}
 footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
 .flogo{font-family:Syne,sans-serif;font-weight:800;font-size:.88rem;background:linear-gradient(90deg,var(--a),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .fn{font-size:.69rem;color:var(--mu);}
@@ -494,38 +499,11 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
   <!-- ABONNEMENTS (aperçu indicatif — paiement non actif) -->
   <div class="pricing-section" id="pricingSection">
     <h2 class="section-title" id="pricing-title">Formules</h2>
-    <p class="section-sub" id="pricing-sub">🔜 Aperçu des offres à venir — paiement non actif, à titre indicatif</p>
+    <p class="section-sub" id="pricing-sub">🔜 À venir</p>
     <div class="pricing-grid">
-      <div class="price-card">
-        <div class="price-name">Gratuit</div>
-        <div class="price-amount">0€</div>
-        <ul class="price-feats">
-          <li>Calendrier des élections</li>
-          <li>Globe interactif</li>
-          <li>Indicateurs de base</li>
-        </ul>
-      </div>
-      <div class="price-card featured">
-        <div class="price-badge">Bientôt</div>
-        <div class="price-name">Medium</div>
-        <div class="price-amount">5€<span>/mois</span></div>
-        <ul class="price-feats">
-          <li>Tout le contenu Gratuit</li>
-          <li>Fonctionnement institutionnel complet de chaque pays (régime, chambres, prérogatives)</li>
-          <li>Résultats des élections régionales et composition des parlements par pays</li>
-          <li>Élections partielles</li>
-          <li>Newsletter (à venir)</li>
-          <li>Alertes par email</li>
-        </ul>
-      </div>
-      <div class="price-card">
-        <div class="price-name">Premium</div>
-        <div class="price-amount">10€<span>/mois</span></div>
-        <ul class="price-feats">
-          <li>Tout le contenu Medium</li>
-          <li>Comparateur bilatéral</li>
-          <li>Export de données</li>
-        </ul>
+      <div class="price-card featured" style="text-align:center;grid-column:1/-1;max-width:560px;margin:0 auto;">
+        <div class="price-name" id="pricing-soon-title">À venir</div>
+        <div style="font-size:.86rem;color:var(--mu);line-height:1.6" id="pricing-soon-txt">De nouvelles formules pour aller plus loin arrivent très prochainement.</div>
       </div>
     </div>
   </div>
@@ -533,9 +511,7 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
   <footer>
     <div class="flogo">⚡ Geolandar</div>
     <div class="fn" style="display:flex;gap:14px;flex-wrap:wrap;">
-      <span id="ftr-legal">Mentions légales</span>
-      <span id="ftr-privacy">Politique de confidentialité</span>
-      <span id="ftr-cgv">CGV</span>
+      <a href="#" class="ftr-link" data-legal="mentions" onclick="openLegal('mentions');return false;">Mentions légales</a><a href="#" class="ftr-link" data-legal="confidentialite" onclick="openLegal('confidentialite');return false;">Politique de confidentialité</a><a href="#" class="ftr-link" data-legal="contact" onclick="openLegal('contact');return false;">Contact</a>
     </div>
     <div class="fn">© 2026 Geolandar</div>
   </footer>
@@ -588,6 +564,7 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
   <footer>
     <div class="flogo">⚡ Geolandar</div>
     <div class="fn" id="ftr-src-cal">Sources : Reuters, AFP, Wikipedia, Banque Mondiale, IFES — 2026</div>
+    <div class="ftr-links"><a href="#" class="ftr-link" data-legal="mentions" onclick="openLegal('mentions');return false;">Mentions légales</a><a href="#" class="ftr-link" data-legal="confidentialite" onclick="openLegal('confidentialite');return false;">Politique de confidentialité</a><a href="#" class="ftr-link" data-legal="contact" onclick="openLegal('contact');return false;">Contact</a></div>
     <div class="fn">© 2026 Geolandar</div>
   </footer>
 </div>
@@ -606,6 +583,7 @@ footer{border-top:1px solid var(--bd);padding:18px 28px;display:flex;justify-con
   <footer>
     <div class="flogo">⚡ Geolandar</div>
     <div class="fn" id="ftr-src-pays">Sources : Banque Mondiale, V-Dem, Transparency International — 2025</div>
+    <div class="ftr-links"><a href="#" class="ftr-link" data-legal="mentions" onclick="openLegal('mentions');return false;">Mentions légales</a><a href="#" class="ftr-link" data-legal="confidentialite" onclick="openLegal('confidentialite');return false;">Politique de confidentialité</a><a href="#" class="ftr-link" data-legal="contact" onclick="openLegal('contact');return false;">Contact</a></div>
     <div class="fn">© 2026 Geolandar</div>
   </footer>
 </div>
@@ -1758,6 +1736,7 @@ function fmtDate(d,cert){
   try{return new Date(d+'T00:00:00').toLocaleDateString(lang==='fr'?'fr-FR':'en-GB',{day:'numeric',month:'long',year:'numeric'});}catch(e){return d;}
 }
 function cdown(e){
+  if(e.enCours){ var _d2=daysTo(tour2(e)); return '<span class="cdbdg cd3">🔁 '+(lang==='fr'?'2nd tour ':'Runoff ')+(_d2===0?(lang==='fr'?"aujourd'hui":'today'):(lang==='fr'?'dans '+_d2+'j':'in '+_d2+'d'))+'</span>'; }
   if(e.done){
     if(!e.result) return '<span class="cdbdg cdd" title="'+(lang==='fr'?'Vote clos, dépouillement en cours':'Vote closed, count in progress')+'">⏳ '+(lang==='fr'?'Résultat en attente':'Result pending')+'</span>';
     return '<span class="cdbdg cdd">✓ '+(lang==='fr'?'Terminée':'Ended')+'</span>';
@@ -2335,6 +2314,7 @@ function renderYears(){
 function shiftY(dir){var i=YEARS.indexOf(aYear)+dir;if(i>=0&&i<YEARS.length){aYear=YEARS[i];renderYears();renderCal();}}
 
 function renderCal(){
+  if(typeof majTours==='function') majTours();
   var q=(document.getElementById('fsrch').value||'').toLowerCase();
   var ft=document.getElementById('ftype').value;
   var fr=document.getElementById('freg').value;
@@ -2358,7 +2338,7 @@ function renderCal(){
     if(partielles.length > 0){
       bannerEl.style.display = 'block';
       listEl.innerHTML = partielles.map(function(e){
-        return '<span style="padding:4px 10px;background:rgba(139,92,246,.2);border-radius:20px;font-size:.75rem;color:#c4b5fd;cursor:pointer;filter:blur(3px);user-select:none;" title="Disponible avec l offre Pro">'+e.p+'</span>';
+        return '<span style="padding:4px 10px;background:rgba(139,92,246,.2);border-radius:20px;font-size:.75rem;color:#c4b5fd;cursor:pointer;filter:blur(3px);user-select:none;" title="À venir très prochainement">'+e.p+'</span>';
       }).join('');
     } else {
       bannerEl.style.display = 'none';
@@ -2383,7 +2363,8 @@ function renderCal(){
 /* ══ MODAL DETAIL ══ */
 function openModal(id){
   var e=E.find(function(x){return x.id===id;});if(!e)return;
-  var ind=findInd(e.p),src=SRC[e.p],r=e.result;
+  majTours();
+  var ind=findInd(e.p),src=SRC[e.p],r=e.enCours?null:e.result;
   /* Si résultat pas inline, chercher dans eByP */
   if(!r && e.done) {
     var _allE=(eByP[e.p]||[]);
@@ -2397,6 +2378,11 @@ function openModal(id){
   document.getElementById('mt').textContent=e.p;
   document.getElementById('ms').textContent=btlbl(e.t)+' · '+fmtDate(e.d,e.cert);
   var b='';
+  if(e.enCours){
+    b+='<div class="msec"><h3>🔁 '+(lang==='fr'?'Élection en cours':'Election in progress')+'</h3><div class="ctxbox">'
+      +(lang==='fr'?'Le 1er tour a eu lieu le '+fmtDate(e.d,1)+'. Le second tour se tiendra le <strong>'+fmtDate(tour2(e),1)+'</strong> : le résultat définitif sera affiché après ce second tour.'
+                   :'The first round was held on '+fmtDate(e.d,1)+'. The runoff will take place on <strong>'+fmtDate(tour2(e),1)+'</strong>; the final result will be shown afterwards.')+'</div></div>';
+  }
   // INDICATEURS
   if(ind){
     b+='<div class="msec"><h3>'+(lang==='fr'?'Indicateurs économiques & politiques':'Economic & political indicators')+'</h3><div class="minds">';
@@ -2420,6 +2406,7 @@ function openModal(id){
       b+='</div>';
     }
     b+='</div>';
+    b+=teaserMediumLegislatif(e.result?e:Object.assign({},e,{result:r}),false);
     if(src)b+='<a href="'+src.url+'" target="_blank" rel="noopener" class="srcbtn">🔗 '+(lang==='fr'?'Source officielle — ':'Official source — ')+src.n+'</a>';
     b+='</div>';
   } else if(e.done && !r){
@@ -2581,7 +2568,7 @@ function openCountryCulture(pays){
       +'<a href="https://news.google.com/search?q='+qNews+'&'+newsHost+'" target="_blank" rel="noopener" class="culture-link">📰 '+(fr?'Actualités récentes':'Recent news')+'</a>'
       +'<a href="https://www.google.com/search?q='+qCulture+'" target="_blank" rel="noopener" class="culture-link">🎭 '+(fr?'Culture & société':'Culture & society')+'</a>'
     +'</div>'
-    +'<div class="culture-teaser">🔒 '+(fr?"La formule <strong>Medium</strong> détaille les institutions, le mode de gouvernance et l'histoire complète de chaque pays — sans avoir à chercher sur plusieurs sites.":"The <strong>Medium</strong> plan details each country's institutions, governance system and full history — without hunting across several sites.")+'</div>'
+    +'<div class="culture-teaser">🔒 '+(fr?"<strong>À venir très prochainement</strong> : le détail des institutions, du mode de gouvernance et de l'histoire complète de chaque pays — sans avoir à chercher sur plusieurs sites.":"<strong>Coming very soon</strong>: each country's institutions, governance system and full history in detail — without hunting across several sites.")+'</div>'
     +'</div>';
   mbody.insertAdjacentHTML('beforeend', html);
   fetchWikipediaSummary(pays, boxId);
@@ -2665,6 +2652,58 @@ var _RESULTATS={
    codée en dur : voir avantScrutinPasse(). */
 E.forEach(function(e){ if(!e.done) e.avantScrutin=true; });
 function avantScrutinPasse(e){ return !!(e && e.done && e.avantScrutin); }
+/* ══ ÉLECTIONS À DEUX TOURS ══ */
+function tour2(e){
+  if(!e) return null;
+  if(e.d2) return e.d2;
+  if(e.t!=='p'||!e.d||e.d.indexOf('-00')>=0) return null;
+  var t0=new Date(e.d+'T00:00:00'),best=null;
+  E.forEach(function(x){
+    if(x===e||x.p!==e.p||x.t!==e.t||!x.d||x.d.indexOf('-00')>=0) return;
+    var dj=(new Date(x.d+'T00:00:00')-t0)/86400000;
+    if(dj>=7&&dj<=60&&(!best||x.d<best)) best=x.d;
+  });
+  return best;
+}
+function majTours(){
+  E.forEach(function(e){ e.estTour2=false; });
+  E.forEach(function(e){
+    var t2=tour2(e), d1=daysTo(e.d), d2=t2?daysTo(t2):null;
+    if(t2 && !e.d2) E.forEach(function(x){ if(x!==e&&x.p===e.p&&x.t===e.t&&x.d===t2) x.estTour2=true; });
+    if(t2 && d1!==null && d1<0 && d2!==null && d2>=0){
+      /* 1er tour passé, 2nd tour à venir : élection toujours en cours */
+      if(!e.enCours && e.result) e.resultTour1=e.result;
+      e.enCours=true; e.result=null; e.done=false;
+    } else if(e.enCours){
+      e.enCours=false;
+      if(d2!==null && d2<0) e.done=true;
+    }
+  });
+}
+function majToursThrottle(){ var n=Date.now(); if(!window._mtT||n-window._mtT>300){ window._mtT=n; majTours(); } }
+/* Date du 2nd tour lue dans Supabase (colonne date_tour2). Si la colonne
+   n'existe pas encore, la requête échoue sans rien casser. */
+function loadToursSupabase(){
+  supaFetch('elections','select=pays,date,date_tour2&date_tour2=not.is.null').then(function(rows){
+    if(!rows||!rows.length) return;
+    var ch=false;
+    rows.forEach(function(r){ E.forEach(function(e){ if(e.p===r.pays&&e.d===r.date&&e.d2!==r.date_tour2){ e.d2=r.date_tour2; ch=true; } }); });
+    if(!ch) return;
+    majTours(); renderCal();
+    try{ renderSpotlight(); }catch(x){}
+    if(typeof gCountriesG!=='undefined'&&gCountriesG) gCountriesG.selectAll('.cp').attr('fill',function(d){ try{return paysColor(d.id);}catch(err){return '#1e3a5f';} });
+  }).catch(function(){});
+}
+setTimeout(loadToursSupabase,2500);
+
+/* Teaser offre Medium pour les scrutins parlementaires terminés */
+function teaserMediumLegislatif(e, compact){
+  if(!e || !e.done || !e.result || (e.t!=='l' && e.t!=='s')) return '';
+  var fr=lang==='fr';
+  var txt=fr?"<strong>Résultats détaillés</strong> (sièges par parti, nouvelle majorité) — à venir très prochainement."
+            :"<strong>Detailed results</strong> (seats per party, new majority) — coming very soon.";
+  return '<div class="culture-teaser" style="'+(compact?'margin-top:6px;padding:6px 9px;font-size:.66rem':'')+'">🔒 '+txt+'</div>';
+}
 E.forEach(function(e){
   var dt = daysTo(e.d);
   var isPast = (dt !== null && dt < 0) || e.done;
@@ -2762,6 +2801,7 @@ function globeSphereColor(){
    mise à jour, provoquant un "ReferenceError: paysColor is not defined"
    qui interrompait silencieusement le reste du script. */
 function paysColor(id){
+  if(typeof majToursThrottle==='function') majToursThrottle();
   try {
     var iso=String(id).padStart(3,'0');
     var pays=ISO3[iso];
@@ -3226,6 +3266,7 @@ function initGlobe(){
 
 /* ══ AFFICHAGE PAYS (Globe) ══ */
 function showCountry(pays,zoomTarget){
+  majTours();
   var ind=findInd(pays),es_complet=E.filter(function(e){return e.p===pays;}),src=SRC[pays],info=INFO[pays];
   /* N'afficher que les élections dans la fenêtre 2026-2028 — les données
      hors fenêtre (ex: 2025 déjà passées) restent en mémoire dans es_complet
@@ -3281,10 +3322,13 @@ function showCountry(pays,zoomTarget){
       var ct=e.done?'✓ '+(lang==='fr'?'Scrutin tenu':'Vote held'):(e.cert===1?'✓ '+(lang==='fr'?'Date confirmée':'Confirmed date'):'📅 '+(lang==='fr'?'En ':'In ')+e.d.substring(0,4));
       bR+='<div class="gelec'+(e.done?' done':'')+'">';
       bR+='<div class="geltop"><span class="geltype '+bcls(e.t)+'">'+btlbl(e.t)+'</span><span class="geldate">'+fmtDate(e.d,e.cert)+'</span></div>';
+      if(e.enCours){ cc='gc1b'; ct='🔁 '+(lang==='fr'?'1er tour tenu · 2nd tour le ':'First round held · runoff on ')+fmtDate(tour2(e),1); }
+      else if(e.estTour2){ ct='🔁 '+(lang==='fr'?'2nd tour · ':'Runoff · ')+ct; }
       bR+='<div class="gelcert '+cc+'">'+ct+'</div>';
       if(e.done&&r){
         bR+='<div class="gelwin">🏆 '+r.winner+'</div><div class="gelsco">'+r.party+' · '+r.score+'</div>';
         if(r.gov)bR+='<div style="font-size:.64rem;color:var(--a3);font-style:italic;margin-top:2px">'+r.gov+'</div>';
+        bR+=teaserMediumLegislatif(e,true);
         if(r.bars)r.bars.slice(0,3).forEach(function(b){bR+='<div class="gelbr"><span class="gbrnm">'+b.n+'</span><div class="gbrwrap"><div class="gbrfill" style="width:'+b.pct+'%;background:'+(b.won?'#10b981':'#3b82f6')+'"></div></div><span class="gbrpct">'+b.pct+'%</span></div>';});
         if(src)bR+='<a href="'+src.url+'" target="_blank" rel="noopener" class="gsrc">🔗 '+(lang==='fr'?lang==='en'?'Official results':'Résultats officiels':'Official results')+'</a>';
       }else{
@@ -3410,7 +3454,9 @@ function setLang(l){
     'legd5': fr?'Aucun scrutin prévu sur 2026-2028 pour ce pays':'No vote planned for 2026-2028 for this country',
     /* Abonnements */
     'pricing-title': fr?'Formules':'Plans',
-    'pricing-sub':   fr?'🔜 Aperçu des offres à venir — paiement non actif, à titre indicatif':'🔜 Preview of upcoming plans — payment not active, for reference only',
+    'pricing-soon-title': fr?'À venir':'Coming soon',
+    'pricing-soon-txt': fr?'De nouvelles formules pour aller plus loin arrivent très prochainement.':'New plans to go further are coming very soon.',
+    'pricing-sub':   fr?'🔜 À venir':'🔜 Coming soon',
     /* Spotlight */
     'spotlight-eyebrow': fr?'🗳️ Élection partielle ce mois-ci':'🗳️ By-election this month',
     'introScrolldownTxt': fr?'Défiler pour explorer le globe':'Scroll to explore the globe',
@@ -3449,7 +3495,7 @@ function setLang(l){
     'filter-sen':    fr?'Sénatoriale':'Senate',
     /* Encart partielles */
     'partial-title': fr?'🗳️ ÉLECTIONS PARTIELLES CE MOIS-CI':'🗳️ BY-ELECTIONS THIS MONTH',
-    'partial-badge': fr?'Offre Pro':'Pro Plan',
+    'partial-badge': fr?'À venir':'Coming soon',
     /* Résultats */
     'res-elu':       fr?'ÉLU(E) / VAINQUEUR':'ELECTED / WINNER',
     'res-certif':    fr?'Résultats certifiés':'Certified results',
@@ -4106,7 +4152,58 @@ function loadPaysDuMoisSupabase(){
   }).catch(function(){});
 }
 setTimeout(loadPaysDuMoisSupabase,1000);
+/* ══ PAGES LÉGALES & CONTACT ══
+   Les textes définitifs (mentions légales, politique de confidentialité)
+   seront collés dans LEGAL_PAGES[...].html. Tant qu'un texte est vide, la
+   fenêtre indique qu'il sera publié prochainement.
+   Contact : formulaire qui ouvre la messagerie du visiteur vers
+   CONTACT_EMAIL (adresse OVH). Aucune donnée n'est stockée par le site. */
+var CONTACT_EMAIL='';
+var LEGAL_PAGES={
+  mentions:{fr:'Mentions légales',en:'Legal notice',html:''},
+  confidentialite:{fr:'Politique de confidentialité',en:'Privacy policy',html:''}
+};
+function openLegal(k){
+  var fr=lang==='fr';
+  document.getElementById('mflag').innerHTML='';
+  var b='';
+  if(k==='contact'){
+    document.getElementById('mt').textContent=fr?'Contact':'Contact';
+    document.getElementById('ms').textContent=fr?'Une question, une erreur repérée, une suggestion ?':'A question, an error, a suggestion?';
+    b+='<div class="msec"><form id="contactForm" onsubmit="return envoyerContact(event)" style="display:flex;flex-direction:column;gap:10px">'
+      +'<input class="cf-in" id="cfNom" required placeholder="'+(fr?'Votre nom':'Your name')+'">'
+      +'<input class="cf-in" id="cfMail" type="email" required placeholder="'+(fr?'Votre adresse e-mail':'Your email address')+'">'
+      +'<input class="cf-in" id="cfObjet" required placeholder="'+(fr?'Objet':'Subject')+'">'
+      +'<textarea class="cf-in" id="cfMsg" required rows="6" placeholder="'+(fr?'Votre message':'Your message')+'"></textarea>'
+      +'<button type="submit" class="modal-cta-btn" style="align-self:flex-start">'+(fr?'Envoyer':'Send')+'</button>'
+      +'<div id="cfInfo" style="font-size:.7rem;color:var(--mu);line-height:1.5">'+(fr?"En cliquant sur « Envoyer », votre logiciel de messagerie s'ouvre avec le message prêt à partir. Le site ne conserve aucune donnée.":"Clicking “Send” opens your email app with the message ready to go. The site stores no data.")+'</div>'
+      +'</form></div>';
+  } else {
+    var p=LEGAL_PAGES[k]; if(!p) return;
+    document.getElementById('mt').textContent=fr?p.fr:p.en;
+    document.getElementById('ms').textContent='Geolandar';
+    b+='<div class="msec"><div class="ctxbox" style="line-height:1.65">'+(p.html||(fr?'Le texte complet sera publié très prochainement.':'The full text will be published very soon.'))+'</div></div>';
+  }
+  document.getElementById('mbody').innerHTML=b;
+  document.getElementById('ov').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function envoyerContact(ev){
+  if(ev) ev.preventDefault();
+  var fr=lang==='fr';
+  if(!CONTACT_EMAIL){
+    document.getElementById('cfInfo').textContent=fr?"Le formulaire sera actif très prochainement.":"The form will be active very soon.";
+    return false;
+  }
+  var nom=document.getElementById('cfNom').value, mail=document.getElementById('cfMail').value,
+      objet=document.getElementById('cfObjet').value, msg=document.getElementById('cfMsg').value;
+  var corps=msg+'\n\n— '+nom+' ('+mail+')';
+  window.location.href='mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent('[Geolandar] '+objet)+'&body='+encodeURIComponent(corps);
+  return false;
+}
+
 function renderSpotlight(){
+  if(typeof majTours==='function') majTours();
   var wrap=document.getElementById('spotlightWrap');
   if(!wrap) return;
   var card=document.getElementById('spotlightCard');
@@ -4132,11 +4229,12 @@ function renderSpotlight(){
   if(partielles.length){
     electionsVedette=partielles.slice();
   } else {
-    var candidates=E.filter(function(e){ var d=daysTo(e.d); return !e.done && d!==null && d>=0; });
-    candidates.sort(function(a,b){ return daysTo(a.d)-daysTo(b.d); });
+    var dEff=function(e){ return e.enCours?daysTo(tour2(e)):daysTo(e.d); };
+    var candidates=E.filter(function(e){ var d=dEff(e); return !e.done && d!==null && d>=0; });
+    candidates.sort(function(a,b){ return dEff(a)-dEff(b); });
     if(candidates.length){
-      var dMin=daysTo(candidates[0].d);
-      electionsVedette=candidates.filter(function(e){ return daysTo(e.d)===dMin; });
+      var dMin=dEff(candidates[0]);
+      electionsVedette=candidates.filter(function(e){ return dEff(e)===dMin; });
     }
   }
 
@@ -4164,7 +4262,7 @@ function renderSpotlight(){
   function renderElectionSlide(e){
     if(eyebrow) eyebrow.textContent=(partielles.length?(fr?'🗳️ Élection partielle ce mois-ci':'🗳️ By-election this month'):(fr?'🗳️ Élection à la une':'🗳️ Featured election'));
     var html='<div class="spotlight-top centered"><div class="spotlight-flag" id="spotlightFlagBox"></div><div class="spotlight-country">'+e.p+'</div></div>';
-    html+='<div class="spotlight-facts"><div class="spotlight-fact"><span>📅</span>'+fmtDate(e.d,e.cert)+'</div><div class="spotlight-fact"><span>🗳️</span>'+btlbl(e.t)+'</div></div>';
+    html+='<div class="spotlight-facts"><div class="spotlight-fact"><span>📅</span>'+(e.enCours?(fr?'2nd tour : ':'Runoff: ')+fmtDate(tour2(e),1):fmtDate(e.d,e.cert))+'</div><div class="spotlight-fact"><span>🗳️</span>'+btlbl(e.t)+'</div></div>';
     var leaderE=LEADERS[e.p];
     if(leaderE) html+='<div class="spotlight-fact-single"><span>👤</span>'+(fr?'Dirigeant actuel : ':'Current leader: ')+leaderE.n+' — '+leaderE.t+'</div>';
     if(e.done&&e.result){
