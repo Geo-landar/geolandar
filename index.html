@@ -1834,7 +1834,7 @@ var LEADERS = {
 "Italie":{n:"Giorgia Meloni",t:"Présidente du Conseil",p:"Fratelli d'Italia (droite nationale)",pos:6,d:"Nationaliste conservatrice. Post-fasciste réformée. Pro-OTAN mais eurosceptique sur les migrations. Première femme à diriger l'Italie."},
 "Espagne":{n:"Pedro Sánchez",t:"Président du gouvernement",p:"PSOE (centre-gauche)",pos:-3,d:"Social-démocrate. Coalition avec Sumar (gauche radicale). Amnistie catalane controversée. Politique sociale progressiste."},
 "Pologne":{n:"Donald Tusk",t:"Premier ministre",p:"KO (centre-droit libéral)",pos:2,d:"Pro-européen convaincu. Restauration de l'État de droit après PiS. Soutien fort à l'Ukraine. Augmentation massive du budget défense."},
-"Pays-Bas":{n:"Dick Schoof",t:"Premier ministre",p:"Coalition VVD-PVV-NSC-BBB (droite)",pos:5,d:"Gouvernement de droite populiste soutenu par Geert Wilders (PVV). Politique migratoire très restrictive. Tensions avec l'UE sur les quotas."},
+"Pays-Bas":{n:"Rob Jetten",t:"Premier ministre",p:"D66 (centre, libéral-progressiste)",pos:0,d:"Chef du parti D66, arrivé en tête des législatives d'octobre 2025 devant le PVV de Geert Wilders. Plus jeune Premier ministre de l'histoire du pays, à la tête d'une coalition centriste. Priorités : logement, climat, réforme de l'asile."},
 "Suede":{n:"Ulf Kristersson",t:"Premier ministre",p:"Parti Modéré (centre-droit)",pos:4,d:"Gouvernement de droite soutenu par les Démocrates de Suède. Politique sécuritaire dure face aux gangs. Relance du nucléaire."},
 "Norvege":{n:"Jonas Gahr Støre",t:"Premier ministre",p:"Parti Travailliste (centre-gauche)",pos:-3,d:"Social-démocrate. Gestion du fonds souverain (1 700 Md$). Défense du modèle scandinave. Tensions sur la politique pétrolière vs environnement."},
 "Danemark":{n:"Mette Frederiksen",t:"Première ministre",p:"Parti Social-Démocrate",pos:-2,d:"Social-démocrate au discours ferme sur l'immigration. Coalition centre-gauche reformée après mars 2026. Défense à 3% du PIB."},
@@ -3713,7 +3713,7 @@ function loadElectionsFromSupabase() {
   /* Charger uniquement les élections nationales depuis Supabase — les
      régionales (niveau='regionale') sont réservées à une future offre
      Medium et ne doivent pas polluer l'affichage grand public. */
-  supaFetch('elections', 'select=pays,date,winner,party,done,type&niveau=eq.national&order=date.desc')
+  supaFetch('elections', 'select=pays,date,winner,party,done,type,cert&niveau=eq.national&order=date.desc')
     .then(function(rows) {
       if (!rows || !rows.length) return;
       var added = 0;
@@ -3809,7 +3809,7 @@ function loadElectionsFromSupabase() {
           r: regionPays(row.pays),
           t: row.type || 'l',
           d: row.date,
-          cert: 2,
+          cert: (row.cert===1||row.cert===2||row.cert===3)?row.cert:2,
           /* CORRECTIF : si la date est déjà passée, marquer done=true même
              si Supabase indique false — sinon une élection 2025 découverte
              après coup atterrit comme "à venir" dans le calcul de couleur
@@ -4393,6 +4393,13 @@ function syncDirigeants(){
       rows.forEach(function(row){
         if(!row.pays) return;
         var existant = LEADERS[row.pays];
+        /* Wikidata hésite entre plusieurs titulaires (fiabilité 4) : on garde
+           la fiche rédigée à la main plutôt qu'un choix incertain. */
+        if(row.fiabilite===4 && existant) return;
+        /* Même personne que la fiche rédigée : on garde le titre et la
+           description détaillés (Supabase ne fournit qu'un texte générique). */
+        var _nn=function(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z ]/g,' ').trim().split(/\s+/).pop();};
+        var memePersonne = existant && existant.n && row.nom && _nn(existant.n)===_nn(row.nom);
         var nouvellePos = (row.position===null||row.position===undefined)?null:row.position;
         /* CORRECTIF : si Supabase ne connaît pas la position (null) mais
            qu'une entrée statique correcte existe déjà (écrite à la main),
@@ -4406,10 +4413,10 @@ function syncDirigeants(){
           : nouvellePos;
         LEADERS[row.pays]={
           n: row.nom||(existant?existant.n:'')||'',
-          t: row.titre||(existant?existant.t:'')||'',
-          p: row.parti||(existant?existant.p:'')||'',
+          t: (memePersonne&&existant.t)?existant.t:(row.titre||(existant?existant.t:'')||''),
+          p: (memePersonne&&existant.p)?existant.p:(row.parti||(existant?existant.p:'')||''),
           pos: posFinale,
-          d: row.description||(existant?existant.d:'')||'',
+          d: (memePersonne&&existant.d)?existant.d:(row.description||(existant?existant.d:'')||''),
           fiab: row.fiabilite||(existant?existant.fiab:null)||null
         };
       });
