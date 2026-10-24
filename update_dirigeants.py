@@ -1,58 +1,130 @@
 import requests
 import re
-QID_BRUT = re.compile(r'^Q\d+$')
 from supabase import create_client
 from datetime import datetime, date
 import os
 import time
 
-# ══════════════════════════════════════
-# CONFIGURATION
-# ══════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════
+#  GEOLANDAR — Mise à jour automatique des dirigeants — v2.0 (24/10/2026)
+#  Corrections par rapport à la v1 :
+#   1. Chaque dirigeant est écrit sous le nom de pays UTILISÉ PAR LE SITE
+#      (identification par code ISO). Avant, une vingtaine de pays étaient
+#      écrits sous le nom Wikidata (« Royaume des Pays-Bas »…) et le site
+#      ne les voyait jamais (ex. Pays-Bas bloqué sur Dick Schoof).
+#   2. Liste corrigée des pays où le pouvoir réel est au chef de l'État
+#      (Arménie, Géorgie, Mongolie, Cambodge… affichaient la mauvaise personne).
+#   3. Wikidata : les déclarations « obsolètes » sont ignorées, la déclaration
+#      « préférée » l'emporte en cas de doute.
+#   4. Corrections manuelles conditionnelles quand Wikidata est en retard
+#      (ex. Népal) : elles ne s'appliquent QUE tant que Wikidata renvoie encore
+#      l'ancien nom, puis se désactivent toutes seules.
+#   5. Pays absents du site, collèges (Suisse, Saint-Marin) : jamais écrits.
+# ══════════════════════════════════════════════════════════════════
+
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://tmbupyyugedmtmvzadeq.supabase.co")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_KEY else None
+
+QID_BRUT = re.compile(r'^Q\d+$')
 
 # ══════════════════════════════════════
-# NORMALISATION DES NOMS DE PAYS
-# (mêmes conventions que E[]/PAYS[]/LEADERS dans index.html)
+# NOMS DE PAYS — ALIGNÉS SUR LE SITE (v2, 24/10/2026)
+# Le site cherche chaque pays sous SON nom exact (« Pays-Bas », « Chine »…).
+# On identifie donc le pays par son code ISO (Wikidata P297), puis on le
+# traduit avec la table ci-dessous, générée à partir du site lui-même.
+# Si le code manque, on se rabat sur le nom Wikidata corrigé (NOMS_PAYS).
+# Un pays qui ne figure pas sur le site est ignoré (et signalé dans le journal).
 # ══════════════════════════════════════
+ISO_VERS_SITE = {
+    "ad":"Andorre", "ae":"Emirats arabes", "af":"Afghanistan", "ag":"Antigua-et-Barbuda", "al":"Albanie", "am":"Armenie",
+    "ao":"Angola", "ar":"Argentine", "as":"Samoa americaines", "at":"Autriche", "au":"Australie", "aw":"Aruba",
+    "az":"Azerbaidjan", "ba":"Bosnie", "bb":"Barbade", "bd":"Bangladesh", "be":"Belgique", "bf":"Burkina Faso",
+    "bg":"Bulgarie", "bh":"Bahrein", "bi":"Burundi", "bj":"Benin", "bm":"Bermudes", "bn":"Brunei",
+    "bo":"Bolivie", "br":"Bresil", "bs":"Bahamas", "bt":"Bhoutan", "bw":"Botswana", "by":"Belarus",
+    "bz":"Belize", "ca":"Canada", "cc":"Iles Cocos", "cd":"RD Congo", "cf":"Centrafrique", "cg":"Rep. du Congo",
+    "ch":"Suisse", "ci":"Cote d'Ivoire", "ck":"Iles Cook", "cl":"Chili", "cm":"Cameroun", "cn":"Chine",
+    "co":"Colombie", "cr":"Costa Rica", "cu":"Cuba", "cv":"Cap-Vert", "cw":"Curaçao", "cx":"Ile Christmas",
+    "cy":"Chypre", "cz":"Tchequie", "de":"Allemagne", "dj":"Djibouti", "dk":"Danemark", "dm":"Dominique",
+    "do":"Rep. dominicaine", "dz":"Algerie", "ec":"Equateur", "ee":"Estonie", "eg":"Egypte", "eh":"Sahara occidental",
+    "er":"Erythree", "es":"Espagne", "et":"Ethiopie", "fi":"Finlande", "fj":"Fidji", "fk":"Iles Falkland",
+    "fm":"Micronesie", "fo":"Iles Féroé", "fr":"France", "ga":"Gabon", "gb":"Royaume-Uni", "gd":"Grenade",
+    "ge":"Georgie", "gf":"Guyane française", "gh":"Ghana", "gi":"Gibraltar", "gl":"Groenland", "gm":"Gambie",
+    "gn":"Guinee", "gp":"Guadeloupe", "gq":"Guinee equatoriale", "gr":"Grece", "gs":"Géorgie du Sud", "gt":"Guatemala",
+    "gu":"Guam", "gw":"Guinee-Bissau", "gy":"Guyana", "hk":"Hong Kong", "hm":"Ile Heard", "hn":"Honduras",
+    "hr":"Croatie", "ht":"Haiti", "hu":"Hongrie", "id":"Indonesie", "ie":"Irlande", "il":"Israel",
+    "im":"Ile de Man", "in":"Inde", "io":"Territoire britannique OI", "iq":"Irak", "ir":"Iran", "is":"Islande",
+    "it":"Italie", "je":"Jersey", "jm":"Jamaique", "jo":"Jordanie", "jp":"Japon", "ke":"Kenya",
+    "kg":"Kirghizstan", "kh":"Cambodge", "ki":"Kiribati", "km":"Comores", "kn":"Saint-Kitts", "kp":"Coree du Nord",
+    "kr":"Coree du Sud", "kw":"Koweit", "ky":"Iles Caiman", "kz":"Kazakhstan", "la":"Laos", "lb":"Liban",
+    "lc":"Sainte-Lucie", "li":"Liechtenstein", "lk":"Sri Lanka", "lr":"Liberia", "ls":"Lesotho", "lt":"Lituanie",
+    "lu":"Luxembourg", "lv":"Lettonie", "ly":"Libye", "ma":"Maroc", "mc":"Monaco", "md":"Moldavie",
+    "me":"Montenegro", "mf":"Saint-Martin", "mg":"Madagascar", "mh":"Iles Marshall", "mk":"Macedoine du Nord", "ml":"Mali",
+    "mm":"Myanmar", "mn":"Mongolie", "mq":"Martinique", "mr":"Mauritanie", "mt":"Malte", "mu":"Maurice",
+    "mv":"Maldives", "mw":"Malawi", "mx":"Mexique", "my":"Malaisie", "mz":"Mozambique", "na":"Namibie",
+    "nc":"Nouvelle-Caledonie", "ne":"Niger", "ng":"Nigeria", "ni":"Nicaragua", "nl":"Pays-Bas", "no":"Norvege",
+    "np":"Nepal", "nr":"Nauru", "nu":"Niue", "nz":"Nouvelle-Zelande", "om":"Oman", "pa":"Panama",
+    "pe":"Perou", "pf":"Polynésie française", "pg":"Papouasie-NG", "ph":"Philippines", "pk":"Pakistan", "pl":"Pologne",
+    "pm":"Saint-Pierre-et-Miquelon", "pr":"Puerto Rico", "pt":"Portugal", "pw":"Palau", "py":"Paraguay", "qa":"Qatar",
+    "ro":"Roumanie", "rs":"Serbie", "ru":"Russie", "rw":"Rwanda", "sa":"Arabie Saoudite", "sb":"Iles Salomon",
+    "sd":"Soudan", "se":"Suede", "sg":"Singapour", "sh":"Sainte-Hélène", "si":"Slovenie", "sk":"Slovaquie",
+    "sl":"Sierra Leone", "sm":"Saint-Marin", "sn":"Senegal", "so":"Somalie", "sr":"Suriname", "ss":"Soudan du Sud",
+    "st":"Sao Tome-et-Principe", "sv":"El Salvador", "sx":"Sint Maarten", "sy":"Syrie", "sz":"Eswatini", "tc":"Iles Turques-et-Caïques",
+    "td":"Tchad", "tf":"Terres australes françaises", "tg":"Togo", "th":"Thailande", "tj":"Tadjikistan", "tk":"Tokelau",
+    "tl":"Timor oriental", "tm":"Turkmenistan", "tn":"Tunisie", "to":"Tonga", "tr":"Turquie", "tt":"Trinidad & Tobago",
+    "tw":"Taiwan", "tz":"Tanzanie", "ua":"Ukraine", "ug":"Ouganda", "um":"Iles mineures éloignées", "us":"Etats-Unis",
+    "uy":"Uruguay", "uz":"Ouzbekistan", "vc":"Saint-Vincent", "ve":"Venezuela", "vg":"Iles Vierges britanniques", "vi":"Iles Vierges américaines",
+    "vn":"Vietnam", "vu":"Vanuatu", "wf":"Wallis-et-Futuna", "ws":"Samoa", "xk":"Kosovo", "ye":"Yemen",
+    "yt":"Mayotte", "za":"Afrique du Sud", "zm":"Zambie", "zw":"Zimbabwe",
+}
+NOMS_SITE = set(ISO_VERS_SITE.values()) | {"Somaliland"}
+
+# États dont Wikidata range le code ISO sur une autre fiche (royaumes « constitutifs »)
+QID_VERS_SITE = {"Q29999": "Pays-Bas", "Q756617": "Danemark"}
+
 NOMS_PAYS = {
-    "Algérie": "Algerie", "Arménie": "Armenie", "Bélarus": "Belarus",
-    "Bénin": "Benin", "Brésil": "Bresil", "Corée du Sud": "Coree du Sud",
-    "Corée du Nord": "Coree du Nord", "Côte d'Ivoire": "Cote d'Ivoire",
-    "Érythrée": "Erythree", "Éthiopie": "Ethiopie", "Équateur": "Equateur",
-    "Fédération de Russie": "Russie", "Géorgie": "Georgie", "Grèce": "Grece",
-    "Guinée": "Guinee", "Guinée-Bissau": "Guinee-Bissau",
-    "Guinée équatoriale": "Guinee equatoriale", "Haïti": "Haiti",
-    "Indonésie": "Indonesie", "Israël": "Israel", "Jamaïque": "Jamaique",
-    "Macédoine du Nord": "Macedoine du Nord", "Monténégro": "Montenegro",
-    "Mozambique": "Mozambique", "Népal": "Nepal", "Nigéria": "Nigeria",
-    "Norvège": "Norvege", "Nouvelle-Zélande": "Nouvelle-Zelande",
-    "Ouzbékistan": "Ouzbekistan", "Papouasie-Nouvelle-Guinée": "Papouasie-NG",
-    "Pérou": "Perou", "République centrafricaine": "Centrafrique",
-    "République démocratique du Congo": "RD Congo",
-    "République dominicaine": "Rep. dominicaine",
-    "République du Congo": "Rep. du Congo",
-    "São Tomé-et-Príncipe": "Sao Tome-et-Principe",
-    "Sénégal": "Senegal", "Slovénie": "Slovenie",
-    "Sri Lanka": "Sri Lanka", "Suède": "Suede",
-    "Tchéquie": "Tchequie", "Thaïlande": "Thailande",
-    "Trinité-et-Tobago": "Trinidad & Tobago",
-    "Turkménistan": "Turkmenistan",
-    "Viêt Nam": "Vietnam", "Yémen": "Yemen", "États-Unis": "Etats-Unis",
-    "Émirats arabes unis": "Emirats arabes", "El Salvador": "El Salvador",
+    "Algérie":"Algerie","Arménie":"Armenie","Bélarus":"Belarus","Biélorussie":"Belarus",
+    "Bénin":"Benin","Brésil":"Bresil","Corée du Sud":"Coree du Sud","République de Corée":"Coree du Sud",
+    "Corée du Nord":"Coree du Nord","Côte d'Ivoire":"Cote d'Ivoire","Érythrée":"Erythree",
+    "Éthiopie":"Ethiopie","Équateur":"Equateur","Fédération de Russie":"Russie","Géorgie":"Georgie",
+    "Grèce":"Grece","Guinée":"Guinee","Guinée-Bissau":"Guinee-Bissau","Guinée équatoriale":"Guinee equatoriale",
+    "Haïti":"Haiti","Îles Marshall":"Iles Marshall","Îles Salomon":"Iles Salomon","Indonésie":"Indonesie",
+    "Israël":"Israel","Jamaïque":"Jamaique","Macédoine du Nord":"Macedoine du Nord","Monténégro":"Montenegro",
+    "Népal":"Nepal","Nigéria":"Nigeria","Norvège":"Norvege","Nouvelle-Zélande":"Nouvelle-Zelande",
+    "Ouzbékistan":"Ouzbekistan","Papouasie-Nouvelle-Guinée":"Papouasie-NG","Pérou":"Perou",
+    "République centrafricaine":"Centrafrique","République démocratique du Congo":"RD Congo",
+    "république démocratique du Congo":"RD Congo","République dominicaine":"Rep. dominicaine",
+    "République du Congo":"Rep. du Congo","São Tomé-et-Príncipe":"Sao Tome-et-Principe",
+    "Sao Tomé-et-Principe":"Sao Tome-et-Principe","Sénégal":"Senegal","Slovénie":"Slovenie","Suède":"Suede",
+    "Taïwan":"Taiwan","Tchéquie":"Tchequie","Thaïlande":"Thailande","Trinité-et-Tobago":"Trinidad & Tobago",
+    "Turkménistan":"Turkmenistan","Viêt Nam":"Vietnam","Yémen":"Yemen","États-Unis":"Etats-Unis",
+    "Émirats arabes unis":"Emirats arabes","Arabie saoudite":"Arabie Saoudite","Azerbaïdjan":"Azerbaidjan",
+    "Bahreïn":"Bahrein","Birmanie":"Myanmar","Bosnie-Herzégovine":"Bosnie","Égypte":"Egypte",
+    "États fédérés de Micronésie":"Micronesie","Kirghizistan":"Kirghizstan","Koweït":"Koweit",
+    "Palaos":"Palau","république populaire de Chine":"Chine","République populaire de Chine":"Chine",
+    "Royaume de Danemark":"Danemark","Royaume des Pays-Bas":"Pays-Bas",
+    "Saint-Christophe-et-Niévès":"Saint-Kitts","Saint-Vincent-et-les-Grenadines":"Saint-Vincent",
+    "Salvador":"El Salvador","Tanzanie":"Tanzanie",
 }
 
-def normaliser(pays):
-    return NOMS_PAYS.get(pays, pays)
+def pays_site(label, iso="", qid=""):
+    """Renvoie le nom du pays tel que le site l'utilise, ou None si le pays
+    n'est pas sur le site."""
+    if qid and qid in QID_VERS_SITE:
+        return QID_VERS_SITE[qid]
+    if iso and iso.lower() in ISO_VERS_SITE:
+        return ISO_VERS_SITE[iso.lower()]
+    nom = NOMS_PAYS.get(label, label)
+    return nom if nom in NOMS_SITE else None
 
 # ══════════════════════════════════════
-# QUEL POSTE FAIT AUTORITÉ : chef d'État (hos) ou chef du gouvernement (hog) ?
-# Par défaut : hog (systèmes parlementaires, majorité des pays).
-# Liste des pays où c'est le chef d'État qui détient le pouvoir réel
-# (régimes présidentiels ou semi-présidentiels, monarchies absolues,
-# régimes autoritaires à parti unique, juntes militaires).
+# QUEL POSTE AFFICHER : chef d'État (hos) ou chef du gouvernement (hog) ?
+# Par défaut : chef du gouvernement (régimes parlementaires).
+# Ici : pays où le pouvoir réel appartient au chef de l'État.
+# Retirés le 24/10 : Arménie, Géorgie, Mongolie, Cambodge, Togo (le Premier
+# ministre / président du Conseil y détient le pouvoir).
+# Ajoutés : Algérie, Guyana, Tunisie, Suriname, Myanmar, Monaco, Vatican,
+# Qatar, Émirats, Koweït, Eswatini.
 # ══════════════════════════════════════
 PAYS_HOS = {
     "Etats-Unis","France","Russie","Turquie","Bresil","Argentine","Mexique",
@@ -64,21 +136,56 @@ PAYS_HOS = {
     "Cote d'Ivoire","Gabon","Rep. du Congo","Djibouti","Zambie","Zimbabwe",
     "Namibie","Botswana","Mali","Burkina Faso","Niger","Tchad","Guinee",
     "Mauritanie","Benin","Madagascar","Mozambique","Malawi","Somalie",
-    "Soudan","Soudan du Sud","Liberia","Sierra Leone","Togo",
+    "Soudan","Soudan du Sud","Liberia","Sierra Leone",
     "Guinee equatoriale","Centrafrique","Erythree","Burundi","Comores",
     "Cap-Vert","Sao Tome-et-Principe","Guinee-Bissau","Gambie",
-    "Coree du Nord","Chine","Vietnam","Cambodge","Laos","Kazakhstan",
+    "Coree du Nord","Chine","Vietnam","Laos","Kazakhstan",
     "Ouzbekistan","Tadjikistan","Kirghizstan","Turkmenistan","Azerbaidjan",
-    "Belarus","Ukraine","Georgie","Armenie","Mongolie","Afghanistan",
+    "Belarus","Ukraine","Afghanistan",
     "Yemen","Syrie","Taiwan","Chypre","Seychelles","Maldives",
     "Sri Lanka","Timor oriental","Kiribati","Nauru","Palau",
     "Iles Marshall","Micronesie",
+    # ajoutés le 24/10/2026
+    "Algerie","Guyana","Tunisie","Suriname","Myanmar","Monaco","Vatican",
+    "Qatar","Emirats arabes","Koweit","Eswatini",
+}
+
+# Pays que le script ne doit jamais écrire : gouvernement collégial (pas
+# une personne) ou cas suivis à la main dans le site.
+PAYS_IGNORES = {"Suisse", "Saint-Marin", "Arabie Saoudite", "Bosnie"}
+
+# ══════════════════════════════════════
+# CORRECTIONS QUAND WIKIDATA EST EN RETARD
+# « si_wikidata » = ancien(s) nom(s) encore renvoyé(s) à tort par Wikidata.
+# La correction ne s'applique que dans ce cas : dès que Wikidata renvoie
+# quelqu'un d'autre (le bon titulaire ou un successeur), elle est ignorée.
+# Vérifié le 10/10/2026 (voir le document « points à corriger »).
+# ══════════════════════════════════════
+CORRECTIONS = {
+    "Nepal":        {"si_wikidata": ["Pushpa Kamal Dahal", "Sushila Karki", "Khadga Prasad Sharma Oli"],
+                     "nom": "Balen Shah", "titre": "Premier ministre", "depuis": "27/03/2026"},
+    "Thailande":    {"si_wikidata": ["Phumtham Wechayachai", "Paetongtarn Shinawatra"],
+                     "nom": "Anutin Charnvirakul", "titre": "Premier ministre", "depuis": "septembre 2025"},
+    "Malawi":       {"si_wikidata": ["Lazarus Chakwera"],
+                     "nom": "Peter Mutharika", "titre": "Président", "depuis": "octobre 2025"},
+    "Samoa":        {"si_wikidata": ["Naomi Mataʻafa", "Fiamē Naomi Mataʻafa", "Naomi Mata'afa"],
+                     "nom": "La'auli Leuatea Schmidt", "titre": "Premier ministre", "depuis": "septembre 2025"},
+    "Vanuatu":      {"si_wikidata": ["Bob Loughman", "Charlot Salwai"],
+                     "nom": "Jotham Napat", "titre": "Premier ministre", "depuis": "février 2025"},
+    "Maurice":      {"si_wikidata": ["Pravind Jugnauth"],
+                     "nom": "Navin Ramgoolam", "titre": "Premier ministre", "depuis": "novembre 2024"},
+    "Irak":         {"si_wikidata": ["Mohammed Chia al-Soudani", "Mohammed Shia' Al Sudani"],
+                     "nom": "Ali al-Zaidi", "titre": "Premier ministre", "depuis": "mai 2026"},
+    "Iles Salomon": {"si_wikidata": ["Jeremiah Manele"],
+                     "nom": "Matthew Wale", "titre": "Premier ministre", "depuis": "15/05/2026"},
+    "Madagascar":   {"si_wikidata": ["Andry Rajoelina", "Christian Ntsay"],
+                     "nom": "Michael Randrianirina", "titre": "Président de la Refondation (colonel)", "depuis": "octobre 2025"},
+    "Guinee-Bissau":{"si_wikidata": ["Umaro Sissoco Embaló"],
+                     "nom": "Horta N'Tam", "titre": "Président de la transition (général)", "depuis": "novembre 2025"},
 }
 
 # ══════════════════════════════════════
-# CORRESPONDANCE PARTI -> ORIENTATION POLITIQUE (-10 à +10)
-# Basée sur les mots-clés d'idéologie politique (P1387 sur Wikidata,
-# ou à défaut sur le nom du parti). Défaut = 0 (centre / non déterminé).
+# CORRESPONDANCE PARTI -> ORIENTATION POLITIQUE (-10 à +10) — inchangée
 # ══════════════════════════════════════
 MOTS_CLES_POSITION = [
     # ══ NOMS DE PARTIS RÉELS — VÉRIFIÉS EN PRIORITÉ ══
@@ -218,36 +325,34 @@ def deduire_position(libelles_ideologie, nom_parti):
     return None
 
 # ══════════════════════════════════════
-# REQUÊTE WIKIDATA — chef d'État (P35) et chef de gouvernement (P6)
-# de tous les pays, avec parti (P102) et date de prise de fonction (P580)
+# REQUÊTE WIKIDATA — chef d'État (P35) et chef de gouvernement (P6),
+# avec code ISO du pays (P297) et rang de la déclaration.
 # ══════════════════════════════════════
 QUERY_DIRIGEANTS = """
-SELECT ?paysLabel
-       ?hos ?hosLabel ?hosPartyItem ?hosPartyItemLabel ?hosStart ?hosIdeoItem ?hosIdeoItemLabel
-       ?hog ?hogLabel ?hogPartyItem ?hogPartyItemLabel ?hogStart ?hogIdeoItem ?hogIdeoItemLabel
+SELECT ?pays ?paysLabel ?iso
+       ?hos ?hosLabel ?hosRank ?hosPartyItemLabel ?hosStart ?hosIdeoItemLabel
+       ?hog ?hogLabel ?hogRank ?hogPartyItemLabel ?hogStart ?hogIdeoItemLabel
 WHERE {
   ?pays wdt:P31 wd:Q3624078.
+  OPTIONAL { ?pays wdt:P297 ?iso. }
   OPTIONAL {
     ?pays p:P35 ?hosStmt.
-    ?hosStmt ps:P35 ?hos.
+    ?hosStmt ps:P35 ?hos; wikibase:rank ?hosRank.
+    FILTER(?hosRank != wikibase:DeprecatedRank)
     FILTER NOT EXISTS { ?hosStmt pq:P582 ?hosEnd. }
     OPTIONAL { ?hosStmt pq:P580 ?hosStart. }
     OPTIONAL { ?hos wdt:P102 ?hosPartyItem.
-      OPTIONAL { ?hosPartyItem wdt:P1387 ?hosIdeoItem. }
-    }
+      OPTIONAL { ?hosPartyItem wdt:P1387 ?hosIdeoItem. } }
   }
   OPTIONAL {
     ?pays p:P6 ?hogStmt.
-    ?hogStmt ps:P6 ?hog.
+    ?hogStmt ps:P6 ?hog; wikibase:rank ?hogRank.
+    FILTER(?hogRank != wikibase:DeprecatedRank)
     FILTER NOT EXISTS { ?hogStmt pq:P582 ?hogEnd. }
     OPTIONAL { ?hogStmt pq:P580 ?hogStart. }
     OPTIONAL { ?hog wdt:P102 ?hogPartyItem.
-      OPTIONAL { ?hogPartyItem wdt:P1387 ?hogIdeoItem. }
-    }
+      OPTIONAL { ?hogPartyItem wdt:P1387 ?hogIdeoItem. } }
   }
-  # Le service de label natif de Wikidata génère automatiquement
-  # ?xLabel pour chaque variable ?x sélectionnée, avec repli fr->en déjà
-  # intégré et optimisé.
   SERVICE wikibase:label { bd:serviceParam wikibase:language "fr,en". }
 }
 """
@@ -257,8 +362,8 @@ def wikidata_query(query):
         r = requests.get(
             "https://query.wikidata.org/sparql",
             params={"query": query, "format": "json"},
-            headers={"Accept": "application/json", "User-Agent": "Geolandar-Dirigeants/1.0"},
-            timeout=90
+            headers={"Accept": "application/json", "User-Agent": "Geolandar-Dirigeants/2.0 (geolandar.fr)"},
+            timeout=120
         )
         r.raise_for_status()
         return r.json()["results"]["bindings"]
@@ -267,7 +372,6 @@ def wikidata_query(query):
         return []
 
 def fmt_date(valeur_iso):
-    """Formate une date ISO Wikidata (peut être vide) en JJ/MM/AAAA."""
     if not valeur_iso:
         return None
     try:
@@ -275,122 +379,95 @@ def fmt_date(valeur_iso):
     except Exception:
         return None
 
-def construire_dirigeants():
-    """Interroge Wikidata et construit, pour chaque pays, l'entrée dirigeant
-    à écrire dans Supabase. Regroupe les lignes par pays (une ligne par
-    combinaison hos/hog possible dans les résultats bruts)."""
-    print("  Interrogation de Wikidata (chefs d'État et de gouvernement)...")
-    lignes = wikidata_query(QUERY_DIRIGEANTS)
-    print(f"  {len(lignes)} lignes reçues")
+def v(ligne, cle):
+    return ligne.get(cle, {}).get("value", "")
 
-    # Regrouper par pays : on garde toutes les valeurs hos et hog vues,
-    # pour détecter les cas ambigus (plusieurs personnes "actuelles" à la fois)
+def construire_dirigeants(lignes):
+    """Regroupe les lignes Wikidata par pays (nom du site) et choisit le bon titulaire."""
     par_pays = {}
+    hors_site = set()
     for ligne in lignes:
-        pays = normaliser(ligne.get("paysLabel", {}).get("value", ""))
+        qid = v(ligne, "pays").split("/")[-1]
+        pays = pays_site(v(ligne, "paysLabel"), v(ligne, "iso"), qid)
         if not pays:
+            if v(ligne, "paysLabel"):
+                hors_site.add(v(ligne, "paysLabel"))
             continue
-        entree = par_pays.setdefault(pays, {"hos": set(), "hog": set(), "data": {}})
+        entree = par_pays.setdefault(pays, {"hos": {}, "hog": {}})
+        for role in ("hos", "hog"):
+            nom = v(ligne, role + "Label")
+            if not nom or not v(ligne, role) or QID_BRUT.match(nom.strip()):
+                continue
+            info = entree[role].setdefault(nom, {"parti": "", "start": "", "ideologie": "", "prefere": False})
+            info["parti"] = info["parti"] or v(ligne, role + "PartyItemLabel")
+            info["ideologie"] = info["ideologie"] or v(ligne, role + "IdeoItemLabel")
+            debut = v(ligne, role + "Start")
+            if debut > info["start"]:
+                info["start"] = debut
+            if v(ligne, role + "Rank").endswith("PreferredRank"):
+                info["prefere"] = True
 
-        hos_nom = ligne.get("hosLabel", {}).get("value", "")
-        if hos_nom and ligne.get("hos"):
-            entree["hos"].add(hos_nom)
-            entree["data"].setdefault("hos_info", {})[hos_nom] = {
-                "parti": ligne.get("hosPartyItemLabel", {}).get("value", ""),
-                "start": ligne.get("hosStart", {}).get("value", ""),
-                "ideologie": ligne.get("hosIdeoItemLabel", {}).get("value", ""),
-            }
-
-        hog_nom = ligne.get("hogLabel", {}).get("value", "")
-        if hog_nom and ligne.get("hog"):
-            entree["hog"].add(hog_nom)
-            entree["data"].setdefault("hog_info", {})[hog_nom] = {
-                "parti": ligne.get("hogPartyItemLabel", {}).get("value", ""),
-                "start": ligne.get("hogStart", {}).get("value", ""),
-                "ideologie": ligne.get("hogIdeoItemLabel", {}).get("value", ""),
-            }
+    if hors_site:
+        print(f"  ℹ {len(hors_site)} États Wikidata absents du site (ignorés) : {', '.join(sorted(hors_site))}")
 
     resultats = {}
+    aujourd_hui = date.today().isoformat()
     for pays, entree in par_pays.items():
-        role = "hos" if pays in PAYS_HOS else "hog"
-        noms = entree["hos"] if role == "hos" else entree["hog"]
-        info_key = "hos_info" if role == "hos" else "hog_info"
-        infos = entree["data"].get(info_key, {})
-
-        if not noms:
+        if pays in PAYS_IGNORES:
             continue
-
-        # GARDE-FOU : rejeter les noms qui sont un identifiant Wikidata brut
-        # (ex: "Q3052772") plutôt qu'un vrai nom traduit — même correctif que
-        # celui déjà appliqué à update_elections.py, oublié ici par erreur.
-        infos_par_nom = entree["data"].get(info_key, {})
-        noms_valides = [n for n in noms if not QID_BRUT.match(n.strip())]
-        if not noms_valides:
-            continue  # aucun nom exploitable pour ce pays, on l'ignore
-
-        # Fiabilité : plusieurs "titulaires actuels" en même temps sur
-        # Wikidata = donnée ambiguë (transition, conflit de succession...)
-        ambigu = len(noms_valides) > 1
-
-        # CORRECTIF : en cas d'ambiguïté, choisir le titulaire dont la date
-        # de prise de fonction (P580) est la plus RÉCENTE, pas le premier
-        # par ordre alphabétique. Un ordre alphabétique pouvait faire
-        # remonter un ancien dirigeant dans les pays à forte rotation
-        # politique (ex: plusieurs Premiers ministres en quelques années),
-        # quand l'ancien titulaire n'a pas de date de fin correctement
-        # renseignée sur Wikidata.
-        def cle_tri(n):
-            d = infos_par_nom.get(n, {}).get("start", "")
-            return d or ""  # chaîne vide = trié en premier (le plus ancien)
-        nom = sorted(noms_valides, key=cle_tri, reverse=True)[0] if ambigu else noms_valides[0]
-        info = infos_par_nom.get(nom, {})
-        parti = info.get("parti", "")
-        ideologie = info.get("ideologie", "")
-        date_debut = fmt_date(info.get("start", ""))
-
+        role = "hos" if pays in PAYS_HOS else "hog"
+        candidats = {n: i for n, i in entree[role].items() if (i["start"] or "")[:10] <= aujourd_hui}
+        if not candidats:
+            continue
+        ambigu = len(candidats) > 1
+        # Choix : déclaration « préférée » d'abord, puis la prise de fonction la plus récente.
+        nom = sorted(candidats, key=lambda n: (candidats[n]["prefere"], candidats[n]["start"]), reverse=True)[0]
+        info = candidats[nom]
+        # Ambiguïté levée si une seule déclaration est « préférée »
+        if ambigu and sum(1 for i in candidats.values() if i["prefere"]) == 1:
+            ambigu = False
+        parti, ideologie = info["parti"], info["ideologie"]
+        date_debut = fmt_date(info["start"])
         titre = "Chef d'État" if role == "hos" else "Chef du gouvernement"
         position = deduire_position([ideologie] if ideologie else [], parti)
-
-        if ambigu:
-            fiabilite = 4  # non reconnu / conflit — plusieurs titulaires détectés
-        elif not date_debut:
-            fiabilite = 3  # partiellement reconnu — date de prise de fonction inconnue
-        else:
-            fiabilite = 1  # certifié
-
-        description = (
-            f"{nom}, {titre.lower()} depuis le {date_debut}." if date_debut
-            else f"{nom}, {titre.lower()} (date de prise de fonction non renseignée sur Wikidata)."
-        )
+        fiabilite = 4 if ambigu else (3 if not date_debut else 1)
+        description = (f"{nom}, {titre.lower()} depuis le {date_debut}." if date_debut
+                       else f"{nom}, {titre.lower()} (date de prise de fonction non renseignée sur Wikidata).")
         if parti:
             description += f" Parti : {parti}."
         if ambigu:
             description += " ⚠️ Plusieurs titulaires actuels détectés sur Wikidata — à vérifier."
-
-        resultats[pays] = {
-            "pays": pays,
-            "nom": nom,
-            "titre": titre,
-            "parti": parti,
-            "position": position,
-            "description": description,
-            "fiabilite": fiabilite,
-        }
-
+        resultats[pays] = {"pays": pays, "nom": nom, "titre": titre, "parti": parti, "position": position,
+                           "description": description, "fiabilite": fiabilite,
+                           "autres": sorted(n for n in candidats if n != nom)}
     return resultats
+
+def appliquer_corrections(dirigeants):
+    """Remplace un titulaire périmé renvoyé par Wikidata, uniquement si Wikidata
+    renvoie encore l'ancien nom."""
+    for pays, c in CORRECTIONS.items():
+        d = dirigeants.get(pays)
+        if not d:
+            continue
+        noms_wd = [d["nom"]] + d.get("autres", [])
+        if d["nom"] == c["nom"]:
+            print(f"  ✓ {pays} : Wikidata est à jour ({c['nom']}) — la correction manuelle peut être retirée")
+            continue
+        if not any(n in c["si_wikidata"] for n in noms_wd) and c["nom"] not in noms_wd:
+            print(f"  ⚠ {pays} : Wikidata renvoie « {d['nom']} », ni l'ancien ni le titulaire attendu — correction NON appliquée, à vérifier")
+            continue
+        print(f"  ✎ {pays} : Wikidata renvoie « {d['nom']} » (périmé) → {c['nom']}")
+        d.update({"nom": c["nom"], "titre": c["titre"], "parti": "", "position": None, "fiabilite": 1,
+                  "description": f"{c['nom']}, {c['titre'].lower()} depuis {c['depuis']}."})
+    return dirigeants
 
 def sauvegarder(dirigeants):
     total = 0
     for pays, d in dirigeants.items():
         try:
             supabase.table("dirigeants").upsert({
-                "pays": d["pays"],
-                "nom": d["nom"],
-                "titre": d["titre"],
-                "parti": d["parti"],
-                "position": d["position"],
-                "description": d["description"],
-                "fiabilite": d["fiabilite"],
+                "pays": d["pays"], "nom": d["nom"], "titre": d["titre"], "parti": d["parti"],
+                "position": d["position"], "description": d["description"], "fiabilite": d["fiabilite"],
                 "updated_at": datetime.now().isoformat(),
             }, on_conflict="pays").execute()
             total += 1
@@ -398,37 +475,35 @@ def sauvegarder(dirigeants):
             print(f"  ✗ {pays}: {e}")
     return total
 
-# ══════════════════════════════════════
-# MAIN
-# ══════════════════════════════════════
 def main():
     print("=" * 60)
-    print("  GEOLANDAR — Mise à jour automatique des dirigeants v1.0")
+    print("  GEOLANDAR — Mise à jour automatique des dirigeants v2.0")
     print(f"  {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 60)
-
-    dirigeants = construire_dirigeants()
+    print("  Interrogation de Wikidata (chefs d'État et de gouvernement)...")
+    lignes = wikidata_query(QUERY_DIRIGEANTS)
+    print(f"  {len(lignes)} lignes reçues")
+    if not lignes:
+        print("  Aucune donnée reçue : rien n'est modifié dans Supabase.")
+        return
+    dirigeants = appliquer_corrections(construire_dirigeants(lignes))
     print(f"\n  {len(dirigeants)} pays avec un dirigeant identifié")
-
+    if supabase is None:
+        print("  (pas de clé Supabase : essai à blanc, rien n'est écrit)")
+        for p in sorted(dirigeants):
+            print(f"   {p}: {dirigeants[p]['nom']} [{dirigeants[p]['fiabilite']}]")
+        return
     print("\n  Écriture dans Supabase...")
     total = sauvegarder(dirigeants)
-
-    # Récapitulatif des cas à surveiller (visible directement dans les logs)
     ambigus = [p for p, d in dirigeants.items() if d["fiabilite"] == 4]
     incertains = [p for p, d in dirigeants.items() if d["fiabilite"] == 3]
     if ambigus:
         print(f"\n  ⚠️  {len(ambigus)} pays avec plusieurs titulaires détectés (à vérifier) :")
-        for p in ambigus:
-            print(f"     - {p}")
+        for p in sorted(ambigus):
+            print(f"     - {p} : {dirigeants[p]['nom']} (autres : {', '.join(dirigeants[p]['autres'])})")
     if incertains:
-        print(f"\n  🟠 {len(incertains)} pays sans date de prise de fonction connue :")
-        for p in incertains:
-            print(f"     - {p}")
-
-    print(f"\n{'=' * 60}")
-    print(f"  TOTAL: {total} dirigeants mis à jour")
-    print(f"  Terminé: {datetime.now().strftime('%H:%M:%S')}")
-    print(f"{'=' * 60}")
+        print(f"\n  🟠 {len(incertains)} pays sans date de prise de fonction connue : {', '.join(sorted(incertains))}")
+    print(f"\n{'=' * 60}\n  TOTAL: {total} dirigeants mis à jour\n  Terminé: {datetime.now().strftime('%H:%M:%S')}\n{'=' * 60}")
 
 if __name__ == "__main__":
     main()
