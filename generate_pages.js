@@ -39,8 +39,10 @@ function extract(name) {
   }
   return (0, eval)('(' + html.slice(open, k + 1) + ')');
 }
+const d3 = require('d3-geo'), topojson = require('topojson-client'), ic = require('i18n-iso-countries');
+const TOPO50 = require('world-atlas/countries-50m.json'), TOPO110 = require('world-atlas/countries-110m.json'), LAND110 = require('world-atlas/land-110m.json');
 const PAYS = extract('PAYS'), INFO = extract('INFO'), LEADERS = extract('LEADERS');
-const E = extract('E'), SRC = extract('SRC');
+const E = extract('E'), SRC = extract('SRC'), ISOC = extract('ISO'), FLAG = extract('FLAG_DATA');
 if (!PAYS.length || !E.length || !Object.keys(LEADERS).length) throw new Error('Structure de index.html inattendue');
 
 /* ── Utilitaires ── */
@@ -81,8 +83,71 @@ if (only) {
 } else if (!args.includes('--all')) { throw new Error('Précisez --all ou --only Pays1,Pays2'); }
 const wanted = new Set(list);
 
+
+/* ── Drapeaux : écrits en fichiers /flags/xx.png à partir de FLAG_DATA du site ── */
+const FLAGDIR = path.join(ROOT, 'flags');
+function writeFlags() {
+  fs.mkdirSync(FLAGDIR, { recursive: true });
+  for (const [k, b64] of Object.entries(FLAG)) fs.writeFileSync(path.join(FLAGDIR, k + '.png'), Buffer.from(b64, 'base64'));
+}
+const flagImg = (p, w) => ISOC[p] && FLAG[ISOC[p]] ? `<img class="flag" src="/flags/${ISOC[p]}.png" alt="Drapeau : ${esc(nom(p))}" width="${w}" height="${Math.round(w * 0.74)}">` : '';
+
+/* ── Carte : globe centré sur le pays + gros plan du pays (SVG statique) ── */
+const F50 = new Map(topojson.feature(TOPO50, TOPO50.objects.countries).features.map(f => [String(f.id), f]));
+const F110 = topojson.feature(TOPO110, TOPO110.objects.countries).features;
+const LAND = topojson.feature(LAND110, LAND110.objects.land);
+function mainPart(f) {
+  if (f.geometry.type !== 'MultiPolygon') return { center: d3.geoCentroid(f), shown: f };
+  const polys = f.geometry.coordinates.map(c => ({ type: 'Feature', geometry: { type: 'Polygon', coordinates: c } }));
+  polys.sort((a, b) => d3.geoArea(b) - d3.geoArea(a));
+  const center = d3.geoCentroid(polys[0]);
+  const keep = polys.filter(x => d3.geoDistance(d3.geoCentroid(x), center) < 0.5);
+  return { center, shown: { type: 'Feature', geometry: { type: 'MultiPolygon', coordinates: keep.map(k => k.geometry.coordinates) } } };
+}
+function mapSvg(p) {
+  const iso = ISOC[p]; if (!iso) return null;
+  const num = ic.alpha2ToNumeric(iso.toUpperCase()); const f = num && F50.get(String(num)); if (!f) return null;
+  const { center, shown } = mainPart(f);
+  const pth = pr => { const g = d3.geoPath(pr); g.digits(1); return g; };
+  const W = 760, H = 340;
+  const gl = d3.geoOrthographic().rotate([-center[0], -center[1]]).translate([180, 170]).scale(150).clipAngle(90);
+  const gp = pth(gl);
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Carte de ${esc(nom(p))}">`;
+  s += `<rect width="${W}" height="${H}" fill="#0a0e1a"/>`;
+  s += `<path d="${gp({ type: 'Sphere' })}" fill="#0f1a33" stroke="#2a3558"/>`;
+  s += `<path d="${gp(d3.geoGraticule10())}" fill="none" stroke="#1b2644" stroke-width=".5"/>`;
+  s += `<path d="${gp(LAND)}" fill="#26324f"/>`;
+  s += `<path d="${gp(f)}" fill="#f97316"/>`;
+  const pt = gl(center); if (pt) s += `<circle cx="${pt[0].toFixed(1)}" cy="${pt[1].toFixed(1)}" r="13" fill="none" stroke="#f97316" stroke-width="2"/>`;
+  /* gros plan */
+  const px = [370, 10, 750, 330];
+  let zp = d3.geoMercator().fitExtent([[px[0] + 10, px[1] + 10], [px[2] - 10, px[3] - 10]], shown);
+  if (zp.scale() > 2400) zp = d3.geoMercator().center(center).scale(2400).translate([(px[0] + px[2]) / 2, (px[1] + px[3]) / 2]);
+  const zg = pth(zp);
+  s += `<clipPath id="z"><rect x="${px[0]}" y="${px[1]}" width="${px[2] - px[0]}" height="${px[3] - px[1]}" rx="12"/></clipPath>`;
+  s += `<rect x="${px[0]}" y="${px[1]}" width="${px[2] - px[0]}" height="${px[3] - px[1]}" rx="12" fill="#0f1a33" stroke="#2a3558"/>`;
+  s += `<g clip-path="url(#z)">`;
+  s += `<path d="${F110.filter(x => { const b = zg.bounds(x); return b[1][0] > px[0] && b[0][0] < px[2] && b[1][1] > px[1] && b[0][1] < px[3] && b[1][0] - b[0][0] < 4000; }).map(x => zg(x) || '').join('')}" fill="#26324f" stroke="#0f1a33" stroke-width=".8"/>`;
+  s += `<path d="${zg(f)}" fill="#f97316" stroke="#fbbf24" stroke-width="1"/></g></svg>`;
+  return s;
+}
+
+/* ── Élections à venir (3 ans) par continent ── */
+const CSLUG = { EU: 'europe', AM: 'ameriques', AF: 'afrique', AS: 'asie', OC: 'oceanie' };
+const horizon = new Date(today); horizon.setFullYear(horizon.getFullYear() + 3);
+function upcoming(r) {
+  return E.filter(e => e.r === r && !e.done && !isPast(e) && (!isoOk(e.d) || new Date(e.d + 'T00:00:00') <= horizon))
+    .sort((a, b) => (a.d || '9999').localeCompare(b.d || '9999'));
+}
+const firstSentence = s => { const m = (s || '').match(/^.{20,160}?[.!?](\s|$)/); return m ? m[0].trim() : (s || '').slice(0, 150); };
+function electionRow(e) {
+  const linked = wanted.has(e.p);
+  const nm = linked ? `<a href="/pays/${slug(e.p)}/">${esc(nom(e.p))}</a>` : esc(nom(e.p));
+  return `<div class="card erow"><div class="ehead"><span class="who">${flagImg(e.p, 24)} <strong>${nm}</strong></span><span class="edate">${esc(fmtDate(e.d, e.cert))}</span></div><div><span class="badge">${esc(TYPEF[e.t] || 'Scrutin')}</span></div>${e.ctx ? `<p>${esc(firstSentence(e.ctx))}</p>` : ''}</div>`;
+}
+
 /* ── Génération d'une page ── */
-function page(c) {
+function page(c, hasMap) {
   const p = c.p, n = nom(p), L = LEADERS[p], I = INFO[p] || {}, region = REGION[c.r] || '';
   const els = E.filter(e => e.p === p).sort((a, b) => (a.d || '').localeCompare(b.d || ''));
   const next = els.filter(e => !e.done && !isPast(e));
@@ -125,7 +190,7 @@ function page(c) {
     body += `<section><h2>${esc(n)} — dernières élections</h2>`;
     passed.slice(-2).reverse().forEach(e => {
       body += `<div class="card"><div class="ehead"><span class="badge">${esc(TYPEF[e.t] || 'Scrutin')}</span><span class="edate">${esc(fmtDate(e.d, e.cert))}</span></div>`;
-      if (!e.done) body += `<p>Scrutin tenu. Les résultats sont en cours de consolidation : consultez la <a href="/">carte interactive</a> pour la mise à jour.</p>`;
+      if (!e.done) body += `<div class="lock"><span aria-hidden="true">🔒</span> <strong>Résultats disponibles très prochainement</strong><br><span>Le scrutin a eu lieu : les résultats seront publiés dès leur validation.</span></div>`;
       if (e.done && e.ctx) body += `<p>${esc(e.ctx)}</p>`;
       if (e.done && e.fiabilite && e.fiabilite.txt) body += `<p class="fiab"><strong>Fiabilité du scrutin :</strong> ${esc(e.fiabilite.txt)}${e.fiabilite.src ? ' <em>(sources : ' + esc(e.fiabilite.src) + ')</em>' : ''}</p>`;
       body += '</div>';
@@ -139,9 +204,11 @@ function page(c) {
   }).join('') + '</div></section>';
   /* Sources */
   if (SRC[p]) body += `<section><h2>Source officielle</h2><p><a href="${esc(SRC[p].url)}" rel="noopener" target="_blank">${esc(SRC[p].n)}</a></p></section>`;
-  /* Maillage interne */
-  const voisins = PAYS.filter(x => x.r === c.r && x.p !== p && wanted.has(x.p)).slice(0, 12);
-  if (voisins.length) body += `<section><h2>Autres pays : ${esc(region)}</h2><p class="chips">` + voisins.map(x => `<a href="/pays/${slug(x.p)}/">${esc(nom(x.p))}</a>`).join('') + '</p></section>';
+  /* Carte : pays sur le globe + retour vers le globe interactif */
+  if (hasMap) body += `<section><h2>${esc(n)} sur la carte</h2><figure class="map"><img src="/pays/${slug(p)}/carte.svg" alt="Carte : ${esc(n)} sur le globe${region ? ' (' + esc(region) + ')' : ''}" width="760" height="340" loading="lazy"><figcaption>${esc(n)}${region ? ' · Région : ' + esc(region) : ''}</figcaption></figure><p><a class="back" href="/">← Retour au globe interactif</a></p></section>`;
+  /* Autres élections sur le continent */
+  const autres = upcoming(c.r).filter(e => e.p !== p).slice(0, 6);
+  if (autres.length) body += `<section><h2>Autres élections : ${esc(region)}</h2>` + autres.map(electionRow).join('') + `<p><a class="btn2" href="/elections/${CSLUG[c.r]}/">Toutes les élections en ${esc(region)} d’ici 3 ans →</a></p></section>`;
 
   const url = `${SITE}/pays/${slug(p)}/`;
   const ld = [{ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
@@ -170,10 +237,10 @@ function page(c) {
 </head>
 <body>
 <header><a class="brand" href="/"><img src="/favicon.png" alt="" width="28" height="28"> Geolandar</a>
-<nav><a href="/">Carte et calendrier</a><a href="/pays/">Tous les pays</a></nav></header>
+<nav><a href="/">Carte et calendrier</a><a href="/elections/">Élections par continent</a><a href="/pays/">Tous les pays</a></nav></header>
 <main>
 <nav class="crumb" aria-label="Fil d’Ariane"><a href="/">Geolandar</a> › <a href="/pays/">Pays</a> › ${esc(n)}</nav>
-<h1>${esc(n)} : ${first ? 'élections, ' : ''}dirigeant et indicateurs</h1>
+<h1>${flagImg(p, 44)} ${esc(n)} : ${first ? 'élections, ' : ''}dirigeant et indicateurs</h1>
 ${body}
 <section class="cta"><h2>Explorer ${esc(n)} sur la carte interactive</h2><p>Globe, calendrier mondial des élections, résultats et fiabilité des scrutins dans 196 pays.</p><a class="btn" href="/">Ouvrir Geolandar</a></section>
 </main>
@@ -201,16 +268,23 @@ dt{color:var(--mu);font-size:.8rem}dd{margin:2px 0 0;font-weight:600}
 .chips{display:flex;flex-wrap:wrap;gap:8px}.chips a{background:var(--cd);border:1px solid var(--bd);border-radius:999px;padding:4px 12px;text-decoration:none;color:var(--tx);font-size:.9rem}
 .cta{text-align:center;background:linear-gradient(135deg,#1a1f33,#14233f);border:1px solid var(--bd);border-radius:14px;padding:8px 16px 20px;margin-top:2em}
 .btn{display:inline-block;background:var(--a);color:#fff;padding:10px 22px;border-radius:999px;text-decoration:none;font-weight:700}
+figure.map{margin:0}figure.map img{width:100%;height:auto;border-radius:12px;border:1px solid var(--bd);display:block}figcaption{color:var(--mu);font-size:.85rem;margin-top:6px}
+.back,.btn2{display:inline-block;margin-top:6px;font-weight:600;text-decoration:none}.flag{border-radius:3px;vertical-align:middle;box-shadow:0 1px 6px rgba(0,0,0,.4)}
+.lock{background:#161c30;border:1px dashed #3a4670;border-radius:10px;padding:10px 12px;margin:8px 0;color:var(--mu)}.lock strong{color:var(--tx)}
+.who{display:flex;align-items:center;gap:8px}.erow p{margin:.4em 0;color:var(--mu);font-size:.95rem}
 footer{border-top:1px solid var(--bd);color:var(--mu);font-size:.85rem;text-align:center;padding:18px 16px}
 @media (max-width:600px){h1{font-size:1.5rem}}`;
 
 /* ── Écriture ── */
 fs.mkdirSync(OUT, { recursive: true });
+writeFlags();
 const done = [];
 for (const c of PAYS.filter(x => wanted.has(x.p))) {
   const dir = path.join(OUT, slug(c.p));
   fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'index.html'), page(c));
+  const svg = mapSvg(c.p);
+  if (svg) fs.writeFileSync(path.join(dir, 'carte.svg'), svg);
+  fs.writeFileSync(path.join(dir, 'index.html'), page(c, !!svg));
   done.push(c);
 }
 /* Page d'index /pays/ */
@@ -220,7 +294,7 @@ let hub = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name
 <title>Tous les pays : dirigeants, élections et indicateurs | Geolandar</title>
 <meta name="description" content="Liste des pays du monde avec leur dirigeant, leur prochaine élection et leurs indicateurs clés : Europe, Amériques, Afrique, Asie, Océanie.">
 <link rel="canonical" href="${SITE}/pays/"><link rel="icon" type="image/png" href="/favicon.png"><meta property="og:image" content="${SITE}/og-image.png"><style>${CSS}</style></head><body>
-<header><a class="brand" href="/"><img src="/favicon.png" alt="" width="28" height="28"> Geolandar</a><nav><a href="/">Carte et calendrier</a><a href="/pays/">Tous les pays</a></nav></header>
+<header><a class="brand" href="/"><img src="/favicon.png" alt="" width="28" height="28"> Geolandar</a><nav><a href="/">Carte et calendrier</a><a href="/elections/">Élections par continent</a><a href="/pays/">Tous les pays</a></nav></header>
 <main><h1>Tous les pays : dirigeants, élections et indicateurs</h1>`;
 Object.keys(REGION).forEach(r => {
   if (!byRegion[r]) return;
@@ -229,10 +303,34 @@ Object.keys(REGION).forEach(r => {
 hub += `</main><footer>Geolandar · <a href="/">geolandar.fr</a></footer></body></html>\n`;
 fs.writeFileSync(path.join(OUT, 'index.html'), hub);
 
+
+/* Pages « élections par continent » (3 ans) + index /elections/ */
+const EDIR = path.join(ROOT, 'elections'); fs.mkdirSync(EDIR, { recursive: true });
+const HEAD = (title, desc, url) => `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><link rel="canonical" href="${url}"><link rel="icon" type="image/png" href="/favicon.png">
+<meta property="og:type" content="website"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}"><meta property="og:url" content="${url}"><meta property="og:image" content="${SITE}/og-image.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${SITE}/og-image.png"><style>${CSS}</style></head><body>
+<header><a class="brand" href="/"><img src="/favicon.png" alt="" width="28" height="28"> Geolandar</a><nav><a href="/">Carte et calendrier</a><a href="/elections/">Élections par continent</a><a href="/pays/">Tous les pays</a></nav></header><main>`;
+const FOOT = `</main><footer>Geolandar · <a href="/">geolandar.fr</a></footer></body></html>\n`;
+const y0 = today.getFullYear(), y1 = horizon.getFullYear();
+let eh = HEAD(`Élections dans le monde ${y0}-${y1} : calendrier par continent | Geolandar`, `Calendrier des élections à venir dans le monde sur trois ans, par continent : Europe, Amériques, Afrique, Asie et Océanie.`, SITE + '/elections/') +
+  `<h1>Élections dans le monde, ${y0}-${y1}</h1><p class="chips">`;
+Object.keys(REGION).forEach(r => {
+  const list = upcoming(r); if (!list.length) return;
+  eh += `<a href="/elections/${CSLUG[r]}/">${REGION[r]} (${list.length})</a>`;
+  const dir = path.join(EDIR, CSLUG[r]); fs.mkdirSync(dir, { recursive: true });
+  const reg = REGION[r];
+  fs.writeFileSync(path.join(dir, 'index.html'),
+    HEAD(`Élections en ${reg} ${y0}-${y1} : calendrier des scrutins à venir | Geolandar`, `Toutes les élections à venir en ${reg} d’ici ${y1} : ${list.length} scrutins, avec dates, enjeux et pays concernés.`, `${SITE}/elections/${CSLUG[r]}/`) +
+    `<nav class="crumb"><a href="/">Geolandar</a> › <a href="/elections/">Élections</a> › ${esc(reg)}</nav><h1>Élections en ${esc(reg)} : calendrier ${y0}-${y1}</h1><p>${list.length} scrutins à venir dans les trois prochaines années, classés par date. Le calendrier est mis à jour chaque nuit.</p>` +
+    list.map(electionRow).join('') + FOOT);
+});
+eh += `</p>` + FOOT;
+fs.writeFileSync(path.join(EDIR, 'index.html'), eh);
+
 /* Sitemap (uniquement avec --sitemap) */
 if (args.includes('--sitemap')) {
   const iso = today.toISOString().slice(0, 10);
-  const urls = [[SITE + '/', '1.0', 'daily'], [SITE + '/pays/', '0.8', 'daily'], ...done.map(c => [`${SITE}/pays/${slug(c.p)}/`, '0.7', 'weekly'])];
+  const urls = [[SITE + '/', '1.0', 'daily'], [SITE + '/pays/', '0.8', 'daily'], [SITE + '/elections/', '0.8', 'daily'], ...Object.keys(REGION).filter(r => upcoming(r).length).map(r => [`${SITE}/elections/${CSLUG[r]}/`, '0.8', 'daily']), ...done.map(c => [`${SITE}/pays/${slug(c.p)}/`, '0.7', 'weekly'])];
   fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     urls.map(([u, pr, f]) => `  <url>\n    <loc>${u}</loc>\n    <lastmod>${iso}</lastmod>\n    <changefreq>${f}</changefreq>\n    <priority>${pr}</priority>\n  </url>`).join('\n') + '\n</urlset>\n');
 }
