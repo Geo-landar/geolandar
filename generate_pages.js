@@ -104,6 +104,8 @@ function mainPart(f) {
   const keep = polys.filter(x => d3.geoDistance(d3.geoCentroid(x), center) < 0.5);
   return { center, shown: { type: 'Feature', geometry: { type: 'MultiPolygon', coordinates: keep.map(k => k.geometry.coordinates) } } };
 }
+const REGCOL = ['#5b5fc7', '#4a7cc7', '#b5546b', '#4f6fd0', '#a8566b', '#6a55c9'];
+const TRACKED = new Set(PAYS.map(c => ISOC[c.p]).filter(Boolean).map(i => String(ic.alpha2ToNumeric(i.toUpperCase()))));
 let ADMIN = null;
 function regionsOf(iso, shown) {
   if (ADMIN === null) { try { ADMIN = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'admin1.json'), 'utf8')); } catch (e) { ADMIN = {}; } }
@@ -123,7 +125,7 @@ function mapSvg(p) {
   const { center, shown } = mainPart(f);
   const regs = regionsOf(iso, shown);
   const pth = pr => { const g = d3.geoPath(pr); g.digits(1); return g; };
-  const W = 760, H = 460;
+  const W = 760, H = 560;
   let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Carte de ${esc(nom(p))}${regs ? ' et de ses régions' : ''}">`;
   s += `<rect width="${W}" height="${H}" rx="14" fill="#0a0e1a"/>`;
   /* le pays, en grand, avec son découpage régional */
@@ -132,15 +134,11 @@ function mapSvg(p) {
   if (zp.scale() > 2400) zp = d3.geoMercator().center(center).scale(2400).translate([W / 2, H / 2]);
   const zg = pth(zp);
   s += `<clipPath id="z"><rect x="${zbox[0]}" y="${zbox[1]}" width="${zbox[2] - zbox[0]}" height="${zbox[3] - zbox[1]}" rx="12"/></clipPath><g clip-path="url(#z)">`;
-  s += `<path d="${F110.filter(x => { const b = zg.bounds(x); return b[1][0] > zbox[0] && b[0][0] < zbox[2] && b[1][1] > zbox[1] && b[0][1] < zbox[3] && b[1][0] - b[0][0] < 4000; }).map(x => zg(x) || '').join('')}" fill="#1c2742" stroke="#0a0e1a" stroke-width=".8"/>`;
-  if (regs) s += `<g fill="#f97316" fill-opacity=".9" stroke="#0a0e1a" stroke-width="1" stroke-linejoin="round">${regs.map(r => `<path d="${zg(r) || ''}"/>`).join('')}</g>`;
+  s += `<path d="${F110.filter(x => { const b = zg.bounds(x); return b[1][0] > zbox[0] && b[0][0] < zbox[2] && b[1][1] > zbox[1] && b[0][1] < zbox[3] && b[1][0] - b[0][0] < 4000; }).map(x => zg(x) || '').join('')}" fill="#1e3a5f" stroke="#2f5d8f" stroke-width=".6"/>`;
+  s += `<path d="${F110.filter(x => TRACKED.has(String(x.id)) && String(x.id) !== String(num)).filter(x => { const b = zg.bounds(x); return b[1][0] > zbox[0] && b[0][0] < zbox[2] && b[1][1] > zbox[1] && b[0][1] < zbox[3] && b[1][0] - b[0][0] < 4000; }).map(x => zg(x) || '').join('')}" fill="#10b981" stroke="#0a0e1a" stroke-width=".6"/>`;
+  if (regs) s += `<g stroke="#8fb4e8" stroke-opacity=".7" stroke-width=".8" stroke-linejoin="round">${regs.map((r, i) => `<path fill="${REGCOL[(i * 7 + (i >> 2)) % REGCOL.length]}" d="${zg(r) || ''}"/>`).join('')}</g>`;
   else s += `<path d="${zg(f)}" fill="#f97316" stroke="#fbbf24" stroke-width="1"/>`;
   s += `</g>`;
-  /* petit globe en médaillon : situation du pays sur la planète */
-  const gl = d3.geoOrthographic().rotate([-center[0], -center[1]]).translate([84, 84]).scale(58).clipAngle(90), gp = pth(gl);
-  s += `<path d="${gp({ type: 'Sphere' })}" fill="#0f1a33" stroke="#2a3558" stroke-width="1.5"/><path d="${gp(d3.geoGraticule10())}" fill="none" stroke="#1b2644" stroke-width=".5"/>`;
-  s += `<path d="${gp(LAND)}" fill="#2d3a5e"/><path d="${gp(f)}" fill="#f97316"/>`;
-  const pt = gl(center); if (pt) s += `<circle cx="${pt[0].toFixed(1)}" cy="${pt[1].toFixed(1)}" r="9" fill="none" stroke="#fbbf24" stroke-width="1.6"/>`;
   return s + `</svg>`;
 }
 
@@ -217,7 +215,7 @@ function page(c, hasMap) {
   /* Sources */
   if (SRC[p]) body += `<section><h2>Source officielle</h2><p><a href="${esc(SRC[p].url)}" rel="noopener" target="_blank">${esc(SRC[p].n)}</a></p></section>`;
   /* Carte : pays sur le globe + retour vers le globe interactif */
-  if (hasMap) body += `<section><h2>${esc(n)} sur la carte</h2><figure class="map"><img src="/pays/${slug(p)}/carte.svg" alt="Carte : ${esc(n)} sur le globe${region ? ' (' + esc(region) + ')' : ''}" width="760" height="460" loading="lazy"><figcaption>${esc(n)}${region ? ' · Région : ' + esc(region) : ''}</figcaption></figure><p><a class="back" href="/">← Retour au globe interactif</a></p></section>`;
+  if (hasMap) body += `<section><h2>${esc(n)} sur la carte</h2><figure class="map"><a class="pill" href="/">← Retour</a><img src="/pays/${slug(p)}/carte.svg" alt="Carte : ${esc(n)} sur le globe${region ? ' (' + esc(region) + ')' : ''}" width="760" height="560" loading="lazy"><figcaption>${esc(n)}${region ? ' · Région : ' + esc(region) : ''}</figcaption></figure><p><a class="back" href="/">← Retour au globe interactif</a></p></section>`;
   /* Autres élections sur le continent */
   const autres = upcoming(c.r).filter(e => e.p !== p).slice(0, 6);
   if (autres.length) body += `<section><h2>Autres élections : ${esc(region)}</h2>` + autres.map(electionRow).join('') + `<p><a class="btn2" href="/elections/${CSLUG[c.r]}/">Toutes les élections en ${esc(region)} d’ici 3 ans →</a></p></section>`;
@@ -280,7 +278,7 @@ dt{color:var(--mu);font-size:.8rem}dd{margin:2px 0 0;font-weight:600}
 .chips{display:flex;flex-wrap:wrap;gap:8px}.chips a{background:var(--cd);border:1px solid var(--bd);border-radius:999px;padding:4px 12px;text-decoration:none;color:var(--tx);font-size:.9rem}
 .cta{text-align:center;background:linear-gradient(135deg,#1a1f33,#14233f);border:1px solid var(--bd);border-radius:14px;padding:8px 16px 20px;margin-top:2em}
 .btn{display:inline-block;background:var(--a);color:#fff;padding:10px 22px;border-radius:999px;text-decoration:none;font-weight:700}
-figure.map{margin:0}figure.map img{width:100%;height:auto;border-radius:12px;border:1px solid var(--bd);display:block}figcaption{color:var(--mu);font-size:.85rem;margin-top:6px}
+figure.map{margin:0;position:relative}.pill{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#0a0e1acc;border:1px solid var(--bd);border-radius:20px;padding:6px 18px;color:var(--tx);text-decoration:none;font-size:.9rem}figure.map img{width:100%;height:auto;border-radius:12px;border:1px solid var(--bd);display:block}figcaption{color:var(--mu);font-size:.85rem;margin-top:6px}
 .back,.btn2{display:inline-block;margin-top:6px;font-weight:600;text-decoration:none}.flag{border-radius:3px;vertical-align:middle;box-shadow:0 1px 6px rgba(0,0,0,.4)}
 .lock{background:#161c30;border:1px dashed #3a4670;border-radius:10px;padding:10px 12px;margin:8px 0;color:var(--mu)}.lock strong{color:var(--tx)}
 .who{display:flex;align-items:center;gap:8px}.erow p{margin:.4em 0;color:var(--mu);font-size:.95rem}
