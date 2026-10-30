@@ -106,6 +106,7 @@ function mainPart(f) {
 }
 const REGCOL = ['#5b5fc7', '#4a7cc7', '#b5546b', '#4f6fd0', '#a8566b', '#6a55c9'];
 const TRACKED = new Set(PAYS.map(c => ISOC[c.p]).filter(Boolean).map(i => String(ic.alpha2ToNumeric(i.toUpperCase()))));
+const MEDIUM_REGIONS = false;
 let REGD = null;
 const regPos = pos => {
   const mix = (a, b, k) => { const h = x => [1, 3, 5].map(i => parseInt(x.slice(i, i + 2), 16)); const A = h(a), B = h(b); return 'rgb(' + A.map((v, i) => Math.round(v + (B[i] - v) * k)).join(',') + ')'; };
@@ -146,8 +147,9 @@ function mapSvg(p) {
   const iso = ISOC[p]; if (!iso) return null;
   const num = ic.alpha2ToNumeric(iso.toUpperCase()); const f = num && F50.get(String(num)); if (!f) return null;
   const { center, shown } = mainPart(f);
-  const rd = regionsDev(p, shown);
-  const regs = rd || (regionsOf(iso, shown) || []).map((f, i) => ({ f, fill: NEUTRE[i % NEUTRE.length] }));
+  /* Régions (offre Medium, pas encore disponible) : désactivées. Passer MEDIUM_REGIONS à true quand l'offre sera prête. */
+  const rd = MEDIUM_REGIONS ? regionsDev(p, shown) : null;
+  const regs = MEDIUM_REGIONS ? (rd || (regionsOf(iso, shown) || []).map((f, i) => ({ f, fill: NEUTRE[i % NEUTRE.length] }))) : [];
   if (!regs.length) regs.length = 0;
   const pth = pr => { const g = d3.geoPath(pr); g.digits(1); return g; };
   const W = 760, H = 560;
@@ -162,7 +164,7 @@ function mapSvg(p) {
   s += `<path d="${F110.filter(x => { const b = zg.bounds(x); return b[1][0] > zbox[0] && b[0][0] < zbox[2] && b[1][1] > zbox[1] && b[0][1] < zbox[3] && b[1][0] - b[0][0] < 4000; }).map(x => zg(x) || '').join('')}" fill="#1e3a5f" stroke="#2f5d8f" stroke-width=".6"/>`;
   s += `<path d="${F110.filter(x => TRACKED.has(String(x.id)) && String(x.id) !== String(num)).filter(x => { const b = zg.bounds(x); return b[1][0] > zbox[0] && b[0][0] < zbox[2] && b[1][1] > zbox[1] && b[0][1] < zbox[3] && b[1][0] - b[0][0] < 4000; }).map(x => zg(x) || '').join('')}" fill="#10b981" stroke="#0a0e1a" stroke-width=".6"/>`;
   if (regs.length) s += `<g fill-opacity=".8" stroke="#fff" stroke-opacity=".85" stroke-width="1" stroke-linejoin="round">${regs.map(r => `<path fill="${r.fill}" d="${zg(r.f) || ''}"/>`).join('')}</g>`;
-  else s += `<path d="${zg(f)}" fill="#f97316" stroke="#fbbf24" stroke-width="1"/>`;
+  else s += `<path d="${zg(shown)}" fill="#f97316" fill-opacity=".85" stroke="#fff" stroke-opacity=".85" stroke-width="1.1" stroke-linejoin="round"/>`;
   s += `</g>`;
   return s + `</svg>`;
 }
