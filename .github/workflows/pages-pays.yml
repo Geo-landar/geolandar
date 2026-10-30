@@ -1,0 +1,33 @@
+name: Geolandar - Pages pays (SEO)
+
+# Régénère les pages /pays/, /elections/ et le sitemap à partir de index.html.
+# Se lance : chaque nuit à 01h30 (après la mise à jour des élections), à chaque modification de index.html, ou à la main.
+on:
+  schedule:
+    - cron: '30 1 * * *'
+  push:
+    branches: [main]
+    paths: ['index.html', 'generate_pages.js']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - name: Générer les pages
+        run: node generate_pages.js --all --sitemap
+      - name: Enregistrer s'il y a des changements
+        run: |
+          git config user.name "geolandar-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add pays elections flags sitemap.xml
+          if git diff --cached --quiet; then echo "Aucun changement"; else git commit -m "Pages pays : mise à jour automatique" && git push; fi

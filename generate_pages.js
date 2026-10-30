@@ -48,7 +48,11 @@ if (!PAYS.length || !E.length || !Object.keys(LEADERS).length) throw new Error('
 /* ── Utilitaires ── */
 const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-const ACCENTS = { 'Bresil': 'Brésil', 'Thailande': 'Thaïlande', 'Tchequie': 'Tchéquie', 'Armenie': 'Arménie', 'Georgie': 'Géorgie',
+const ACCENTS = { 'Suede': 'Suède', 'Norvege': 'Norvège', 'Slovenie': 'Slovénie', 'Macedoine du Nord': 'Macédoine du Nord', 'Montenegro': 'Monténégro',
+  'Perou': 'Pérou', 'Senegal': 'Sénégal', 'Azerbaidjan': 'Azerbaïdjan', 'Israel': 'Israël', 'Ouzbekistan': 'Ouzbékistan', 'Turkmenistan': 'Turkménistan',
+  'Nepal': 'Népal', 'Yemen': 'Yémen', 'Papouasie-NG': 'Papouasie-Nouvelle-Guinée', 'Nouvelle-Zelande': 'Nouvelle-Zélande', 'Nouvelle-Caledonie': 'Nouvelle-Calédonie',
+  'Sao Tome-et-Principe': 'Sao Tomé-et-Principe', 'Saint-Vincent': 'Saint-Vincent-et-les-Grenadines', 'Saint-Kitts': 'Saint-Kitts-et-Nevis',
+  'Trinidad & Tobago': 'Trinité-et-Tobago', 'Grece': 'Grèce', 'Bosnie': 'Bosnie-Herzégovine', 'Kirghizistan': 'Kirghizistan', 'Bresil': 'Brésil', 'Thailande': 'Thaïlande', 'Tchequie': 'Tchéquie', 'Armenie': 'Arménie', 'Georgie': 'Géorgie',
   'Benin': 'Bénin', 'Egypte': 'Égypte', 'Equateur': 'Équateur', 'Erythree': 'Érythrée', 'Ethiopie': 'Éthiopie',
   'Emirats arabes': 'Émirats arabes unis', 'Etats-Unis': 'États-Unis', 'Coree du Sud': 'Corée du Sud', 'Coree du Nord': 'Corée du Nord',
   'Cote d\'Ivoire': 'Côte d\'Ivoire', 'Bahrein': 'Bahreïn', 'Koweit': 'Koweït', 'Haiti': 'Haïti', 'Indonesie': 'Indonésie',
@@ -75,7 +79,7 @@ const col = s => s >= 75 ? '#10b981' : s >= 50 ? '#eab308' : s >= 30 ? '#f97316'
 /* ── Sélection des pays à générer ── */
 const args = process.argv.slice(2);
 const only = args.includes('--only') ? args[args.indexOf('--only') + 1].split(',').map(s => s.trim()) : null;
-let list = PAYS.map(c => c.p);
+let list = [...new Set(PAYS.map(c => c.p))];
 if (only) {
   const miss = only.filter(n => !list.includes(n));
   if (miss.length) throw new Error('Pays inconnu(s) : ' + miss.join(', '));
@@ -316,7 +320,8 @@ footer{border-top:1px solid var(--bd);color:var(--mu);font-size:.85rem;text-alig
 fs.mkdirSync(OUT, { recursive: true });
 writeFlags();
 const done = [];
-for (const c of PAYS.filter(x => wanted.has(x.p))) {
+const seenP = new Set();
+for (const c of PAYS.filter(x => wanted.has(x.p) && !seenP.has(x.p) && seenP.add(x.p))) {
   const dir = path.join(OUT, slug(c.p));
   fs.mkdirSync(dir, { recursive: true });
   const svg = mapSvg(c.p);
