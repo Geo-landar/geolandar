@@ -104,32 +104,44 @@ function mainPart(f) {
   const keep = polys.filter(x => d3.geoDistance(d3.geoCentroid(x), center) < 0.5);
   return { center, shown: { type: 'Feature', geometry: { type: 'MultiPolygon', coordinates: keep.map(k => k.geometry.coordinates) } } };
 }
+let ADMIN = null;
+function regionsOf(iso, shown) {
+  if (ADMIN === null) { try { ADMIN = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'admin1.json'), 'utf8')); } catch (e) { ADMIN = {}; } }
+  const t = ADMIN[iso]; if (!t) return null;
+  const [[x0, y0], [x1, y1]] = d3.geoBounds(shown), m = 2;
+  const out = [];
+  for (const g of topojson.feature(t, t.objects.r).features) {
+    const polys = g.geometry.type === 'Polygon' ? [g.geometry.coordinates] : g.geometry.coordinates;
+    const keep = polys.filter(c => { const [cx, cy] = d3.geoCentroid({ type: 'Polygon', coordinates: c }); return cx > x0 - m && cx < x1 + m && cy > y0 - m && cy < y1 + m; });
+    if (keep.length) out.push({ type: 'Feature', geometry: { type: 'MultiPolygon', coordinates: keep } });
+  }
+  return out.length ? out : null;
+}
 function mapSvg(p) {
   const iso = ISOC[p]; if (!iso) return null;
   const num = ic.alpha2ToNumeric(iso.toUpperCase()); const f = num && F50.get(String(num)); if (!f) return null;
   const { center, shown } = mainPart(f);
+  const regs = regionsOf(iso, shown);
   const pth = pr => { const g = d3.geoPath(pr); g.digits(1); return g; };
-  const W = 760, H = 340;
-  const gl = d3.geoOrthographic().rotate([-center[0], -center[1]]).translate([180, 170]).scale(150).clipAngle(90);
-  const gp = pth(gl);
-  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Carte de ${esc(nom(p))}">`;
-  s += `<rect width="${W}" height="${H}" fill="#0a0e1a"/>`;
-  s += `<path d="${gp({ type: 'Sphere' })}" fill="#0f1a33" stroke="#2a3558"/>`;
-  s += `<path d="${gp(d3.geoGraticule10())}" fill="none" stroke="#1b2644" stroke-width=".5"/>`;
-  s += `<path d="${gp(LAND)}" fill="#26324f"/>`;
-  s += `<path d="${gp(f)}" fill="#f97316"/>`;
-  const pt = gl(center); if (pt) s += `<circle cx="${pt[0].toFixed(1)}" cy="${pt[1].toFixed(1)}" r="13" fill="none" stroke="#f97316" stroke-width="2"/>`;
-  /* gros plan */
-  const px = [370, 10, 750, 330];
-  let zp = d3.geoMercator().fitExtent([[px[0] + 10, px[1] + 10], [px[2] - 10, px[3] - 10]], shown);
-  if (zp.scale() > 2400) zp = d3.geoMercator().center(center).scale(2400).translate([(px[0] + px[2]) / 2, (px[1] + px[3]) / 2]);
+  const W = 760, H = 460;
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Carte de ${esc(nom(p))}${regs ? ' et de ses régions' : ''}">`;
+  s += `<rect width="${W}" height="${H}" rx="14" fill="#0a0e1a"/>`;
+  /* le pays, en grand, avec son découpage régional */
+  const zbox = [8, 8, W - 8, H - 8];
+  let zp = d3.geoMercator().fitExtent([[zbox[0] + 40, zbox[1] + 30], [zbox[2] - 40, zbox[3] - 30]], shown);
+  if (zp.scale() > 2400) zp = d3.geoMercator().center(center).scale(2400).translate([W / 2, H / 2]);
   const zg = pth(zp);
-  s += `<clipPath id="z"><rect x="${px[0]}" y="${px[1]}" width="${px[2] - px[0]}" height="${px[3] - px[1]}" rx="12"/></clipPath>`;
-  s += `<rect x="${px[0]}" y="${px[1]}" width="${px[2] - px[0]}" height="${px[3] - px[1]}" rx="12" fill="#0f1a33" stroke="#2a3558"/>`;
-  s += `<g clip-path="url(#z)">`;
-  s += `<path d="${F110.filter(x => { const b = zg.bounds(x); return b[1][0] > px[0] && b[0][0] < px[2] && b[1][1] > px[1] && b[0][1] < px[3] && b[1][0] - b[0][0] < 4000; }).map(x => zg(x) || '').join('')}" fill="#26324f" stroke="#0f1a33" stroke-width=".8"/>`;
-  s += `<path d="${zg(f)}" fill="#f97316" stroke="#fbbf24" stroke-width="1"/></g></svg>`;
-  return s;
+  s += `<clipPath id="z"><rect x="${zbox[0]}" y="${zbox[1]}" width="${zbox[2] - zbox[0]}" height="${zbox[3] - zbox[1]}" rx="12"/></clipPath><g clip-path="url(#z)">`;
+  s += `<path d="${F110.filter(x => { const b = zg.bounds(x); return b[1][0] > zbox[0] && b[0][0] < zbox[2] && b[1][1] > zbox[1] && b[0][1] < zbox[3] && b[1][0] - b[0][0] < 4000; }).map(x => zg(x) || '').join('')}" fill="#1c2742" stroke="#0a0e1a" stroke-width=".8"/>`;
+  if (regs) s += `<g fill="#f97316" fill-opacity=".9" stroke="#0a0e1a" stroke-width="1" stroke-linejoin="round">${regs.map(r => `<path d="${zg(r) || ''}"/>`).join('')}</g>`;
+  else s += `<path d="${zg(f)}" fill="#f97316" stroke="#fbbf24" stroke-width="1"/>`;
+  s += `</g>`;
+  /* petit globe en médaillon : situation du pays sur la planète */
+  const gl = d3.geoOrthographic().rotate([-center[0], -center[1]]).translate([84, 84]).scale(58).clipAngle(90), gp = pth(gl);
+  s += `<path d="${gp({ type: 'Sphere' })}" fill="#0f1a33" stroke="#2a3558" stroke-width="1.5"/><path d="${gp(d3.geoGraticule10())}" fill="none" stroke="#1b2644" stroke-width=".5"/>`;
+  s += `<path d="${gp(LAND)}" fill="#2d3a5e"/><path d="${gp(f)}" fill="#f97316"/>`;
+  const pt = gl(center); if (pt) s += `<circle cx="${pt[0].toFixed(1)}" cy="${pt[1].toFixed(1)}" r="9" fill="none" stroke="#fbbf24" stroke-width="1.6"/>`;
+  return s + `</svg>`;
 }
 
 /* ── Élections à venir (3 ans) par continent ── */
@@ -205,7 +217,7 @@ function page(c, hasMap) {
   /* Sources */
   if (SRC[p]) body += `<section><h2>Source officielle</h2><p><a href="${esc(SRC[p].url)}" rel="noopener" target="_blank">${esc(SRC[p].n)}</a></p></section>`;
   /* Carte : pays sur le globe + retour vers le globe interactif */
-  if (hasMap) body += `<section><h2>${esc(n)} sur la carte</h2><figure class="map"><img src="/pays/${slug(p)}/carte.svg" alt="Carte : ${esc(n)} sur le globe${region ? ' (' + esc(region) + ')' : ''}" width="760" height="340" loading="lazy"><figcaption>${esc(n)}${region ? ' · Région : ' + esc(region) : ''}</figcaption></figure><p><a class="back" href="/">← Retour au globe interactif</a></p></section>`;
+  if (hasMap) body += `<section><h2>${esc(n)} sur la carte</h2><figure class="map"><img src="/pays/${slug(p)}/carte.svg" alt="Carte : ${esc(n)} sur le globe${region ? ' (' + esc(region) + ')' : ''}" width="760" height="460" loading="lazy"><figcaption>${esc(n)}${region ? ' · Région : ' + esc(region) : ''}</figcaption></figure><p><a class="back" href="/">← Retour au globe interactif</a></p></section>`;
   /* Autres élections sur le continent */
   const autres = upcoming(c.r).filter(e => e.p !== p).slice(0, 6);
   if (autres.length) body += `<section><h2>Autres élections : ${esc(region)}</h2>` + autres.map(electionRow).join('') + `<p><a class="btn2" href="/elections/${CSLUG[c.r]}/">Toutes les élections en ${esc(region)} d’ici 3 ans →</a></p></section>`;
