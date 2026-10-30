@@ -106,6 +106,29 @@ function mainPart(f) {
 }
 const REGCOL = ['#5b5fc7', '#4a7cc7', '#b5546b', '#4f6fd0', '#a8566b', '#6a55c9'];
 const TRACKED = new Set(PAYS.map(c => ISOC[c.p]).filter(Boolean).map(i => String(ic.alpha2ToNumeric(i.toUpperCase()))));
+let REGD = null;
+const regPos = pos => {
+  const mix = (a, b, k) => { const h = x => [1, 3, 5].map(i => parseInt(x.slice(i, i + 2), 16)); const A = h(a), B = h(b); return 'rgb(' + A.map((v, i) => Math.round(v + (B[i] - v) * k)).join(',') + ')'; };
+  if (pos === null || pos === undefined) return null;
+  if (pos === 0) return '#c4b5fd';
+  return pos < 0 ? mix('#f9a8d4', '#dc2626', Math.min(1, -pos / 10)) : mix('#60a5fa', '#7c3aed', Math.min(1, pos / 10));
+};
+const NEUTRE = ['#64748b', '#475569', '#71809a', '#5b6b85', '#8a97ab', '#3f4c61', '#93a1b8', '#57667e'];
+/* Régions « façon globe » : mêmes données et mêmes couleurs que le globe (data/regions.json, copie des données du site) */
+function regionsDev(p, shown) {
+  if (REGD === null) { try { REGD = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'regions.json'), 'utf8')); } catch (e) { REGD = {}; } }
+  const geo = REGD.geo && REGD.geo[p], src = REGD.source && REGD.source[p]; if (!geo || !src) return null;
+  const liste = (REGD.leaders && REGD.leaders[p] && REGD.leaders[p].liste) || {};
+  const [[x0, y0], [x1, y1]] = d3.geoBounds(shown), m = 2, out = [];
+  geo.features.forEach((g, i) => {
+    const polys = g.geometry.type === 'Polygon' ? [g.geometry.coordinates] : g.geometry.coordinates;
+    const keep = polys.filter(c => { const [cx, cy] = d3.geoCentroid({ type: 'Polygon', coordinates: c }); return cx > x0 - m && cx < x1 + m && cy > y0 - m && cy < y1 + m; });
+    if (!keep.length) return;
+    const nom = g.properties[src.nameProp];
+    out.push({ f: { type: 'Feature', geometry: { type: 'MultiPolygon', coordinates: keep } }, fill: regPos(liste[nom] && liste[nom].pos) || NEUTRE[i % NEUTRE.length] });
+  });
+  return out.length ? out : null;
+}
 let ADMIN = null;
 function regionsOf(iso, shown) {
   if (ADMIN === null) { try { ADMIN = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'admin1.json'), 'utf8')); } catch (e) { ADMIN = {}; } }
@@ -123,10 +146,12 @@ function mapSvg(p) {
   const iso = ISOC[p]; if (!iso) return null;
   const num = ic.alpha2ToNumeric(iso.toUpperCase()); const f = num && F50.get(String(num)); if (!f) return null;
   const { center, shown } = mainPart(f);
-  const regs = regionsOf(iso, shown);
+  const rd = regionsDev(p, shown);
+  const regs = rd || (regionsOf(iso, shown) || []).map((f, i) => ({ f, fill: NEUTRE[i % NEUTRE.length] }));
+  if (!regs.length) regs.length = 0;
   const pth = pr => { const g = d3.geoPath(pr); g.digits(1); return g; };
   const W = 760, H = 560;
-  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Carte de ${esc(nom(p))}${regs ? ' et de ses régions' : ''}">`;
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Carte de ${esc(nom(p))}${regs.length ? ' et de ses régions' : ''}">`;
   s += `<rect width="${W}" height="${H}" rx="14" fill="#0a0e1a"/>`;
   /* le pays, en grand, avec son découpage régional */
   const zbox = [8, 8, W - 8, H - 8];
@@ -136,7 +161,7 @@ function mapSvg(p) {
   s += `<clipPath id="z"><rect x="${zbox[0]}" y="${zbox[1]}" width="${zbox[2] - zbox[0]}" height="${zbox[3] - zbox[1]}" rx="12"/></clipPath><g clip-path="url(#z)">`;
   s += `<path d="${F110.filter(x => { const b = zg.bounds(x); return b[1][0] > zbox[0] && b[0][0] < zbox[2] && b[1][1] > zbox[1] && b[0][1] < zbox[3] && b[1][0] - b[0][0] < 4000; }).map(x => zg(x) || '').join('')}" fill="#1e3a5f" stroke="#2f5d8f" stroke-width=".6"/>`;
   s += `<path d="${F110.filter(x => TRACKED.has(String(x.id)) && String(x.id) !== String(num)).filter(x => { const b = zg.bounds(x); return b[1][0] > zbox[0] && b[0][0] < zbox[2] && b[1][1] > zbox[1] && b[0][1] < zbox[3] && b[1][0] - b[0][0] < 4000; }).map(x => zg(x) || '').join('')}" fill="#10b981" stroke="#0a0e1a" stroke-width=".6"/>`;
-  if (regs) s += `<g stroke="#8fb4e8" stroke-opacity=".7" stroke-width=".8" stroke-linejoin="round">${regs.map((r, i) => `<path fill="${REGCOL[(i * 7 + (i >> 2)) % REGCOL.length]}" d="${zg(r) || ''}"/>`).join('')}</g>`;
+  if (regs.length) s += `<g fill-opacity=".8" stroke="#fff" stroke-opacity=".85" stroke-width="1" stroke-linejoin="round">${regs.map(r => `<path fill="${r.fill}" d="${zg(r.f) || ''}"/>`).join('')}</g>`;
   else s += `<path d="${zg(f)}" fill="#f97316" stroke="#fbbf24" stroke-width="1"/>`;
   s += `</g>`;
   return s + `</svg>`;
