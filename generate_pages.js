@@ -117,6 +117,11 @@ const codeType = t => { t = String(t || '').toLowerCase();
   if (/référendum|referendum/.test(t)) return 'r';
   if (/municipal|local|régional|regional|provincial/.test(t)) return 'm';
   return 'l'; };
+const estTypeNational = t => { t = String(t || '').toLowerCase();
+  if (['p', 'l', 's', 'r'].includes(t)) return true;
+  if (t === 'm') return false;
+  return /présidenti|presidential|législative|legislative|générale|sénatoriale|référendum|referendum|parlementaire/.test(t)
+    && !/directe|mairie|maire|locale|gouvernor|municipal|communale|régional|regional|provincial|landtag|partielle|by-election|assemblée d|conseil|cantonal|district/.test(t); };
 (function majElections() {
   const rows = supa('elections', 'select=*&niveau=eq.national');
   if (!Array.isArray(rows)) return;
@@ -124,6 +129,7 @@ const codeType = t => { t = String(t || '').toLowerCase();
   rows.forEach(r => {
     if (!r.pays || !r.date || !PAYS_SITE.has(r.pays)) return;
     let e = E.find(x => x.p === r.pays && x.d === r.date);
+    if (!e && (!estTypeNational(r.type) || rows.some(x => x.pays === r.pays && x.date_tour2 === r.date))) return;
     if (!e) {
       if (!/^\d{4}-\d\d-\d\d$/.test(r.date) || +r.date.slice(0, 4) < today.getFullYear() - 1) return;
       e = { id: 'sb' + r.id, p: r.pays, r: REGION_DE[r.pays], t: codeType(r.type), d: r.date,

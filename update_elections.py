@@ -6,7 +6,11 @@ import os
 import re
 
 # ══════════════════════════════════════════════════════════════════
-#  GEOLANDAR — Mise à jour automatique des élections — v6.0 (24/10/2026)
+#  GEOLANDAR — Mise à jour automatique des élections — v6.1 (05/11/2026)
+#  v6.1 : une élection n'est « nationale » que si Wikidata la rattache au
+#  pays lui-même (juridiction P1001 = le pays) ; sinon elle est régionale.
+#  Les résultats ne viennent que d'élections nationales. Pas de ligne
+#  séparée pour un 2nd tour. Nettoyage nightly des lignes mal classées.
 #  Corrections par rapport à la v5.3 :
 #   1. DÉCOUVERTE : la requête triait par date croissante avec une limite de
 #      400 lignes à partir du 01/01/2025 — elle ne renvoyait donc QUE de
@@ -161,6 +165,7 @@ RESULTATS_CONNUS = {
 # ══════════════════════════════════════
 SUPPRIMEES = {
     ("Haiti", "2026-12-13"),   # reportée : le CEP a annoncé le 29/10/2026 un 1er tour le 18/07/2027
+    ("Haiti", "2026-08-30"),   # ancienne date, reportée (même annonce)
 }
 FORCEES = [
     {"pays": "Haiti", "date": "2027-07-18", "type": "p", "cert": 1, "niveau": "national",
@@ -192,6 +197,18 @@ def appliquer_corrections_elections():
 # FILTRES (inchangés)
 # ══════════════════════════════════════
 TYPES_PARTIELLES = ["Q15284", "Q1198521", "Q82673"]
+
+MOTS_CLES_LOCAL_FORTS = ["élection directe", "mairie", "maire", "élection locale", "locale", "gouvernor",
+    "governor", "municipal", "communale", "régional", "regional", "provincial", "landtag", "state election",
+    "partielle", "by-election", "assemblée d'", "assemblée de", "conseil", "cantonal", "county", "district"]
+MOTS_CLES_NATIONAL = ["présidenti", "presidential", "législative", "legislative", "générale", "general election",
+    "sénatoriale", "senate", "référendum", "referendum", "parlementaire", "parliamentary", "fédérale", "federal"]
+
+def libelle_national(label):
+    """Pour un libellé sans juridiction connue : national seulement s'il en a
+    l'air ET ne contient aucun mot local."""
+    t = (label or "").lower()
+    return any(k in t for k in MOTS_CLES_NATIONAL) and not any(k in t for k in MOTS_CLES_LOCAL_FORTS)
 
 MOTS_CLES_REGIONAL = [
     "regional","régional","state election","provincial","gubernatorial",
@@ -230,11 +247,12 @@ def requete_decouverte():
     debut = (date.today() - timedelta(days=90)).isoformat()
     fin = (date.today() + timedelta(days=3 * 366)).isoformat()
     return f"""
-SELECT DISTINCT ?paysLabel ?iso ?date ?datePrecision ?typeLabel ?type WHERE {{
+SELECT DISTINCT ?election ?pays ?paysLabel ?iso ?date ?datePrecision ?typeLabel ?type ?juri ?juriIso WHERE {{
   ?election wdt:P31 ?type .
   ?type wdt:P279* wd:Q40231 .
   ?election wdt:P17 ?pays .
   OPTIONAL {{ ?pays wdt:P297 ?iso . }}
+  OPTIONAL {{ ?election wdt:P1001 ?juri . OPTIONAL {{ ?juri wdt:P297 ?juriIso . }} }}
   ?election p:P585 ?dateStatement .
   ?dateStatement psv:P585 ?dateNode .
   ?dateNode wikibase:timeValue ?date .
@@ -256,6 +274,7 @@ SELECT ?paysLabel ?iso ?date ?vainqueurLabel ?partiLabel WHERE {{
   OPTIONAL {{ ?pays wdt:P297 ?iso . }}
   ?election wdt:P585 ?date .
   ?election wdt:P991 ?vainqueur .
+  FILTER NOT EXISTS {{ ?election wdt:P1001 ?j . FILTER(?j != ?pays) }}
   OPTIONAL {{ ?vainqueur wdt:P102 ?parti . }}
   FILTER(?date >= "{debut}T00:00:00Z"^^xsd:dateTime)
   FILTER(?date <= NOW())
@@ -274,6 +293,7 @@ SELECT ?paysLabel ?iso ?date ?candLabel ?votes ?partiLabel WHERE {{
   OPTIONAL {{ ?pays wdt:P297 ?iso . }}
   ?election wdt:P585 ?date .
   ?election p:P726 ?candStatement .
+  FILTER NOT EXISTS {{ ?election wdt:P1001 ?j . FILTER(?j != ?pays) }}
   ?candStatement ps:P726 ?cand .
   ?candStatement pq:P1111 ?votes .
   OPTIONAL {{ ?cand wdt:P102 ?parti . }}
@@ -339,7 +359,14 @@ def lire_decouverte(data):
         else:
             ignorees += 1; continue
         partielle = type_qid in TYPES_PARTIELLES or any(k in tl for k in ["partielle", "by-election", "partiel", "complementaire"])
-        niveau = "regionale" if (partielle or any(k in tl for k in MOTS_CLES_REGIONAL)) else "national"
+        juri = v(row, "juri").split("/")[-1]
+        pays_qid = v(row, "pays").split("/")[-1]
+        if juri:
+            # rattachée au pays lui-même (même fiche, ou même code ISO : ex. Pays-Bas / Royaume des Pays-Bas)
+            national = (juri == pays_qid) or (bool(v(row, "juriIso")) and pays_site("", v(row, "juriIso")) == pays)
+        else:
+            national = libelle_national(type_label)  # pas de juridiction : prudence
+        niveau = "national" if (national and not partielle) else "regionale"
         cle = (pays, date_el)
         # Une même élection peut sortir plusieurs fois (plusieurs types) : on garde le plus précis
         # présidentielle et législatives le même jour : on garde la présidentielle
@@ -367,9 +394,11 @@ def deux_tours(elections):
 def decouvrir_elections():
     data = wikidata_query(requete_decouverte(), "découverte")
     elections, ignorees = lire_decouverte(data)
+    paires = deux_tours(elections)
+    seconds = {(p, d2) for (p, d1), d2 in paires.items()}
     nouvelles = 0
     for e in elections:
-        if (e["pays"], e["date"]) in SUPPRIMEES:
+        if (e["pays"], e["date"]) in SUPPRIMEES or (e["pays"], e["date"]) in seconds:
             continue
         try:
             res = supabase.table("elections").select("id").eq("pays", e["pays"]).eq("date", e["date"]).execute()
@@ -386,13 +415,54 @@ def decouvrir_elections():
             print(f"  ✗ insertion {e['pays']} {e['date']}: {ex}")
     print(f"  {nouvelles} nouvelles élections ajoutées, {ignorees} lignes ignorées")
     # Seconds tours
-    for (pays, d1), d2 in deux_tours(elections).items():
+    for (pays, d1), d2 in paires.items():
         try:
             supabase.table("elections").update({"date_tour2": d2}).eq("pays", pays).eq("date", d1).execute()
             print(f"  🔁 {pays} : 1er tour {d1}, 2nd tour {d2}")
         except Exception as ex:
             print(f"  ⚠ {pays} : impossible d'écrire le 2nd tour ({ex}). La colonne date_tour2 existe-t-elle ? (fichier geolandar_second_tour.sql)")
+    nettoyer(elections, data)
     return elections
+
+def nettoyer(elections, data):
+    """Corrige chaque nuit ce que les versions précédentes ont mal classé.
+    Ne fait rien si Wikidata n'a presque rien renvoyé (panne)."""
+    if len(data) < 200:
+        print("  (nettoyage ignoré : réponse Wikidata trop courte)")
+        return
+    nationales = {(e["pays"], e["date"]) for e in elections if e["niveau"] == "national"}
+    forcees = {(e["pays"], e["date"]) for e in FORCEES}
+    debut = (date.today() - timedelta(days=90)).isoformat()
+    fin = (date.today() + timedelta(days=3 * 366)).isoformat()
+    try:
+        rows = supabase.table("elections").select("id,pays,date,type,niveau,date_tour2").eq("niveau", "national").execute().data
+    except Exception as ex:
+        print(f"  ✗ nettoyage : {ex}"); return
+    tours2 = {(r["pays"], r["date_tour2"]) for r in rows if r.get("date_tour2")}
+    n_reg = n_t2 = 0
+    for r in rows:
+        cle = (r["pays"], r["date"])
+        if cle in forcees: continue
+        try:
+            if cle in tours2:                                   # ligne en double d'un 2nd tour
+                supabase.table("elections").delete().eq("id", r["id"]).execute(); n_t2 += 1; continue
+            ancien_libelle = r.get("type") and len(r["type"]) > 2
+            if debut <= r["date"] <= fin and r["date"][4:] != "-00-00" and cle not in nationales:
+                supabase.table("elections").update({"niveau": "regionale"}).eq("id", r["id"]).execute(); n_reg += 1
+            elif ancien_libelle and not libelle_national(r["type"]):
+                supabase.table("elections").update({"niveau": "regionale"}).eq("id", r["id"]).execute(); n_reg += 1
+        except Exception as ex:
+            print(f"  ✗ nettoyage {cle}: {ex}")
+    # Sens inverse : une élection reconnue nationale par Wikidata mais classée régionale
+    n_nat = 0
+    try:
+        regs = supabase.table("elections").select("id,pays,date").eq("niveau", "regionale").gte("date", debut).execute().data
+        for r in regs:
+            if (r["pays"], r["date"]) in nationales:
+                supabase.table("elections").update({"niveau": "national"}).eq("id", r["id"]).execute(); n_nat += 1
+    except Exception as ex:
+        print(f"  ✗ nettoyage (retour en national) : {ex}")
+    print(f"  🧹 nettoyage : {n_reg} élection(s) reclassée(s) régionales, {n_nat} remise(s) en national, {n_t2} doublon(s) de 2nd tour supprimé(s)")
 
 # ══════════════════════════════════════
 # RÉSULTATS
@@ -469,7 +539,7 @@ def chercher_resultat(row, sources):
 # ══════════════════════════════════════
 def main():
     print("=" * 55)
-    print("  GEOLANDAR — Mise à jour automatique v6.0")
+    print("  GEOLANDAR — Mise à jour automatique v6.1")
     print(f"  {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 55)
 

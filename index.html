@@ -2799,6 +2799,18 @@ function tour2(e){
 /* Élection anticipée : une date exacte (souvent ajoutée par l'automatisation)
    remplace l'élection du même type prévue plus tard à une date approximative
    (« juin 2027 ») ; son contexte et ses enjeux sont repris. */
+/* Type d'élection venu de Supabase : code (p, l, s, r, m) ou ancien libellé */
+function codeTypeElection(t){ t=String(t||'').toLowerCase();
+  if(['p','l','s','r','m'].indexOf(t)>=0) return t;
+  if(/présidenti|presidential/.test(t)) return 'p';
+  if(/sénat|senat/.test(t)) return 's';
+  if(/référendum|referendum/.test(t)) return 'r';
+  return 'l'; }
+function estTypeNational(t){ t=String(t||'').toLowerCase();
+  if(['p','l','s','r'].indexOf(t)>=0) return true;
+  if(t==='m') return false;
+  return /présidenti|presidential|législative|legislative|générale|sénatoriale|référendum|referendum|parlementaire/.test(t)
+    && !/directe|mairie|maire|locale|gouvernor|municipal|communale|régional|regional|provincial|landtag|partielle|by-election|assemblée d|conseil|cantonal|district/.test(t); }
 function remplacerAnticipees(){
   for(var i=E.length-1;i>=0;i--){
     var e=E[i]; if(e.done||e.cert===1) continue;
@@ -3866,7 +3878,7 @@ function loadElectionsFromSupabase() {
   /* Charger uniquement les élections nationales depuis Supabase — les
      régionales (niveau='regionale') sont réservées à une future offre
      Medium et ne doivent pas polluer l'affichage grand public. */
-  supaFetch('elections', 'select=pays,date,winner,party,done,type,cert&niveau=eq.national&order=date.desc')
+  supaFetch('elections', 'select=pays,date,winner,party,done,type,cert,date_tour2&niveau=eq.national&order=date.desc')
     .then(function(rows) {
       if (!rows || !rows.length) return;
       var added = 0;
@@ -3947,6 +3959,12 @@ function loadElectionsFromSupabase() {
            (ballottage, législatives + présidentielles simultanées, etc.) */
         var dejaDans = E.some(function(e){ return e.p === row.pays && e.d === row.date; });
         if (dejaDans) return;
+        /* Garde-fou : n'ajouter que des scrutins réellement nationaux
+           (anciens libellés Wikidata du type « élection directe (Basse-Saxe) »,
+           « élection à la mairie »… ignorés), et pas la ligne d'un 2nd tour */
+        if (!estTypeNational(row.type)) return;
+        if (rows.some(function(x){ return x.pays===row.pays && x.date_tour2===row.date; })) return;
+        row.type = codeTypeElection(row.type);
         /* Ajouter la nouvelle élection */
         var newId = Math.max.apply(null, E.map(function(e){return e.id||0;})) + 1;
         /* Détecter si c'est une élection partielle */
