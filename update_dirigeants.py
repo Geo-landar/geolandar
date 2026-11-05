@@ -6,7 +6,9 @@ import os
 import time
 
 # ══════════════════════════════════════════════════════════════════
-#  GEOLANDAR — Mise à jour automatique des dirigeants — v2.0 (24/10/2026)
+#  GEOLANDAR — Mise à jour automatique des dirigeants — v2.1 (05/11/2026)
+#  v2.1 : Serbie (président), Timor oriental (Premier ministre), Myanmar,
+#  suppression des anciennes lignes Suisse / Saint-Marin / Arabie saoudite / Bosnie.
 #  Corrections par rapport à la v1 :
 #   1. Chaque dirigeant est écrit sous le nom de pays UTILISÉ PAR LE SITE
 #      (identification par code ISO). Avant, une vingtaine de pays étaient
@@ -143,12 +145,15 @@ PAYS_HOS = {
     "Ouzbekistan","Tadjikistan","Kirghizstan","Turkmenistan","Azerbaidjan",
     "Belarus","Ukraine","Afghanistan",
     "Yemen","Syrie","Taiwan","Chypre","Seychelles","Maldives",
-    "Sri Lanka","Timor oriental","Kiribati","Nauru","Palau",
+    "Sri Lanka","Kiribati","Nauru","Palau",
     "Iles Marshall","Micronesie",
     # ajoutés le 24/10/2026
     "Algerie","Guyana","Tunisie","Suriname","Myanmar","Monaco","Vatican",
     "Qatar","Emirats arabes","Koweit","Eswatini",
+    # ajouté le 05/11/2026 : le président Vučić détient le pouvoir réel
+    "Serbie",
 }
+# Retiré le 05/11/2026 : Timor oriental (le Premier ministre dirige le gouvernement)
 
 # Pays que le script ne doit jamais écrire : gouvernement collégial (pas
 # une personne) ou cas suivis à la main dans le site.
@@ -180,6 +185,8 @@ CORRECTIONS = {
                      "nom": "Matthew Wale", "titre": "Premier ministre", "depuis": "15/05/2026"},
     "Madagascar":   {"si_wikidata": ["Andry Rajoelina", "Christian Ntsay"],
                      "nom": "Michael Randrianirina", "titre": "Président de la Refondation (colonel)", "depuis": "octobre 2025"},
+    "Myanmar":      {"si_wikidata": ["Myint Swe"],
+                     "nom": "Min Aung Hlaing", "titre": "Président de l'Union", "depuis": "le 10 avril 2026"},
     "Guinee-Bissau":{"si_wikidata": ["Umaro Sissoco Embaló"],
                      "nom": "Horta N'Tam", "titre": "Président de la transition (général)", "depuis": "novembre 2025"},
 }
@@ -462,6 +469,12 @@ def appliquer_corrections(dirigeants):
     return dirigeants
 
 def sauvegarder(dirigeants):
+    # Supprimer les anciennes lignes des pays que le script ne doit jamais écrire
+    for p in PAYS_IGNORES:
+        try:
+            supabase.table("dirigeants").delete().eq("pays", p).execute()
+        except Exception as e:
+            print(f"  ✗ suppression {p}: {e}")
     total = 0
     for pays, d in dirigeants.items():
         try:

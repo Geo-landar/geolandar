@@ -96,6 +96,17 @@ const PAYS_SITE = new Set(PAYS.map(c => c.p));
 const REGION_DE = {}; PAYS.forEach(c => { REGION_DE[c.p] = c.r; });
 E.forEach(e => { if (!e.done) e.avantScrutin = true; });   /* textes rédigés avant le vote */
 const dernierMot = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z ]/g, ' ').trim().split(/\s+/).pop();
+function memePersonneNoms(a, b) {
+  var norm=function(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim();};
+  var A=norm(a),B=norm(b); if(!A||!B) return false; if(A===B) return true;
+  var vide={bin:1,ben:1,ibn:1,al:1,el:1,de:1,da:1,du:1,von:1,van:1,der:1,prince:1,roi:1,sheikh:1,cheikh:1,abdel:1,abdul:1,mohammed:1,muhammad:1,mohamed:1,ahmed:1,ali:1,jean:1,jr:1};
+  var ta=A.split(' ').filter(function(t){return t.length>=4&&!vide[t];}), tb=B.split(' ').filter(function(t){return t.length>=4&&!vide[t];});
+  if(ta.some(function(t){return tb.indexOf(t)>=0;})) return true;
+  var bg=function(s){var r={};for(var i=0;i<s.length-1;i++){r[s.substr(i,2)]=(r[s.substr(i,2)]||0)+1;}return r;};
+  var x=bg(A.replace(/ /g,'')),y=bg(B.replace(/ /g,'')),inter=0,na=0,nb=0,k;
+  for(k in x){na+=x[k]; if(y[k]) inter+=Math.min(x[k],y[k]);} for(k in y) nb+=y[k];
+  return 2*inter/(na+nb)>=0.6;
+}
 (function majDirigeants() {
   const rows = supa('dirigeants', 'select=pays,nom,titre,parti,description,fiabilite');
   if (!Array.isArray(rows)) return;
@@ -104,7 +115,7 @@ const dernierMot = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
     if (!r.pays || !r.nom || !PAYS_SITE.has(r.pays)) return;
     const ex = LEADERS[r.pays];
     if (r.fiabilite === 4 && ex) return;                         /* Wikidata hésite : on garde la fiche */
-    if (ex && dernierMot(ex.n) === dernierMot(r.nom)) return;    /* même personne : fiche rédigée conservée */
+    if (ex && memePersonneNoms(ex.n, r.nom)) return;             /* même personne : fiche rédigée conservée */
     LEADERS[r.pays] = { n: r.nom, t: r.titre || (ex ? ex.t : ''), p: r.parti || '', d: r.description || '' };
     n++;
   });

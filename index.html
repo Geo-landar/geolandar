@@ -1927,7 +1927,7 @@ var LEADERS = {
 "Danemark":{n:"Mette Frederiksen",t:"Première ministre",p:"Parti Social-Démocrate",pos:-2,d:"Social-démocrate au discours ferme sur l'immigration. Coalition centre-gauche reformée après mars 2026. Défense à 3% du PIB."},
 "Finlande":{n:"Petteri Orpo",t:"Premier ministre",p:"Parti de la Coalition nationale (centre-droit)",pos:3,d:"Conservateur libéral. Coalition avec le Parti des Finns (extrême droite). Rigueur budgétaire. Pays frontalier de la Russie."},
 "Suisse":{n:"Karin Keller-Sutter",t:"Présidente de la Confédération",p:"PLR (centre-droit libéral)",pos:2,d:"Libérale radicale. La Suisse a un système de présidence tournante annuelle. Neutralité traditionnelle sous pression."},
-"Autriche":{n:"Herbert Kickl",t:"Chancelier fédéral",p:"FPÖ (extrême droite)",pos:8,d:"Extrême droite nationaliste. Pro-Poutine affiché. Opposition à l'aide militaire à l'Ukraine. 1er chancelier FPÖ de l'histoire autrichienne."},
+"Autriche":{n:"Christian Stocker",t:"Chancelier fédéral",p:"ÖVP (centre-droit)",pos:3,d:"Chancelier depuis mars 2025, à la tête d'une coalition inédite à trois (ÖVP, SPÖ, NEOS) formée pour écarter le FPÖ d'Herbert Kickl, arrivé en tête des législatives de 2024."},
 "Belgique":{n:"Bart De Wever",t:"Premier ministre",p:"N-VA (nationalisme flamand, centre-droit)",pos:4,d:"Nationaliste flamand modéré. Coalition Arizona (droite + libéraux). Réforme de l'État belge vers plus d'autonomie régionale."},
 "Portugal":{n:"Luís Montenegro",t:"Premier ministre",p:"AD (Alliance Démocratique, centre-droit)",pos:3,d:"Conservateur libéral. Gouvernement minoritaire. Résistance à la montée de Chega (extrême droite). Pro-UE et atlantiste."},
 "Grece":{n:"Kyriakos Mitsotakis",t:"Premier ministre",p:"Nouvelle Démocratie (centre-droit)",pos:3,d:"Conservateur libéral. Redressement économique après la crise. Tensions avec la Turquie (mer Égée). Politique migratoire controversée."},
@@ -2800,6 +2800,17 @@ function tour2(e){
    remplace l'élection du même type prévue plus tard à une date approximative
    (« juin 2027 ») ; son contexte et ses enjeux sont repris. */
 /* Type d'élection venu de Supabase : code (p, l, s, r, m) ou ancien libellé */
+function memePersonneNoms(a,b){
+  var norm=function(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim();};
+  var A=norm(a),B=norm(b); if(!A||!B) return false; if(A===B) return true;
+  var vide={bin:1,ben:1,ibn:1,al:1,el:1,de:1,da:1,du:1,von:1,van:1,der:1,prince:1,roi:1,sheikh:1,cheikh:1,abdel:1,abdul:1,mohammed:1,muhammad:1,mohamed:1,ahmed:1,ali:1,jean:1,jr:1};
+  var ta=A.split(' ').filter(function(t){return t.length>=4&&!vide[t];}), tb=B.split(' ').filter(function(t){return t.length>=4&&!vide[t];});
+  if(ta.some(function(t){return tb.indexOf(t)>=0;})) return true;
+  var bg=function(s){var r={};for(var i=0;i<s.length-1;i++){r[s.substr(i,2)]=(r[s.substr(i,2)]||0)+1;}return r;};
+  var x=bg(A.replace(/ /g,'')),y=bg(B.replace(/ /g,'')),inter=0,na=0,nb=0,k;
+  for(k in x){na+=x[k]; if(y[k]) inter+=Math.min(x[k],y[k]);} for(k in y) nb+=y[k];
+  return 2*inter/(na+nb)>=0.6;
+}
 function codeTypeElection(t){ t=String(t||'').toLowerCase();
   if(['p','l','s','r','m'].indexOf(t)>=0) return t;
   if(/présidenti|presidential/.test(t)) return 'p';
@@ -4612,7 +4623,7 @@ function syncDirigeants(){
         /* Même personne que la fiche rédigée : on garde le titre et la
            description détaillés (Supabase ne fournit qu'un texte générique). */
         var _nn=function(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z ]/g,' ').trim().split(/\s+/).pop();};
-        var memePersonne = existant && existant.n && row.nom && _nn(existant.n)===_nn(row.nom);
+        var memePersonne = existant && existant.n && row.nom && memePersonneNoms(existant.n,row.nom);
         var nouvellePos = (row.position===null||row.position===undefined)?null:row.position;
         /* CORRECTIF : si Supabase ne connaît pas la position (null) mais
            qu'une entrée statique correcte existe déjà (écrite à la main),

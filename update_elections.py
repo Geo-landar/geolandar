@@ -172,7 +172,17 @@ FORCEES = [
      "date_tour2": "2027-10-04"},  # présidentielle et législatives, CEP 29/10/2026
 ]
 
+# Résultats erronés déjà enregistrés, corrigés à chaque passage
+RESULTATS_CORRIGES = {
+    ("Pays-Bas", "2025-10-29"): ("Rob Jetten", "D66"),   # Wikidata avait renvoyé « 50 Plus »
+}
+
 def appliquer_corrections_elections():
+    for (pays, d), (w, pa) in RESULTATS_CORRIGES.items():
+        try:
+            supabase.table("elections").update({"winner": w, "party": pa, "done": True}).eq("pays", pays).eq("date", d).execute()
+        except Exception as ex:
+            print(f"  ✗ correction résultat {pays} {d}: {ex}")
     for pays, d in SUPPRIMEES:
         try:
             r = supabase.table("elections").delete().eq("pays", pays).eq("date", d).execute()
@@ -476,8 +486,11 @@ def lire_resultats(data):
         if not pays or not winner or winner == "undefined" or QID_BRUT.match(winner.strip()) or not d:
             continue
         if party and QID_BRUT.match(party.strip()): party = ""
-        out.setdefault((pays, d), {"winner": winner, "party": party})
-    return out
+        if (pays, d) in out and out[(pays, d)]["winner"] != winner:
+            out[(pays, d)]["ambigu"] = True      # plusieurs « vainqueurs » (listes de partis) : inutilisable
+        else:
+            out.setdefault((pays, d), {"winner": winner, "party": party})
+    return {k: r for k, r in out.items() if not r.get("ambigu")}
 
 def lire_resultats_votes(data):
     """{(pays, date): {winner, party}} — candidat ayant reçu le plus de voix."""
