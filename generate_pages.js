@@ -73,6 +73,84 @@ function fmtDate(d, cert) {
 }
 const isoOk = d => d && /^\d{4}-\d\d-\d\d$/.test(d) && !d.endsWith('-00');
 const isPast = e => isoOk(e.d) && new Date(e.d + 'T00:00:00') < today;
+
+/* ── Données à jour depuis Supabase (comme sur le site) ──
+   Les pages lisent d'abord les données écrites dans index.html, puis les
+   complètent avec Supabase, mis à jour chaque nuit par l'automatisation :
+   dirigeants actuels, nouvelles élections, résultats, seconds tours.
+   Si Supabase ne répond pas, les pages restent générées avec les données
+   du site (aucune erreur). */
+const SUPA_URL = 'https://tmbupyyugedmtmvzadeq.supabase.co/rest/v1/';
+const SUPA_KEY = 'sb_publishable_9uxew0C7pQiixCyKdoFwLw_7j904MMt';
+function supa(table, query) {
+  if (process.env.GEOLANDAR_SUPA_DIR) {           /* tests hors ligne */
+    try { return JSON.parse(fs.readFileSync(path.join(process.env.GEOLANDAR_SUPA_DIR, table + '.json'), 'utf8')); } catch (e) { return null; }
+  }
+  try {
+    const out = require('child_process').execFileSync('curl', ['-sf', '--max-time', '30',
+      SUPA_URL + table + '?' + query, '-H', 'apikey: ' + SUPA_KEY, '-H', 'Authorization: Bearer ' + SUPA_KEY], { encoding: 'utf8' });
+    return JSON.parse(out);
+  } catch (e) { console.warn('Supabase indisponible (' + table + ') : données du site utilisées'); return null; }
+}
+const PAYS_SITE = new Set(PAYS.map(c => c.p));
+const REGION_DE = {}; PAYS.forEach(c => { REGION_DE[c.p] = c.r; });
+E.forEach(e => { if (!e.done) e.avantScrutin = true; });   /* textes rédigés avant le vote */
+const dernierMot = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z ]/g, ' ').trim().split(/\s+/).pop();
+(function majDirigeants() {
+  const rows = supa('dirigeants', 'select=pays,nom,titre,parti,description,fiabilite');
+  if (!Array.isArray(rows)) return;
+  let n = 0;
+  rows.forEach(r => {
+    if (!r.pays || !r.nom || !PAYS_SITE.has(r.pays)) return;
+    const ex = LEADERS[r.pays];
+    if (r.fiabilite === 4 && ex) return;                         /* Wikidata hésite : on garde la fiche */
+    if (ex && dernierMot(ex.n) === dernierMot(r.nom)) return;    /* même personne : fiche rédigée conservée */
+    LEADERS[r.pays] = { n: r.nom, t: r.titre || (ex ? ex.t : ''), p: r.parti || '', d: r.description || '' };
+    n++;
+  });
+  console.log('Supabase : ' + n + ' dirigeant(s) mis à jour');
+})();
+const codeType = t => { t = String(t || '').toLowerCase();
+  if (['p', 'l', 's', 'r', 'm'].includes(t)) return t;
+  if (/présidenti|presidential/.test(t)) return 'p';
+  if (/sénat|senat/.test(t)) return 's';
+  if (/référendum|referendum/.test(t)) return 'r';
+  if (/municipal|local|régional|regional|provincial/.test(t)) return 'm';
+  return 'l'; };
+(function majElections() {
+  const rows = supa('elections', 'select=*&niveau=eq.national');
+  if (!Array.isArray(rows)) return;
+  let ajout = 0, res = 0;
+  rows.forEach(r => {
+    if (!r.pays || !r.date || !PAYS_SITE.has(r.pays)) return;
+    let e = E.find(x => x.p === r.pays && x.d === r.date);
+    if (!e) {
+      if (!/^\d{4}-\d\d-\d\d$/.test(r.date) || +r.date.slice(0, 4) < today.getFullYear() - 1) return;
+      e = { id: 'sb' + r.id, p: r.pays, r: REGION_DE[r.pays], t: codeType(r.type), d: r.date,
+            cert: [1, 2, 3].includes(r.cert) ? r.cert : 2, done: false };
+      E.push(e); ajout++;
+    }
+    if (r.date_tour2) e.d2 = r.date_tour2;
+    const t2futur = e.d2 && isoOk(e.d2) && new Date(e.d2 + 'T00:00:00') >= today;
+    if (r.winner && r.winner !== 'undefined' && !t2futur) {
+      e.done = true; e.result = { winner: r.winner, party: r.party || '' }; res++;
+    }
+  });
+  console.log('Supabase : ' + ajout + ' élection(s) ajoutée(s), ' + res + ' résultat(s)');
+})();
+/* Élection anticipée : la date exacte remplace l'échéance approximative du même type */
+(function remplacerAnticipees() {
+  for (let i = E.length - 1; i >= 0; i--) {
+    const e = E[i]; if (e.done || e.cert === 1) continue;
+    const cle = String(e.d || '').replace(/-00/g, '-28');
+    const x = E.find(z => z !== e && z.p === e.p && z.t === e.t && z.cert === 1 && z.d &&
+      ((new Date(cle + 'T00:00:00') - new Date(z.d + 'T00:00:00')) / 86400000) > 0 &&
+      ((new Date(cle + 'T00:00:00') - new Date(z.d + 'T00:00:00')) / 86400000) <= 420);
+    if (x) { if (!x.ctx && e.ctx) x.ctx = e.ctx; if (!(x.enjeux && x.enjeux.length) && e.enjeux) x.enjeux = e.enjeux; E.splice(i, 1); }
+  }
+})();
+/* Élection « en cours » : 1er tour passé, 2nd tour à venir */
+const enCours = e => e.d2 && isoOk(e.d2) && isPast(e) && new Date(e.d2 + 'T00:00:00') >= today;
 const IND = [['pib', 'PIB'], ['cho', 'Chômage'], ['edu', 'Éducation'], ['san', 'Santé'], ['dem', 'Démocratie'], ['cor', 'Anti-corruption']];
 const col = s => s >= 75 ? '#10b981' : s >= 50 ? '#eab308' : s >= 30 ? '#f97316' : '#ef4444';
 
@@ -177,7 +255,7 @@ function mapSvg(p) {
 const CSLUG = { EU: 'europe', AM: 'ameriques', AF: 'afrique', AS: 'asie', OC: 'oceanie' };
 const horizon = new Date(today); horizon.setFullYear(horizon.getFullYear() + 3);
 function upcoming(r) {
-  return E.filter(e => e.r === r && !e.done && !isPast(e) && (!isoOk(e.d) || new Date(e.d + 'T00:00:00') <= horizon))
+  return E.filter(e => e.r === r && !e.done && (!isPast(e) || enCours(e)) && (!isoOk(e.d) || new Date(e.d + 'T00:00:00') <= horizon))
     .sort((a, b) => (a.d || '9999').localeCompare(b.d || '9999'));
 }
 const firstSentence = s => { const m = (s || '').match(/^.{20,160}?[.!?](\s|$)/); return m ? m[0].trim() : (s || '').slice(0, 150); };
@@ -191,8 +269,8 @@ function electionRow(e) {
 function page(c, hasMap) {
   const p = c.p, n = nom(p), L = LEADERS[p], I = INFO[p] || {}, region = REGION[c.r] || '';
   const els = E.filter(e => e.p === p).sort((a, b) => (a.d || '').localeCompare(b.d || ''));
-  const next = els.filter(e => !e.done && !isPast(e));
-  const passed = els.filter(e => e.done || isPast(e));
+  const next = els.filter(e => !e.done && (!isPast(e) || enCours(e)));
+  const passed = els.filter(e => (e.done || isPast(e)) && !enCours(e));
   const nextYear = next.length ? (next[0].d || '').slice(0, 4) : '';
   const first = next[0];
 
@@ -220,7 +298,8 @@ function page(c, hasMap) {
   if (next.length) {
     body += `<section><h2>${esc(n)} — prochaines élections</h2>`;
     next.forEach(e => {
-      body += `<div class="card"><div class="ehead"><span class="badge">${esc(TYPEF[e.t] || 'Scrutin')}</span><span class="edate">${esc(fmtDate(e.d, e.cert))}</span></div>`;
+      body += `<div class="card"><div class="ehead"><span class="badge">${esc(TYPEF[e.t] || 'Scrutin')}</span><span class="edate">${esc(e.d2 ? '1er tour : ' + fmtDate(e.d, e.cert) + ' · 2nd tour : ' + fmtDate(e.d2, 1) : fmtDate(e.d, e.cert))}</span></div>`;
+      if (enCours(e)) body += `<p><strong>Élection en cours :</strong> le 1er tour a eu lieu, le résultat définitif sera connu après le second tour.</p>`;
       if (e.ctx) body += `<p>${esc(e.ctx)}</p>`;
       if (e.enjeux && e.enjeux.length) body += '<ul class="enj">' + e.enjeux.map(x => `<li><strong>${esc(x.t)}</strong> — ${esc(x.d)}</li>`).join('') + '</ul>';
       body += '</div>';
@@ -232,8 +311,9 @@ function page(c, hasMap) {
     passed.slice(-2).reverse().forEach(e => {
       body += `<div class="card"><div class="ehead"><span class="badge">${esc(TYPEF[e.t] || 'Scrutin')}</span><span class="edate">${esc(fmtDate(e.d, e.cert))}</span></div>`;
       if (!e.done) body += `<div class="lock"><span aria-hidden="true">🔒</span> <strong>Résultats disponibles très prochainement</strong><br><span>Le scrutin a eu lieu : les résultats seront publiés dès leur validation.</span></div>`;
-      if (e.done && e.ctx) body += `<p>${esc(e.ctx)}</p>`;
-      if (e.done && e.fiabilite && e.fiabilite.txt) body += `<p class="fiab"><strong>Fiabilité du scrutin :</strong> ${esc(e.fiabilite.txt)}${e.fiabilite.src ? ' <em>(sources : ' + esc(e.fiabilite.src) + ')</em>' : ''}</p>`;
+      if (e.done && e.result && e.result.winner) body += `<p class="lname">Vainqueur : ${esc(e.result.winner)}${e.result.party ? ' <span class="ltitle">(' + esc(e.result.party) + ')</span>' : ''}</p>`;
+      if (e.done && e.ctx && !e.avantScrutin) body += `<p>${esc(e.ctx)}</p>`;
+      if (e.done && !e.avantScrutin && e.fiabilite && e.fiabilite.txt) body += `<p class="fiab"><strong>Fiabilité du scrutin :</strong> ${esc(e.fiabilite.txt)}${e.fiabilite.src ? ' <em>(sources : ' + esc(e.fiabilite.src) + ')</em>' : ''}</p>`;
       body += '</div>';
     });
     body += '</section>';

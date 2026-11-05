@@ -2796,7 +2796,20 @@ function tour2(e){
   });
   return best;
 }
+/* Élection anticipée : une date exacte (souvent ajoutée par l'automatisation)
+   remplace l'élection du même type prévue plus tard à une date approximative
+   (« juin 2027 ») ; son contexte et ses enjeux sont repris. */
+function remplacerAnticipees(){
+  for(var i=E.length-1;i>=0;i--){
+    var e=E[i]; if(e.done||e.cert===1) continue;
+    var cle=String(e.d||'').replace(/-00/g,'-28');
+    var x=E.find(function(z){ if(z===e||z.p!==e.p||z.t!==e.t||z.cert!==1||!z.d) return false;
+      var j=(new Date(cle+'T00:00:00')-new Date(z.d+'T00:00:00'))/86400000; return j>0&&j<=420; });
+    if(x){ if(!x.ctx&&e.ctx) x.ctx=e.ctx; if(!(x.enjeux&&x.enjeux.length)&&e.enjeux) x.enjeux=e.enjeux; E.splice(i,1); }
+  }
+}
 function majTours(){
+  remplacerAnticipees();
   E.forEach(function(e){ e.estTour2=false; });
   E.forEach(function(e){
     var t2=tour2(e), d1=daysTo(e.d), d2=t2?daysTo(t2):null;
