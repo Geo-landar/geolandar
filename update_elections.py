@@ -132,7 +132,7 @@ RESULTATS_CONNUS = {
     "Chypre":             ("DISY","DISY (centre-droit)","2026-05-24"),
     "Armenie":            ("Nikol Pachinian","Contrat civil (centre)","2026-06-07"),
     "Bahamas":            ("Philip Davis","PLP (centre-gauche)","2026-05-12"),
-    "Costa Rica":         ("Laura Hernandez","PLN (centre-gauche)","2026-02-01"),
+    "Costa Rica":         ("Laura Fernández","Pueblo Soberano (droite populiste)","2026-02-01"),
     "Barbade":            ("Mia Mottley","BLP (centre-gauche)","2026-02-11"),
     "El Salvador":        ("Nayib Bukele","Nuevas Ideas (populiste)","2026-03-01"),
     "Antigua-et-Barbuda": ("Gaston Browne","ABLP (centre-gauche)","2026-04-30"),
@@ -150,6 +150,43 @@ RESULTATS_CONNUS = {
     "Macedoine du Nord":  ("Hristijan Mickoski","VMRO-DPMNE","2026-04-01"),
     "Benin":              ("Patrice Talon","UP (Union Progressiste)","2026-04-12"),
 }
+
+# ══════════════════════════════════════
+# CORRECTIONS MANUELLES D'ÉLECTIONS (appliquées chaque nuit)
+# SUPPRIMEES : élections annulées ou reportées — retirées de Supabase et
+#              jamais réinsérées par la découverte, même si Wikidata les garde.
+# FORCEES    : élections confirmées par une source officielle, créées ou
+#              corrigées dans Supabase si Wikidata est en retard.
+# Retirer une ligne dès que Wikidata est à jour.
+# ══════════════════════════════════════
+SUPPRIMEES = {
+    ("Haiti", "2026-12-13"),   # reportée : le CEP a annoncé le 29/10/2026 un 1er tour le 18/07/2027
+}
+FORCEES = [
+    {"pays": "Haiti", "date": "2027-07-18", "type": "p", "cert": 1, "niveau": "national",
+     "date_tour2": "2027-10-04"},  # présidentielle et législatives, CEP 29/10/2026
+]
+
+def appliquer_corrections_elections():
+    for pays, d in SUPPRIMEES:
+        try:
+            r = supabase.table("elections").delete().eq("pays", pays).eq("date", d).execute()
+            if r.data: print(f"  − {pays} ({d}) retirée (élection reportée/annulée)")
+        except Exception as ex:
+            print(f"  ✗ suppression {pays} {d}: {ex}")
+    for e in FORCEES:
+        try:
+            existe = supabase.table("elections").select("id").eq("pays", e["pays"]).eq("date", e["date"]).execute()
+            champs = {k: v for k, v in e.items() if k not in ("pays", "date")}
+            champs["updated_at"] = datetime.now().isoformat()
+            if existe.data:
+                supabase.table("elections").update(champs).eq("id", existe.data[0]["id"]).execute()
+            else:
+                supabase.table("elections").insert({**e, "winner": "", "party": "", "done": False,
+                                                    "updated_at": datetime.now().isoformat()}).execute()
+                print(f"  + {e['pays']} ({e['date']}) ajoutée (correction manuelle)")
+        except Exception as ex:
+            print(f"  ✗ correction {e['pays']} {e['date']}: {ex}")
 
 # ══════════════════════════════════════
 # FILTRES (inchangés)
@@ -332,6 +369,8 @@ def decouvrir_elections():
     elections, ignorees = lire_decouverte(data)
     nouvelles = 0
     for e in elections:
+        if (e["pays"], e["date"]) in SUPPRIMEES:
+            continue
         try:
             res = supabase.table("elections").select("id").eq("pays", e["pays"]).eq("date", e["date"]).execute()
             if res.data: continue
@@ -441,6 +480,9 @@ def main():
             if e["niveau"] == "national": print(f"   {e['date']} {e['pays']} [{e['type']}] {e['libelle']}")
         print(f"  2nd tours détectés : {deux_tours(elections)}")
         return
+
+    print("\n[0] Corrections manuelles d'élections...")
+    appliquer_corrections_elections()
 
     print("\n[1] Découverte des élections (90 jours passés → 3 ans à venir)...")
     decouvrir_elections()
