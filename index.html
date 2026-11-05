@@ -2802,6 +2802,25 @@ function bestCentroid(feature){
   return d3.geoCentroid(best);
 }
 window._globeAnimToken=0;
+/* ══ ESPACE LIBRE DU GLOBE ══
+   Rectangle (en pixels, relatif au globe) qui n'est recouvert par aucune
+   fiche ouverte : gauche (panL), droite (panR), bas (panBottom). */
+function globeEspaceLibre(){
+  var svg=document.getElementById('globe-svg'); if(!svg) return null;
+  var W=svg.clientWidth,H=svg.clientHeight, pad=14;
+  var box={x0:pad,y0:pad,x1:W-pad,y1:H-pad};
+  if(W<700) return box; /* petit écran : les fiches recouvrent tout, pas de décalage */
+  var ouvert=function(id){var el=document.getElementById(id);return el&&el.classList.contains('open')?el:null;};
+  var L=ouvert('panL'),R=ouvert('panR'),B=ouvert('panBottom');
+  if(L) box.x0=Math.max(box.x0,L.offsetLeft+L.offsetWidth+pad);
+  if(R) box.x1=Math.min(box.x1,R.offsetLeft-pad);
+  if(B) box.y1=Math.min(box.y1,B.offsetTop-pad);
+  /* barre de navigation (et bandeau de test) qui recouvrent le haut du globe */
+  var nav=document.querySelector('nav');
+  if(nav){var dy=nav.getBoundingClientRect().bottom-svg.getBoundingClientRect().top; if(dy>0) box.y0=Math.max(box.y0,dy+pad);}
+  if(box.x1-box.x0<220||box.y1-box.y0<160) return {x0:pad,y0:pad,x1:W-pad,y1:H-pad};
+  return box;
+}
 function zoomToCountry(target,zoomScale,onEnd){
   if(!gProj||!gBaseScale) return;
   var center;
@@ -2811,7 +2830,31 @@ function zoomToCountry(target,zoomScale,onEnd){
   var r0=gProj.rotate(), s0=gProj.scale();
   var r1=[-center[0],-center[1]];
   var s1=zoomScale||(gBaseScale*1.8);
-  var ir=d3.interpolate(r0,r1), is=d3.interpolate(s0,s1);
+  /* Placer le pays au centre de l'espace libre et l'y faire tenir en entier */
+  var t0=gProj.translate(), t1=t0.slice(), esp=globeEspaceLibre();
+  if(esp){
+    t1=[(esp.x0+esp.x1)/2,(esp.y0+esp.y1)/2];
+    if(!zoomScale&&target&&target.type){
+      try{
+        var pj=d3.geoOrthographic().rotate(r1).scale(1).translate([0,0]).clipAngle(90);
+        /* Ne cadrer que la partie principale du pays (sans territoires
+           lointains comme la Guyane pour la France) */
+        var cible=target;
+        if(target.geometry&&target.geometry.type==='MultiPolygon'){
+          var proches=target.geometry.coordinates.filter(function(poly){
+            return d3.geoDistance(d3.geoCentroid({type:'Polygon',coordinates:poly}),center)<0.6;
+          });
+          if(proches.length) cible={type:'Feature',geometry:{type:'MultiPolygon',coordinates:proches}};
+        }
+        var bb=d3.geoPath(pj).bounds(cible), bw=bb[1][0]-bb[0][0], bh=bb[1][1]-bb[0][1];
+        if(bw>0&&bh>0&&isFinite(bw)&&isFinite(bh)){
+          var fit=Math.min((esp.x1-esp.x0)/bw,(esp.y1-esp.y0)/bh)*0.86;
+          s1=Math.max(gBaseScale*0.25,Math.min(fit,gBaseScale*5));
+        }
+      }catch(err){}
+    }
+  }
+  var ir=d3.interpolate(r0,r1), is=d3.interpolate(s0,s1), it=d3.interpolate(t0,t1);
   var myTok=++window._globeAnimToken;
   var tr=d3.transition().duration(850).ease(d3.easeCubicInOut).tween('geolandar-zoomto',function(){
     return function(t){
@@ -2823,7 +2866,7 @@ function zoomToCountry(target,zoomScale,onEnd){
          disputaient la même rotation. On arrête net la tween dès qu'un
          glissement manuel démarre. */
       if(window._globeUserDragging) return;
-      gProj.rotate(ir(t)); gProj.scale(is(t));
+      gProj.rotate(ir(t)); gProj.scale(is(t)); gProj.translate(it(t));
       if(typeof window._globeRedraw==='function') window._globeRedraw();
     };
   });
@@ -2833,11 +2876,13 @@ function zoomResetGlobeView(){
   if(!gProj||!gBaseScale) return;
   var s0=gProj.scale();
   var is=d3.interpolate(s0,gBaseScale);
+  var _svg=document.getElementById('globe-svg');
+  var it=d3.interpolate(gProj.translate(),_svg?[_svg.clientWidth/2,_svg.clientHeight/2]:gProj.translate());
   var myTok=++window._globeAnimToken;
   d3.transition().duration(700).ease(d3.easeCubicInOut).tween('geolandar-zoomout',function(){
     return function(t){
       if(myTok!==window._globeAnimToken) return;
-      gProj.scale(is(t));
+      gProj.scale(is(t)); gProj.translate(it(t));
       if(typeof window._globeRedraw==='function') window._globeRedraw();
     };
   });
