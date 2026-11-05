@@ -2374,6 +2374,14 @@ function renderCal(){
     if(q&&e.p.toLowerCase().indexOf(q)<0)return false;
     return true;
   });
+  /* Ordre chronologique dans l'année affichée. Une date connue au mois près
+     (« 2026-04-00 ») se range en fin de mois, une date connue à l'année près
+     (« 2026-00-00 ») en fin d'année ; à date égale, ordre alphabétique du pays. */
+  var cleDate=function(d){return String(d||'9999-99-99').replace(/-00/g,'-99');};
+  list.sort(function(a,b){
+    var c=cleDate(a.d).localeCompare(cleDate(b.d));
+    return c!==0?c:String(a.p).localeCompare(String(b.p),'fr');
+  });
   /* Élections partielles du mois */
   var now = new Date();
   var moisCourant = now.getFullYear()+'-'+(String(now.getMonth()+1).padStart(2,'0'));
