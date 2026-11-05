@@ -1,0 +1,14 @@
+name: Diagnostic Supabase (temporaire)
+on: workflow_dispatch
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lire les tables (lecture seule)
+        run: |
+          K=sb_publishable_9uxew0C7pQiixCyKdoFwLw_7j904MMt
+          U=https://tmbupyyugedmtmvzadeq.supabase.co/rest/v1
+          echo "=== ELECTIONS ==="
+          curl -sf "$U/elections?select=id,pays,date,type,cert,done,winner,party,niveau,date_tour2,updated_at&order=pays,date" -H "apikey: $K" | jq -r '.[]|[.id,.pays,.date,.type,.cert,.done,.winner,.niveau,.date_tour2,(.updated_at//""|.[0:10])]|@tsv'
+          echo "=== DIRIGEANTS ==="
+          curl -sf "$U/dirigeants?select=pays,nom,titre,fiabilite,updated_at&order=pays" -H "apikey: $K" | jq -r '.[]|[.pays,.nom,.titre,.fiabilite,(.updated_at//""|.[0:10])]|@tsv'
