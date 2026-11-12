@@ -484,10 +484,9 @@ def nettoyer(elections, data, plages=()):
     # Sens inverse : une élection reconnue nationale par Wikidata mais classée régionale
     n_nat = 0
     try:
-        # récentes / futures : toujours ; plus anciennes : seulement si elles ont un vainqueur
         regs = supabase.table("elections").select("id,pays,date,winner").eq("niveau", "regionale").gte("date", (date.today() - timedelta(days=800)).isoformat()).execute().data
         for r in regs:
-            if (r["pays"], r["date"]) in nationales and (r["date"] >= debut or (r.get("winner") or "") not in ("", "undefined")):
+            if (r["pays"], r["date"]) in nationales and controlee(r["date"]):
                 print(f"     ↑ {r['pays']} ({r['date']}) remise en national")
                 supabase.table("elections").update({"niveau": "national"}).eq("id", r["id"]).execute(); n_nat += 1
     except Exception as ex:
