@@ -335,7 +335,7 @@ function page(c, hasMap) {
     });
     body += '</section>';
   }
-  if (!els.length) body += `<section><h2>Élections</h2><p>Aucune élection nationale n’est actuellement référencée pour ce pays dans le calendrier 2026-2028. Le calendrier est mis à jour chaque nuit.</p></section>`;
+  if (!els.length) body += `<section><h2>Élections en ${esc(n)}</h2><p>Le calendrier électoral de ${esc(n)} est suivi en continu : dès qu’un scrutin national est annoncé, il apparaît sur cette page. Des élections locales et municipales ont lieu régulièrement dans la plupart des pays.</p><div class="lock"><span aria-hidden="true">🔒</span> <strong>Élections locales et municipales : ${esc(n)}</strong><br><span>Disponible prochainement avec l’offre Premium.</span></div></section>`;
   /* Indicateurs */
   if (c.i) body += `<section><h2>${esc(n)} — indicateurs clés</h2><div class="grid">` + IND.map(([k, lab]) => {
     const v = c.i[k]; return v ? `<div class="ind"><div class="il">${lab}</div><div class="iv" style="color:${col(v.s)}">${esc(v.v)}</div></div>` : '';
