@@ -6,7 +6,9 @@ import os
 import re
 
 # ══════════════════════════════════════════════════════════════════
-#  GEOLANDAR — Mise à jour automatique des élections — v6.1 (05/11/2026)
+#  GEOLANDAR — Mise à jour automatique des élections — v6.2 (12/11/2026)
+#  v6.2 : le nettoyage contrôle aussi les 2 dernières années (ex. Royaume-Uni :
+#  élections locales enregistrées comme « législatives » avec un vainqueur local).
 #  v6.1 : une élection n'est « nationale » que si Wikidata la rattache au
 #  pays lui-même (juridiction P1001 = le pays) ; sinon elle est régionale.
 #  Les résultats ne viennent que d'élections nationales. Pas de ligne
@@ -253,9 +255,9 @@ def code_type(libelle):
 # ══════════════════════════════════════
 # REQUÊTES WIKIDATA
 # ══════════════════════════════════════
-def requete_decouverte():
-    debut = (date.today() - timedelta(days=90)).isoformat()
-    fin = (date.today() + timedelta(days=3 * 366)).isoformat()
+def requete_decouverte(jours_avant=90, jours_apres=3 * 366):
+    debut = (date.today() - timedelta(days=jours_avant)).isoformat()
+    fin = (date.today() + timedelta(days=jours_apres)).isoformat()
     return f"""
 SELECT DISTINCT ?election ?pays ?paysLabel ?iso ?date ?datePrecision ?typeLabel ?type ?juri ?juriIso WHERE {{
   ?election wdt:P31 ?type .
@@ -431,10 +433,15 @@ def decouvrir_elections():
             print(f"  🔁 {pays} : 1er tour {d1}, 2nd tour {d2}")
         except Exception as ex:
             print(f"  ⚠ {pays} : impossible d'écrire le 2nd tour ({ex}). La colonne date_tour2 existe-t-elle ? (fichier geolandar_second_tour.sql)")
-    nettoyer(elections, data)
+    # Contrôle des anciennes lignes (de 2 ans à 90 jours en arrière) : requête à part,
+    # pour ne pas faire sortir les élections futures de la limite de la découverte.
+    time.sleep(2)
+    passe = wikidata_query(requete_decouverte(800, -90), "contrôle des 2 dernières années")
+    anciennes, _ = lire_decouverte(passe) if len(passe) >= 200 else ([], 0)
+    nettoyer(elections + anciennes, data, 800 if anciennes else 90)
     return elections
 
-def nettoyer(elections, data):
+def nettoyer(elections, data, jours_avant=90):
     """Corrige chaque nuit ce que les versions précédentes ont mal classé.
     Ne fait rien si Wikidata n'a presque rien renvoyé (panne)."""
     if len(data) < 200:
@@ -442,7 +449,8 @@ def nettoyer(elections, data):
         return
     nationales = {(e["pays"], e["date"]) for e in elections if e["niveau"] == "national"}
     forcees = {(e["pays"], e["date"]) for e in FORCEES}
-    debut = (date.today() - timedelta(days=90)).isoformat()
+    forcees |= {(p, d) for p, (w, pa, d) in RESULTATS_CONNUS.items()}   # vérifiées à la main
+    debut = (date.today() - timedelta(days=jours_avant)).isoformat()
     fin = (date.today() + timedelta(days=3 * 366)).isoformat()
     try:
         rows = supabase.table("elections").select("id,pays,date,type,niveau,date_tour2").eq("niveau", "national").execute().data
@@ -466,7 +474,7 @@ def nettoyer(elections, data):
     # Sens inverse : une élection reconnue nationale par Wikidata mais classée régionale
     n_nat = 0
     try:
-        regs = supabase.table("elections").select("id,pays,date").eq("niveau", "regionale").gte("date", debut).execute().data
+        regs = supabase.table("elections").select("id,pays,date").eq("niveau", "regionale").gte("date", (date.today() - timedelta(days=90)).isoformat()).execute().data
         for r in regs:
             if (r["pays"], r["date"]) in nationales:
                 supabase.table("elections").update({"niveau": "national"}).eq("id", r["id"]).execute(); n_nat += 1
@@ -552,7 +560,7 @@ def chercher_resultat(row, sources):
 # ══════════════════════════════════════
 def main():
     print("=" * 55)
-    print("  GEOLANDAR — Mise à jour automatique v6.1")
+    print("  GEOLANDAR — Mise à jour automatique v6.2")
     print(f"  {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 55)
 
