@@ -435,13 +435,20 @@ def decouvrir_elections():
             print(f"  ⚠ {pays} : impossible d'écrire le 2nd tour ({ex}). La colonne date_tour2 existe-t-elle ? (fichier geolandar_second_tour.sql)")
     # Contrôle des anciennes lignes (de 2 ans à 90 jours en arrière) : requête à part,
     # pour ne pas faire sortir les élections futures de la limite de la découverte.
-    time.sleep(2)
-    passe = wikidata_query(requete_decouverte(800, -90), "contrôle des 2 dernières années")
-    anciennes, _ = lire_decouverte(passe) if len(passe) >= 200 else ([], 0)
-    nettoyer(elections + anciennes, data, 800 if anciennes else 90)
+    # Découpé en tranches de 60 jours : une tranche qui atteint la limite de
+    # Wikidata (réponse tronquée) n'est pas utilisée pour reclasser.
+    anciennes, plages = [], []
+    for k in range(800, 90, -60):
+        time.sleep(2)
+        fin_k = max(k - 60, 90)
+        passe = wikidata_query(requete_decouverte(k, -fin_k), f"contrôle J-{k} à J-{fin_k}")
+        if 20 <= len(passe) < 3000:
+            anciennes += lire_decouverte(passe)[0]
+            plages.append(((date.today() - timedelta(days=k)).isoformat(), (date.today() - timedelta(days=fin_k)).isoformat()))
+    nettoyer(elections + anciennes, data, plages)
     return elections
 
-def nettoyer(elections, data, jours_avant=90):
+def nettoyer(elections, data, plages=()):
     """Corrige chaque nuit ce que les versions précédentes ont mal classé.
     Ne fait rien si Wikidata n'a presque rien renvoyé (panne)."""
     if len(data) < 200:
@@ -450,8 +457,10 @@ def nettoyer(elections, data, jours_avant=90):
     nationales = {(e["pays"], e["date"]) for e in elections if e["niveau"] == "national"}
     forcees = {(e["pays"], e["date"]) for e in FORCEES}
     forcees |= {(p, d) for p, (w, pa, d) in RESULTATS_CONNUS.items()}   # vérifiées à la main
-    debut = (date.today() - timedelta(days=jours_avant)).isoformat()
+    debut = (date.today() - timedelta(days=90)).isoformat()
     fin = (date.today() + timedelta(days=3 * 366)).isoformat()
+    plages = [(debut, fin)] + list(plages)          # périodes vérifiées en entier
+    controlee = lambda d: any(a <= d <= z for a, z in plages)
     try:
         rows = supabase.table("elections").select("id,pays,date,type,niveau,date_tour2").eq("niveau", "national").execute().data
     except Exception as ex:
@@ -465,8 +474,9 @@ def nettoyer(elections, data, jours_avant=90):
             if cle in tours2:                                   # ligne en double d'un 2nd tour
                 supabase.table("elections").delete().eq("id", r["id"]).execute(); n_t2 += 1; continue
             ancien_libelle = r.get("type") and len(r["type"]) > 2
-            if debut <= r["date"] <= fin and r["date"][4:] != "-00-00" and cle not in nationales:
+            if controlee(r["date"]) and r["date"][4:] != "-00-00" and cle not in nationales:
                 supabase.table("elections").update({"niveau": "regionale"}).eq("id", r["id"]).execute(); n_reg += 1
+                print(f"     ↓ {r['pays']} ({r['date']}) reclassée régionale")
             elif ancien_libelle and not libelle_national(r["type"]):
                 supabase.table("elections").update({"niveau": "regionale"}).eq("id", r["id"]).execute(); n_reg += 1
         except Exception as ex:
@@ -474,9 +484,11 @@ def nettoyer(elections, data, jours_avant=90):
     # Sens inverse : une élection reconnue nationale par Wikidata mais classée régionale
     n_nat = 0
     try:
-        regs = supabase.table("elections").select("id,pays,date").eq("niveau", "regionale").gte("date", (date.today() - timedelta(days=90)).isoformat()).execute().data
+        # récentes / futures : toujours ; plus anciennes : seulement si elles ont un vainqueur
+        regs = supabase.table("elections").select("id,pays,date,winner").eq("niveau", "regionale").gte("date", (date.today() - timedelta(days=800)).isoformat()).execute().data
         for r in regs:
-            if (r["pays"], r["date"]) in nationales:
+            if (r["pays"], r["date"]) in nationales and (r["date"] >= debut or (r.get("winner") or "") not in ("", "undefined")):
+                print(f"     ↑ {r['pays']} ({r['date']}) remise en national")
                 supabase.table("elections").update({"niveau": "national"}).eq("id", r["id"]).execute(); n_nat += 1
     except Exception as ex:
         print(f"  ✗ nettoyage (retour en national) : {ex}")
