@@ -177,5 +177,6 @@ def officiel_assemblee_fr():
         if g in groupes: groupes[g]["s"] += 1
     return [g for g in groupes.values() if g["s"] > 0]
 
-OFFICIELS = {("Royaume-Uni", "House of Commons"): officiel_communes_uk,
-             ("France", "Assemblée nationale"): officiel_assemblee_fr}
+# Assemblée nationale : NosDéputés.fr ne renvoie pas encore la législature en cours (0 député au 13/11/2026) ;
+# à réactiver avec les données ouvertes officielles de l'Assemblée.
+OFFICIELS = {("Royaume-Uni", "House of Commons"): officiel_communes_uk}
