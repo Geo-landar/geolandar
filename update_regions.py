@@ -111,16 +111,15 @@ def wikidata(query, label):
 def requete_regions(isos):
     vals = " ".join(f'"{i}"' for i in isos)
     return f"""
-SELECT ?iso ?reg ?regFr ?regEn ?regAlt ?article ?pers ?persFr ?persEn ?debut ?partiFr ?partiEn WHERE {{
+SELECT ?iso ?reg ?regFr ?regEn ?regAlt ?pers ?persFr ?persEn ?debut ?partiFr ?partiEn WHERE {{
   VALUES ?iso {{ {vals} }}
   ?pays wdt:P297 ?iso .
   {{ ?pays wdt:P150 ?reg . }} UNION {{ ?reg wdt:P131 ?pays . ?reg wdt:P31/wdt:P279* wd:Q10864048 . }}
+  ?reg p:P6 ?st . ?st ps:P6 ?pers . ?st wikibase:rank ?rang .
+  FILTER(?rang != wikibase:DeprecatedRank)
+  FILTER NOT EXISTS {{ ?st pq:P582 ?fin . }}
   FILTER NOT EXISTS {{ ?reg wdt:P576 ?dissous . }}
-  OPTIONAL {{ ?article schema:about ?reg ; schema:isPartOf <https://en.wikipedia.org/> . }}
-  OPTIONAL {{ ?reg p:P6 ?st . ?st ps:P6 ?pers . ?st wikibase:rank ?rang .
-             FILTER(?rang != wikibase:DeprecatedRank)
-             FILTER NOT EXISTS {{ ?st pq:P582 ?fin . }}
-             OPTIONAL {{ ?st pq:P580 ?debut . }} }}
+  OPTIONAL {{ ?st pq:P580 ?debut . }}
   OPTIONAL {{ ?reg rdfs:label ?regFr . FILTER(LANG(?regFr) = "fr") }}
   OPTIONAL {{ ?reg rdfs:label ?regEn . FILTER(LANG(?regEn) = "en") }}
   OPTIONAL {{ ?reg skos:altLabel ?regAlt . FILTER(LANG(?regAlt) IN ("fr", "en")) }}
@@ -132,6 +131,18 @@ SELECT ?iso ?reg ?regFr ?regEn ?regAlt ?article ?pers ?persFr ?persEn ?debut ?pa
 }}"""
 
 def val(row, k): return row.get(k, {}).get("value", "")
+
+def requete_articles(isos):
+    vals = " ".join(f'"{i}"' for i in isos)
+    return f"""
+SELECT ?iso ?reg ?regFr ?regEn ?article WHERE {{
+  VALUES ?iso {{ {vals} }}
+  ?pays wdt:P297 ?iso .
+  ?pays wdt:P150 ?reg .
+  ?article schema:about ?reg ; schema:isPartOf <https://en.wikipedia.org/> .
+  OPTIONAL {{ ?reg rdfs:label ?regFr . FILTER(LANG(?regFr) = "fr") }}
+  OPTIONAL {{ ?reg rdfs:label ?regEn . FILTER(LANG(?regEn) = "en") }}
+}}"""
 
 # ══════════════════════════════════════
 # 1. Remplissage depuis le fichier du site
@@ -188,9 +199,10 @@ def verifier_dirigeants(rows):
     infos = {}                      # (pays, région) → {"wd": [...], "article": str, "alias": set}
     for i in range(0, len(pays), 6):
         lot = pays[i:i + 6]
-        data = wikidata(requete_regions([iso[p] for p in lot]), ", ".join(lot))
+        data = wikidata(requete_regions([iso[p] for p in lot]), ", ".join(lot)) or []
         time.sleep(2)
-        if data is None: continue
+        data += wikidata(requete_articles([iso[p] for p in lot]), "articles " + ", ".join(lot)) or []
+        time.sleep(2)
         regs = {}
         for d in data:
             g = regs.setdefault(val(d, "reg"), {"iso": val(d, "iso"), "noms": set(), "pers": {}, "article": ""})

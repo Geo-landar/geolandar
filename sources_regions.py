@@ -35,7 +35,7 @@ LISTES = {
 
 MOIS_EN = {m: i + 1 for i, m in enumerate(["january", "february", "march", "april", "may", "june", "july",
                                             "august", "september", "october", "november", "december"])}
-NON_PERSONNE = re.compile(r"(^(file|image|fichier|category|list)\b|party|parti|partido|congress|alliance|front|"
+NON_PERSONNE = re.compile(r"(^(file|image|fichier|category|list)\b|system|government|societ|party|parti|partido|congress|alliance|front|"
                           r"union|movement|league|coalition|governor|minister|president|premier|council|assembly|"
                           r"province|state|region|independent|politician|democrat|republican|liberal|labou?r|"
                           r"conservative|socialist|communist|national|people)", re.I)
@@ -77,6 +77,8 @@ def lire_liste(titre, alias, norm_region):
     alias : {nom normalisé (français, anglais, titre d'article…): nom de région du site}."""
     t = sans_notes(wiki({"action": "parse", "page": titre, "prop": "wikitext", "redirects": 1})["parse"]["wikitext"])
     cible = alias
+    frequence = {}
+    for n in personnes(t): frequence[n] = frequence.get(n, 0) + 1     # un parti ou un pays revient souvent, une personne non
     res = {}
     for ligne in t.split("\n|-"):
         reg = None
@@ -88,7 +90,7 @@ def lire_liste(titre, alias, norm_region):
                     reg = cible.get(k) or cible.get(k2); break
             if reg: break
         if not reg or reg in res: continue
-        noms = [n for n in personnes(ligne) if norm_region(n) not in cible]
+        noms = [n for n in personnes(ligne) if norm_region(n) not in cible and frequence.get(n, 0) < 3]
         if noms:
             res[reg] = (noms[0], date_ligne(ligne))
     return res
