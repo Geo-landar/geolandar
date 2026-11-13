@@ -146,8 +146,8 @@ def remplir(table, lignes, cols_cle, champs):
             continue                                    # mise à jour automatique plus récente : on garde
         nouveau = {k: l.get(k) for k in champs}
         nouveau.update({"source": "fichier", "verifie": date_fr(l.get("verifie")), "updated_at": datetime.now().isoformat()})
-        if e and e.get("perime") and "perime" in nouveau and nouveau["verifie"] <= (e.get("verifie") or ""):
-            nouveau["perime"] = True                    # renouvellement signalé par l'automatisation : on garde
+        if e and "perime" in nouveau:
+            nouveau["perime"] = e.get("perime")         # géré par l'étape 3 (renouvellement)
         if e and all(e.get(k) == nouveau[k] for k in champs + ["verifie"]):
             continue                                    # déjà identique
         a_ecrire.append(nouveau)
@@ -213,23 +213,30 @@ def verifier_dirigeants(rows):
 # ══════════════════════════════════════
 # 3. Chambres : renouvellement après une élection
 # ══════════════════════════════════════
-def marquer_chambres(rows):
+def marquer_chambres(rows, fichier):
+    """perime = vrai si le fichier le dit, ou si une élection a eu lieu depuis la vérification."""
+    perime_fichier = {(c["pays"], c["chambre"]): bool(c.get("perime")) for c in fichier}
     try:
         el = supabase.table("elections").select("pays,date,type").eq("niveau", "national").in_("type", ["l", "s"]).lte("date", AUJ).execute().data
     except Exception as ex:
         print(f"  ✗ élections illisibles : {ex}"); return
     par_pays = {}
     for r in rows: par_pays.setdefault(r["pays"], []).append(r)
-    marques = []
+    marques, elues = [], set()
     for e in el:
         chs = sorted(par_pays.get(e["pays"], []), key=lambda r: r.get("ordre") or 0)
         if not chs or "-00" in e["date"]: continue
         ch = chs[0] if e["type"] == "l" else (chs[1] if len(chs) > 1 else None)
-        if not ch or ch.get("perime") or e["date"] <= (ch.get("verifie") or VERIF_MIN): continue
-        supabase.table("chambres_composition").update({"perime": True, "updated_at": datetime.now().isoformat()}).eq("id", ch["id"]).execute()
-        ch["perime"] = True
-        marques.append(f"{e['pays']} / {ch['chambre']} (élection du {e['date']})")
-    print(f"  {len(marques)} chambre(s) marquée(s) « renouvellement en cours »")
+        if not ch or e["date"] <= (ch.get("verifie") or VERIF_MIN): continue
+        if ch["id"] not in elues: marques.append(f"{e['pays']} / {ch['chambre']} (élection du {e['date']})")
+        elues.add(ch["id"])
+    n = 0
+    for ch in rows:
+        cible = perime_fichier.get((ch["pays"], ch["chambre"]), False) or ch["id"] in elues
+        if bool(ch.get("perime")) != cible:
+            supabase.table("chambres_composition").update({"perime": cible, "updated_at": datetime.now().isoformat()}).eq("id", ch["id"]).execute()
+            ch["perime"] = cible; n += 1
+    print(f"  {len(marques)} chambre(s) renouvelée(s) depuis la dernière vérification ({n} changement(s) écrit(s))")
     for m in marques: print(f"     ⚠ {m}")
     restantes = [f"{r['pays']} / {r['chambre']}" for r in rows if r.get("perime")]
     if restantes:
@@ -251,7 +258,7 @@ def main():
         verifier_dirigeants(dirs)
     if chs:
         print("\n[3] Chambres : élections tenues depuis la dernière vérification...")
-        marquer_chambres(chs)
+        marquer_chambres(chs, donnees["chambres"])
     print(f"\n  Terminé : {datetime.now().strftime('%H:%M:%S')}")
 
 if __name__ == "__main__":

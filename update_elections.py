@@ -172,6 +172,7 @@ SUPPRIMEES = {
 FORCEES = [
     {"pays": "Haiti", "date": "2027-07-18", "type": "p", "cert": 1, "niveau": "national",
      "date_tour2": "2027-10-04"},  # présidentielle et législatives, CEP 29/10/2026
+    {"pays": "France", "date": "2026-09-27", "type": "s", "cert": 1, "niveau": "national"},  # sénatoriales (enregistrées « législatives »)
 ]
 
 # Résultats erronés déjà enregistrés, corrigés à chaque passage
