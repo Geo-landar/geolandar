@@ -173,6 +173,7 @@ FORCEES = [
     {"pays": "Haiti", "date": "2027-07-18", "type": "p", "cert": 1, "niveau": "national",
      "date_tour2": "2027-10-04"},  # présidentielle et législatives, CEP 29/10/2026
     {"pays": "France", "date": "2026-09-27", "type": "s", "cert": 1, "niveau": "national"},  # sénatoriales (enregistrées « législatives »)
+    {"pays": "Vanuatu", "date": "2026-10-31", "type": "m", "niveau": "regionale"},  # élection provinciale (Torba), pas nationale
 ]
 
 # Résultats erronés déjà enregistrés, corrigés à chaque passage
@@ -487,7 +488,7 @@ def nettoyer(elections, data, plages=()):
     try:
         regs = supabase.table("elections").select("id,pays,date,winner").eq("niveau", "regionale").gte("date", (date.today() - timedelta(days=800)).isoformat()).execute().data
         for r in regs:
-            if (r["pays"], r["date"]) in nationales and controlee(r["date"]):
+            if (r["pays"], r["date"]) in nationales and controlee(r["date"]) and (r["pays"], r["date"]) not in forcees:
                 print(f"     ↑ {r['pays']} ({r['date']}) remise en national")
                 supabase.table("elections").update({"niveau": "national"}).eq("id", r["id"]).execute(); n_nat += 1
     except Exception as ex:
