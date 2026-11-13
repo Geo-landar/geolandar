@@ -1,5 +1,10 @@
 # ══════════════════════════════════════════════════════════════════
-#  GEOLANDAR — Dirigeants régionaux et composition des chambres — v1.0 (13/11/2026)
+#  GEOLANDAR — Dirigeants régionaux et composition des chambres — v2.0 (13/11/2026)
+#  v2.0 : plusieurs sources. Dirigeants régionaux : Wikidata + listes Wikipédia
+#  des dirigeants en fonction + encadré de l'article de chaque région (2 sources
+#  d'accord et une date récente pour écrire). Chambres : Wikipédia en + Wikipédia
+#  fr + sources officielles (Royaume-Uni, Assemblée nationale) ; 2 sources
+#  d'accord pour écrire après une élection, source officielle seule en continu.
 #
 #  Chaque nuit :
 #   1. Remplit Supabase (tables dirigeants_regionaux et chambres_composition)
@@ -304,24 +309,72 @@ def marquer_chambres(rows, fichier):
 #    déjà utilisés sur le site sont gardés pour les groupes reconnus.
 # ══════════════════════════════════════
 def articles_chambres(isos):
+    """{iso: [(article anglais, article français)]} pour chaque chambre (Wikidata P194 et ses parties)."""
     vals = " ".join(f'"{i}"' for i in isos)
-    q = f"""SELECT ?iso ?article WHERE {{
+    q = f"""SELECT ?iso ?leg ?en ?fr WHERE {{
   VALUES ?iso {{ {vals} }}
   ?pays wdt:P297 ?iso .
   {{ ?pays wdt:P194 ?leg . }} UNION {{ ?pays wdt:P194 ?l0 . ?l0 wdt:P527 ?leg . }}
-  ?article schema:about ?leg ; schema:isPartOf <https://en.wikipedia.org/> .
+  OPTIONAL {{ ?en schema:about ?leg ; schema:isPartOf <https://en.wikipedia.org/> . }}
+  OPTIONAL {{ ?fr schema:about ?leg ; schema:isPartOf <https://fr.wikipedia.org/> . }}
 }}"""
+    titre = lambda u: requests.utils.unquote(u.split("/wiki/")[-1]).replace("_", " ") if u else ""
     res = {}
     for d in wikidata(q, "articles des chambres") or []:
-        res.setdefault(val(d, "iso"), set()).add(requests.utils.unquote(val(d, "article").split("/wiki/")[-1]).replace("_", " "))
-    return res
+        res.setdefault(val(d, "iso"), {})[val(d, "leg")] = (titre(val(d, "en")), titre(val(d, "fr")))
+    return {k: sorted(v.values()) for k, v in res.items()}
+
+def construire_groupes(groupes, anciens, teintes):
+    """Garde le nom et la couleur du site pour un groupe reconnu (sigle ou nom), sinon ceux de la source."""
+    nouveaux, pris = [], set()
+    for g in groupes:
+        ancien = None
+        for k, a in enumerate(anciens):
+            if k in pris: continue
+            if (g["sigle"] and re.search(r"\b" + re.escape(norm(g["sigle"])) + r"\b", norm(a["n"]))) \
+               or meme_personne(a["n"], g["lien"]):
+                ancien = k; break
+        if ancien is not None:
+            pris.add(ancien)
+            nouveaux.append({"n": anciens[ancien]["n"], "s": g["s"], "c": anciens[ancien]["c"], "_o": ancien})
+        else:
+            nom = g["lien"] + (f" ({g['sigle']})" if g["sigle"] and norm(g["sigle"]) not in norm(g["lien"]) else "")
+            nouveaux.append({"n": nom, "s": g["s"], "c": teintes.get(g["couleur"], g["couleur"] if g["couleur"].startswith("#") else "#94a3b8"), "_o": 999})
+    nouveaux.sort(key=lambda g: g["_o"])
+    for g in nouveaux: g.pop("_o")
+    return nouveaux
+
+def sieges(groupes): return sorted(g["s"] for g in groupes)
+
+def ecrire_chambre(ch, groupes, source):
+    supabase.table("chambres_composition").update({
+        "total": sum(g["s"] for g in groupes), "groupes": groupes, "perime": False, "verifie": AUJ,
+        "source": source, "updated_at": datetime.now().isoformat()}).eq("id", ch["id"]).execute()
+    ch["groupes"], ch["total"], ch["perime"], ch["verifie"], ch["source"] = groupes, sum(g["s"] for g in groupes), False, AUJ, source
+
+def maj_officielles(rows):
+    """Chambres disposant d'une source officielle : mises à jour en continu."""
+    for ch in rows:
+        f = CW.OFFICIELS.get((ch["pays"], ch["chambre"]))
+        if not f: continue
+        try:
+            groupes = f()
+        except Exception as ex:
+            print(f"  ✗ {ch['pays']} / {ch['chambre']} : source officielle indisponible ({type(ex).__name__})"); continue
+        total = sum(g["s"] for g in groupes)
+        if not groupes or abs(total - (ch.get("total") or total)) > 5:
+            print(f"  ⚠ {ch['pays']} / {ch['chambre']} : réponse officielle incohérente ({total} sièges), ignorée"); continue
+        if sieges(groupes) == sieges(ch.get("groupes") or []):
+            print(f"  = {ch['pays']} / {ch['chambre']} : inchangée (source officielle)"); continue
+        ecrire_chambre(ch, construire_groupes(groupes, ch.get("groupes") or [], {}), "officiel")
+        print(f"  ✓ {ch['pays']} / {ch['chambre']} : {total} sièges, {len(groupes)} groupes (source officielle)")
 
 def actualiser_chambres(rows, elues):
-    # chambres renouvelées + celles déjà mises à jour depuis Wikipédia dans les
-    # 35 jours suivant l'élection (résultats provisoires → définitifs)
+    """Chambre renouvelée : nouvelle répartition écrite seulement si 2 sources donnent
+    les mêmes sièges (Wikipédia en, Wikipédia fr, source officielle)."""
     limite = (date.today() - timedelta(days=35)).isoformat()
-    for r in rows:
-        if r["id"] not in elues and r.get("source") == "wikipedia" and r.get("_elec", "") >= limite:
+    for r in rows:   # résultats provisoires → définitifs : on revérifie 35 jours
+        if r["id"] not in elues and r.get("source") in ("wikipedia", "wikipedia+fr", "wikipedia+officiel") and r.get("_elec", "") >= limite:
             elues[r["id"]] = r["_elec"]
     cibles = [r for r in rows if r["id"] in elues]
     if not cibles:
@@ -330,52 +383,46 @@ def actualiser_chambres(rows, elues):
     articles = articles_chambres(sorted({iso[r["pays"]] for r in cibles if r["pays"] in iso}))
     faites, attente = [], []
     for ch in cibles:
+        anciens = ch.get("groupes") or []
         trouve = None
-        for titre in sorted(articles.get(iso.get(ch["pays"], ""), [])):
+        for en, fr in articles.get(iso.get(ch["pays"], ""), []):
+            g_en, g_fr = [], []
             try:
-                derniere, groupes, total_ib = CW.lire_infobox(titre)
+                if en:
+                    derniere, g_en, total_ib = CW.lire_infobox(en)
+                    somme = sum(g["s"] for g in g_en)
+                    if derniere < elues[ch["id"]] or not (somme == ch["total"] or (total_ib and somme == total_ib)): g_en = []
+                if fr:
+                    _, g_fr = CW.lire_infobox_fr(fr)
             except Exception:
-                continue
-            somme = sum(g["s"] for g in groupes)
-            if not groupes or derniere < elues[ch["id"]]: continue
-            if somme == ch["total"] or (total_ib and somme == total_ib):
-                trouve = (titre, derniere, groupes, somme); break
+                pass
+            if not g_en or sieges(g_en) == sieges(anciens): continue      # pas encore à jour
+            confirme = []
+            if g_fr and sieges(g_fr) == sieges(g_en): confirme.append("Wikipédia fr")
+            off = CW.OFFICIELS.get((ch["pays"], ch["chambre"]))
+            if off:
+                try:
+                    if sieges(off()) == sieges(g_en): confirme.append("source officielle")
+                except Exception: pass
+            if confirme:
+                trouve = (en, fr, g_en, g_fr if "Wikipédia fr" in confirme else [], confirme); break
         if not trouve:
             attente.append(f"{ch['pays']} / {ch['chambre']}"); continue
-        titre, derniere, groupes, somme = trouve
-        anciens = ch.get("groupes") or []
-        if sorted(g["s"] for g in groupes) == sorted(g["s"] for g in anciens):
-            attente.append(f"{ch['pays']} / {ch['chambre']}")
-            continue                                        # même répartition qu'avant : Wikipédia pas encore à jour
-        teintes = CW.couleurs([g["couleur"] for g in groupes if g["couleur"]])
-        nouveaux, pris = [], set()
-        for g in groupes:
-            ancien = None
-            for k, a in enumerate(anciens):
-                if k in pris: continue
-                if (g["sigle"] and re.search(r"\b" + re.escape(norm(g["sigle"])) + r"\b", norm(a["n"]))) \
-                   or meme_personne(a["n"], g["lien"]):
-                    ancien = k; break
-            if ancien is not None:
-                pris.add(ancien)
-                nouveaux.append({"n": anciens[ancien]["n"], "s": g["s"], "c": anciens[ancien]["c"], "_o": ancien})
-            else:
-                nom = g["lien"] + (f" ({g['sigle']})" if g["sigle"] and norm(g["sigle"]) != norm(g["lien"]) else "")
-                nouveaux.append({"n": nom, "s": g["s"], "c": teintes.get(g["couleur"], "#94a3b8"), "_o": 999})
-        nouveaux.sort(key=lambda g: g["_o"])
-        for g in nouveaux: g.pop("_o")
-        supabase.table("chambres_composition").update({
-            "total": somme, "groupes": nouveaux, "perime": False, "verifie": AUJ, "source": "wikipedia",
-            "updated_at": datetime.now().isoformat()}).eq("id", ch["id"]).execute()
-        faites.append(f"{ch['pays']} / {ch['chambre']} : {somme} sièges, {len(nouveaux)} groupes (Wikipédia « {titre} », élection du {derniere})")
+        en, fr, g_en, g_fr, confirme = trouve
+        if g_fr:   # noms français
+            nouveaux = construire_groupes(g_fr, anciens, CW.couleurs_fr([g["couleur"] for g in g_fr]))
+        else:
+            nouveaux = construire_groupes(g_en, anciens, CW.couleurs([g["couleur"] for g in g_en]))
+        ecrire_chambre(ch, nouveaux, "wikipedia+fr" if g_fr else "wikipedia+officiel")
+        faites.append(f"{ch['pays']} / {ch['chambre']} : {ch['total']} sièges, {len(nouveaux)} groupes (Wikipédia en « {en} », confirmé par {', '.join(confirme)})")
     print(f"  ✓ {len(faites)} chambre(s) mise(s) à jour automatiquement")
     for x in faites: print(f"     - {x}")
     if attente:
-        print(f"  ⏳ {len(attente)} chambre(s) en attente (Wikipédia pas encore à jour, ou somme des sièges incohérente) : {', '.join(attente)}")
+        print(f"  ⏳ {len(attente)} chambre(s) en attente (sources pas encore à jour ou pas d'accord) : {', '.join(attente)}")
 
 def main():
     print("=" * 55)
-    print("  GEOLANDAR — Régions et chambres v1.1")
+    print("  GEOLANDAR — Régions et chambres v2.0")
     print(f"  {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 55)
     if supabase is None:
@@ -392,6 +439,8 @@ def main():
         elues = marquer_chambres(chs, donnees["chambres"]) or {}
         print("\n[4] Chambres renouvelées : nouvelle répartition des sièges...")
         actualiser_chambres(chs, elues)
+        print("\n[5] Chambres avec source officielle (Royaume-Uni, France)...")
+        maj_officielles(chs)
     print(f"\n  Terminé : {datetime.now().strftime('%H:%M:%S')}")
 
 if __name__ == "__main__":
