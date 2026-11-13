@@ -34,6 +34,10 @@ VERIF_MIN = "2026-09-01"     # les données du site ont été vérifiées en sep
 # Wikidata non fiable pour ce pays) : leurs lignes restent celles du fichier.
 SANS_WIKIDATA = {"Suisse", "Pays-Bas", "Bosnie", "Chine", "Emirats arabes"}
 
+# Lignes écrites à tort par l'automatisation, remises à la valeur du fichier
+# (pays, chambre, date de l'écriture fautive) — sans effet ensuite.
+REINITIALISER = {("Nouvelle-Zelande", "Chambre des représentants", "2026-11-13")}
+
 MOIS = {"janvier": 1, "février": 2, "fevrier": 2, "mars": 3, "avril": 4, "mai": 5, "juin": 6, "juillet": 7,
         "août": 8, "aout": 8, "septembre": 9, "octobre": 10, "novembre": 11, "décembre": 12, "decembre": 12}
 
@@ -143,6 +147,8 @@ def remplir(table, lignes, cols_cle, champs):
     a_ecrire = []
     for l in lignes:
         e = existants.get(cle(l))
+        if e and (e.get("pays"), e.get("chambre"), e.get("verifie")) in REINITIALISER:
+            e = dict(e, source="fichier")                   # mise à jour automatique erronée : on repart du fichier
         if e and e.get("source") not in (None, "", "fichier") and date_fr(l.get("verifie")) <= (e.get("verifie") or ""):
             continue                                    # mise à jour automatique plus récente : on garde
         nouveau = {k: l.get(k) for k in champs}
@@ -289,8 +295,9 @@ def actualiser_chambres(rows, elues):
             attente.append(f"{ch['pays']} / {ch['chambre']}"); continue
         titre, derniere, groupes, somme = trouve
         anciens = ch.get("groupes") or []
-        if somme == ch.get("total") and [(g["s"]) for g in groupes] == [g["s"] for g in anciens]:
-            continue                                        # rien de changé
+        if sorted(g["s"] for g in groupes) == sorted(g["s"] for g in anciens):
+            attente.append(f"{ch['pays']} / {ch['chambre']}")
+            continue                                        # même répartition qu'avant : Wikipédia pas encore à jour
         teintes = CW.couleurs([g["couleur"] for g in groupes if g["couleur"]])
         nouveaux, pris = [], set()
         for g in groupes:
