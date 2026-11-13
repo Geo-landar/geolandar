@@ -105,3 +105,77 @@ def couleurs(modeles):
         except Exception:
             pass
     return res
+
+# ── Wikipédia en français : encadré « Infobox Parlement » ({{Légende|couleur|[[groupe|sigle]] (n)}})
+MOIS_FR = {"janvier": 1, "février": 2, "fevrier": 2, "mars": 3, "avril": 4, "mai": 5, "juin": 6, "juillet": 7,
+           "août": 8, "aout": 8, "septembre": 9, "octobre": 10, "novembre": 11, "décembre": 12, "decembre": 12}
+
+def date_fr(t):
+    t = re.sub(r"[{}|\[\]]", " ", t or "")
+    m = re.search(r"(\d{1,2})(?:er)?\s+([a-zéû]+)\s+(\d{4})", t, re.I)
+    if m and m.group(2).lower() in MOIS_FR:
+        return f"{m.group(3)}-{MOIS_FR[m.group(2).lower()]:02d}-{int(m.group(1)):02d}"
+    return ""
+
+def analyser_fr(t):
+    t = sans_modeles(t, ["note", "refnec", "référence nécessaire", "efn"])
+    derniere = max([date_fr(champ(t, k)) for k in ("dernière_élection1", "dernière_élection", "dernière_élection2")] or [""])
+    groupes = []
+    for ligne in t.split("\n"):
+        m = re.match(r"^\s*(\**)\s*\{\{\s*Légende\s*\|(.*)\((\d+)\)\s*\}\}\s*$", ligne)
+        if not m or m.group(1): continue                     # sous-groupes (« * ») ignorés
+        corps = m.group(2)
+        lien = re.search(r"\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]", corps)
+        nom = (lien.group(1) if lien else re.sub(r"^.*\|", "", corps)).strip()
+        sigle = (lien.group(2) or "").strip() if lien else ""
+        coul = corps.split("|")[0].strip()
+        groupes.append({"lien": re.sub(r"\s*\([^)]*\)$", "", nom), "sigle": sigle, "s": int(m.group(3)), "couleur": coul})
+    return derniere, groupes
+
+def lire_infobox_fr(titre):
+    r = requests.get("https://fr.wikipedia.org/w/api.php", headers=UA, timeout=60, params={
+        "format": "json", "formatversion": 2, "action": "parse", "page": titre, "prop": "wikitext", "section": 0, "redirects": 1})
+    r.raise_for_status()
+    return analyser_fr(r.json()["parse"]["wikitext"])
+
+def couleurs_fr(modeles):
+    res = {m: m for m in modeles if m.startswith("#")}
+    a_traduire = sorted({m for m in modeles if m.startswith("{{")})
+    if a_traduire:
+        try:
+            r = requests.get("https://fr.wikipedia.org/w/api.php", headers=UA, timeout=60, params={
+                "format": "json", "formatversion": 2, "action": "expandtemplates", "text": "§".join(a_traduire), "prop": "wikitext"})
+            for m, c in zip(a_traduire, r.json()["expandtemplates"]["wikitext"].split("§")):
+                c = c.strip()
+                if re.match(r"^#?[0-9A-Fa-f]{6}$", c): res[m] = c if c.startswith("#") else "#" + c
+        except Exception:
+            pass
+    return res
+
+# ── Sources officielles (mises à jour en continu, pas seulement après une élection)
+def officiel_communes_uk():
+    """Chambre des communes : répartition officielle (API du Parlement britannique)."""
+    from datetime import date
+    r = requests.get(f"https://members-api.parliament.uk/api/Parties/StateOfTheParties/1/{date.today().isoformat()}", headers=UA, timeout=60)
+    r.raise_for_status()
+    return [{"lien": x["value"]["party"]["name"], "sigle": x["value"]["party"].get("abbreviation") or "",
+             "s": x["value"]["total"], "couleur": "#" + (x["value"]["party"].get("backgroundColour") or "94a3b8")}
+            for x in r.json()["items"] if x["value"]["total"] > 0]
+
+def officiel_assemblee_fr():
+    """Assemblée nationale : députés en mandat par groupe (NosDéputés.fr, données de l'Assemblée)."""
+    org = requests.get("https://www.nosdeputes.fr/organismes/groupe/json", headers=UA, timeout=60).json()
+    groupes = {}
+    for o in org.get("organismes", []):
+        o = o["organisme"]
+        if o.get("groupe_actuel"):
+            rgb = [int(x) for x in (o.get("couleur") or "148,163,184").split(",")]
+            groupes[o["acronyme"]] = {"lien": o["nom"], "sigle": o["acronyme"], "s": 0, "couleur": "#%02x%02x%02x" % tuple(rgb[:3])}
+    deps = requests.get("https://www.nosdeputes.fr/deputes/enmandat/json", headers=UA, timeout=60).json()
+    for d in deps.get("deputes", []):
+        g = d["depute"].get("groupe_sigle")
+        if g in groupes: groupes[g]["s"] += 1
+    return [g for g in groupes.values() if g["s"] > 0]
+
+OFFICIELS = {("Royaume-Uni", "House of Commons"): officiel_communes_uk,
+             ("France", "Assemblée nationale"): officiel_assemblee_fr}

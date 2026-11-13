@@ -22,6 +22,7 @@ from datetime import date, datetime, timedelta
 import requests
 from supabase import create_client
 import chambres_wiki as CW
+import sources_regions as SR
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
@@ -105,15 +106,16 @@ def wikidata(query, label):
 def requete_regions(isos):
     vals = " ".join(f'"{i}"' for i in isos)
     return f"""
-SELECT ?iso ?reg ?regFr ?regEn ?regAlt ?pers ?persFr ?persEn ?debut ?partiFr ?partiEn WHERE {{
+SELECT ?iso ?reg ?regFr ?regEn ?regAlt ?article ?pers ?persFr ?persEn ?debut ?partiFr ?partiEn WHERE {{
   VALUES ?iso {{ {vals} }}
   ?pays wdt:P297 ?iso .
   {{ ?pays wdt:P150 ?reg . }} UNION {{ ?reg wdt:P131 ?pays . ?reg wdt:P31/wdt:P279* wd:Q10864048 . }}
-  ?reg p:P6 ?st . ?st ps:P6 ?pers . ?st wikibase:rank ?rang .
-  FILTER(?rang != wikibase:DeprecatedRank)
-  FILTER NOT EXISTS {{ ?st pq:P582 ?fin . }}
   FILTER NOT EXISTS {{ ?reg wdt:P576 ?dissous . }}
-  OPTIONAL {{ ?st pq:P580 ?debut . }}
+  OPTIONAL {{ ?article schema:about ?reg ; schema:isPartOf <https://en.wikipedia.org/> . }}
+  OPTIONAL {{ ?reg p:P6 ?st . ?st ps:P6 ?pers . ?st wikibase:rank ?rang .
+             FILTER(?rang != wikibase:DeprecatedRank)
+             FILTER NOT EXISTS {{ ?st pq:P582 ?fin . }}
+             OPTIONAL {{ ?st pq:P580 ?debut . }} }}
   OPTIONAL {{ ?reg rdfs:label ?regFr . FILTER(LANG(?regFr) = "fr") }}
   OPTIONAL {{ ?reg rdfs:label ?regEn . FILTER(LANG(?regEn) = "en") }}
   OPTIONAL {{ ?reg skos:altLabel ?regAlt . FILTER(LANG(?regAlt) IN ("fr", "en")) }}
@@ -168,25 +170,30 @@ def remplir(table, lignes, cols_cle, champs):
 # 2. Dirigeants régionaux ↔ Wikidata
 # ══════════════════════════════════════
 def verifier_dirigeants(rows):
+    """Compare chaque dirigeant régional avec 3 sources : Wikidata, la liste
+    Wikipédia des dirigeants en fonction du pays (avec date) et l'encadré de
+    l'article de la région. Un nouveau nom est écrit s'il est donné par au
+    moins 2 sources ET daté d'après notre dernière vérification."""
     iso = iso_des_pays()
     par_pays = {}
     for r in rows:
         if r["pays"] in SANS_WIKIDATA or r.get("college"): continue
         par_pays.setdefault(r["pays"], []).append(r)
     pays = sorted(p for p in par_pays if p in iso)
-    ecrits, a_verifier, sans_corresp, vus = [], [], 0, 0
+    infos = {}                      # (pays, région) → {"wd": [...], "article": str, "alias": set}
     for i in range(0, len(pays), 6):
         lot = pays[i:i + 6]
         data = wikidata(requete_regions([iso[p] for p in lot]), ", ".join(lot))
         time.sleep(2)
         if data is None: continue
-        # région Wikidata → titulaires actuels
         regs = {}
         for d in data:
-            q = val(d, "reg")
-            g = regs.setdefault(q, {"iso": val(d, "iso"), "noms": set(), "pers": {}})
+            g = regs.setdefault(val(d, "reg"), {"iso": val(d, "iso"), "noms": set(), "pers": {}, "article": ""})
             for k in ("regFr", "regEn", "regAlt"):
                 if val(d, k): g["noms"].add(norm_region(val(d, k)))
+            if val(d, "article"):
+                g["article"] = requests.utils.unquote(val(d, "article").split("/wiki/")[-1]).replace("_", " ")
+            if not val(d, "pers"): continue
             p = g["pers"].setdefault(val(d, "pers"), {"nom": val(d, "persFr") or val(d, "persEn"), "debut": "", "partis": set()})
             if val(d, "debut"): p["debut"] = max(p["debut"], val(d, "debut")[:10])
             if val(d, "partiFr") or val(d, "partiEn"): p["partis"].add(val(d, "partiFr") or val(d, "partiEn"))
@@ -194,27 +201,69 @@ def verifier_dirigeants(rows):
             for r in par_pays[p]:
                 cible = norm_region(r["region"])
                 cand = [g for g in regs.values() if g["iso"] == iso[p] and cible and cible in g["noms"]]
-                if len(cand) != 1:
-                    sans_corresp += 1; continue
-                vus += 1
-                titulaires = [t for t in cand[0]["pers"].values() if t["nom"] and not re.match(r"^Q\d+$", t["nom"])]
-                if len(titulaires) != 1 or meme_personne(titulaires[0]["nom"], r.get("nom")):
-                    continue
-                t = titulaires[0]
-                if t["debut"] and t["debut"] > (r.get("verifie") or VERIF_MIN):
-                    parti = sorted(t["partis"])[0] if len(t["partis"]) == 1 else ""
-                    supabase.table("dirigeants_regionaux").update({
-                        "nom": t["nom"], "parti": parti, "pos": None, "source": "wikidata",
-                        "verifie": AUJ, "updated_at": datetime.now().isoformat()
-                    }).eq("pays", p).eq("region", r["region"]).execute()
-                    ecrits.append(f"{p} / {r['region']} : {r.get('nom')} → {t['nom']} (en fonction depuis le {t['debut']})")
-                else:
-                    a_verifier.append(f"{p} / {r['region']} : site {r.get('nom')!r}, Wikidata {t['nom']!r}"
-                                      + (f" (depuis le {t['debut']})" if t["debut"] else " (sans date)"))
-    print(f"  {vus} régions comparées à Wikidata ({sans_corresp} sans correspondance de nom, laissées telles quelles)")
-    for e in ecrits: print(f"  ✓ {e}")
+                if len(cand) != 1: continue
+                g = cand[0]
+                alias = set(g["noms"]) | ({norm_region(re.sub(r"\s*\([^)]*\)$", "", g["article"]))} if g["article"] else set())
+                infos[(p, r["region"])] = {"wd": [t for t in g["pers"].values() if t["nom"] and not re.match(r"^Q\d+$", t["nom"])],
+                                           "article": g["article"], "alias": alias}
+    # Source 2 : encadrés des articles des régions (50 par appel)
+    encadres = SR.lire_infobox([x["article"] for x in infos.values() if x["article"]])
+    # Source 3 : listes des dirigeants en fonction
+    listes = {}
+    for p, titre in SR.LISTES.items():
+        if p not in par_pays: continue
+        alias = {}
+        for r in par_pays[p]:
+            alias[norm_region(r["region"])] = r["region"]
+            for a in infos.get((p, r["region"]), {}).get("alias", ()):
+                alias.setdefault(a, r["region"])
+        try:
+            listes[p] = SR.lire_liste(titre, alias, lambda x: norm_region(x))
+        except Exception as ex:
+            print(f"  ✗ liste {p} indisponible ({type(ex).__name__})")
+        time.sleep(1)
+    print(f"  Sources : Wikidata {len(infos)} régions reconnues, encadrés {len(encadres)} articles, "
+          f"listes {sum(len(v) for v in listes.values())} régions ({len(listes)} pays)")
+
+    ecrits, a_verifier, confirmes = [], [], 0
+    for p in pays:
+        for r in par_pays[p]:
+            info = infos.get((p, r["region"]), {})
+            wd = info.get("wd", [])
+            sources = {}
+            if len(wd) == 1: sources["Wikidata"] = (wd[0]["nom"], wd[0]["debut"])
+            if (p in listes) and r["region"] in listes[p]: sources["liste Wikipédia"] = listes[p][r["region"]]
+            noms_enc = encadres.get(info.get("article", ""), [])
+            if noms_enc: sources["article Wikipédia"] = (noms_enc[0], "")
+            actuel = r.get("nom") or ""
+            if not sources: continue
+            if any(meme_personne(n, actuel) for n, _ in sources.values()) or any(meme_personne(n, actuel) for n in noms_enc):
+                confirmes += 1; continue
+            # candidats : chaque nom proposé, avec les sources qui le donnent
+            meilleur = None
+            for nom, _ in sources.values():
+                accord = [k for k, (n, _) in sources.items() if meme_personne(n, nom)]
+                if "article Wikipédia" not in accord and any(meme_personne(nom, n) for n in noms_enc): accord.append("article Wikipédia")
+                date_c = max([d for k, (n, d) in sources.items() if k in accord and d] or [""])
+                if not meilleur or len(accord) > len(meilleur[1]): meilleur = (nom, accord, date_c)
+            nom, accord, date_c = meilleur
+            nom_fr = next((n for k, (n, _) in sources.items() if k == "Wikidata" and meme_personne(n, nom)), nom)
+            if len(accord) >= 2 and date_c and date_c > (r.get("verifie") or VERIF_MIN):
+                t = wd[0] if (wd and meme_personne(wd[0]["nom"], nom)) else {"partis": set()}
+                parti = sorted(t["partis"])[0] if len(t.get("partis", ())) == 1 else ""
+                supabase.table("dirigeants_regionaux").update({
+                    "nom": nom_fr, "parti": parti, "pos": None, "source": "+".join(accord),
+                    "verifie": AUJ, "updated_at": datetime.now().isoformat()
+                }).eq("pays", p).eq("region", r["region"]).execute()
+                ecrits.append(f"{p} / {r['region']} : {actuel} → {nom_fr} (depuis le {date_c} ; {', '.join(accord)})")
+            else:
+                raison = "une seule source" if len(accord) < 2 else ("sans date" if not date_c else "prise de fonction antérieure à notre vérification")
+                a_verifier.append(f"{p} / {r['region']} : site {actuel!r}, proposé {nom!r} ({', '.join(accord)} ; {raison})")
+    print(f"  {confirmes} dirigeant(s) régional(aux) confirmé(s) par au moins une source")
+    print(f"  ✓ {len(ecrits)} remplacé(s) :")
+    for e in ecrits: print(f"     - {e}")
     if a_verifier:
-        print(f"\n  📋 {len(a_verifier)} région(s) où Wikidata diffère sans changement récent (site conservé) :")
+        print(f"\n  📋 {len(a_verifier)} désaccord(s) non tranché(s), site conservé :")
         for e in a_verifier: print(f"     - {e}")
 
 # ══════════════════════════════════════
@@ -336,7 +385,7 @@ def main():
     dirs = remplir("dirigeants_regionaux", donnees["dirigeants"], ("pays", "region"), ["pays", "region", "nom", "titre", "parti", "pos", "college"])
     chs = remplir("chambres_composition", donnees["chambres"], ("pays", "chambre"), ["pays", "chambre", "total", "groupes", "perime", "ordre"])
     if dirs:
-        print("\n[2] Dirigeants régionaux : comparaison avec Wikidata...")
+        print("\n[2] Dirigeants régionaux : comparaison avec Wikidata, les listes et les articles Wikipédia...")
         verifier_dirigeants(dirs)
     if chs:
         print("\n[3] Chambres : élections tenues depuis la dernière vérification...")
