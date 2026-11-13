@@ -1,0 +1,17 @@
+name: Sonde sources (temporaire)
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  sonde:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install requests
+      - run: python tools/sonde_sources.py
+      - run: |
+          git config user.name "geolandar-bot"; git config user.email "bot@geolandar.fr"
+          git checkout -B sonde-temp
+          git add -f sonde && git commit -qm "échantillons" && git push -f origin sonde-temp
