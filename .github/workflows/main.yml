@@ -22,7 +22,7 @@ jobs:
           python-version: '3.11'
 
       - name: Installer les dépendances
-        run: pip install requests supabase
+        run: pip install requests supabase pycountry
 
       - name: Lancer la mise à jour
         run: python update_elections.py

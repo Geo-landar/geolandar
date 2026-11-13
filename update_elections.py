@@ -80,7 +80,7 @@ ISO_VERS_SITE = {
     "st":"Sao Tome-et-Principe", "sv":"El Salvador", "sx":"Sint Maarten", "sy":"Syrie", "sz":"Eswatini", "tc":"Iles Turques-et-Caïques",
     "td":"Tchad", "tf":"Terres australes françaises", "tg":"Togo", "th":"Thailande", "tj":"Tadjikistan", "tk":"Tokelau",
     "tl":"Timor oriental", "tm":"Turkmenistan", "tn":"Tunisie", "to":"Tonga", "tr":"Turquie", "tt":"Trinidad & Tobago",
-    "tw":"Taiwan", "tz":"Tanzanie", "ua":"Ukraine", "ug":"Ouganda", "um":"Iles mineures éloignées", "us":"Etats-Unis",
+    "tv":"Tuvalu", "tw":"Taiwan", "tz":"Tanzanie", "ua":"Ukraine", "ug":"Ouganda", "um":"Iles mineures éloignées", "us":"Etats-Unis",
     "uy":"Uruguay", "uz":"Ouzbekistan", "vc":"Saint-Vincent", "ve":"Venezuela", "vg":"Iles Vierges britanniques", "vi":"Iles Vierges américaines",
     "vn":"Vietnam", "vu":"Vanuatu", "wf":"Wallis-et-Futuna", "ws":"Samoa", "xk":"Kosovo", "ye":"Yemen",
     "yt":"Mayotte", "za":"Afrique du Sud", "zm":"Zambie", "zw":"Zimbabwe",

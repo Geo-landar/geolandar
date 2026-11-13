@@ -4,9 +4,15 @@ from supabase import create_client
 from datetime import datetime, date
 import os
 import time
+import sources_dirigeants as S
 
 # ══════════════════════════════════════════════════════════════════
-#  GEOLANDAR — Mise à jour automatique des dirigeants — v2.1 (05/11/2026)
+#  GEOLANDAR — Mise à jour automatique des dirigeants — v3.0 (13/11/2026)
+#  v3.0 : Wikidata n'est plus la seule source. Chaque nuit, le titulaire est
+#  comparé à Wikipédia (liste française des dirigeants actuels, avec date de
+#  prise de fonction), Wikipédia anglais et l'annuaire CIA World Leaders.
+#  Règle : le titulaire le plus récent l'emporte, s'il est confirmé par au
+#  moins une deuxième source indépendante. Sinon : signalé « à vérifier ».
 #  v2.1 : Serbie (président), Timor oriental (Premier ministre), Myanmar,
 #  suppression des anciennes lignes Suisse / Saint-Marin / Arabie saoudite / Bosnie.
 #  Corrections par rapport à la v1 :
@@ -74,7 +80,7 @@ ISO_VERS_SITE = {
     "st":"Sao Tome-et-Principe", "sv":"El Salvador", "sx":"Sint Maarten", "sy":"Syrie", "sz":"Eswatini", "tc":"Iles Turques-et-Caïques",
     "td":"Tchad", "tf":"Terres australes françaises", "tg":"Togo", "th":"Thailande", "tj":"Tadjikistan", "tk":"Tokelau",
     "tl":"Timor oriental", "tm":"Turkmenistan", "tn":"Tunisie", "to":"Tonga", "tr":"Turquie", "tt":"Trinidad & Tobago",
-    "tw":"Taiwan", "tz":"Tanzanie", "ua":"Ukraine", "ug":"Ouganda", "um":"Iles mineures éloignées", "us":"Etats-Unis",
+    "tv":"Tuvalu", "tw":"Taiwan", "tz":"Tanzanie", "ua":"Ukraine", "ug":"Ouganda", "um":"Iles mineures éloignées", "us":"Etats-Unis",
     "uy":"Uruguay", "uz":"Ouzbekistan", "vc":"Saint-Vincent", "ve":"Venezuela", "vg":"Iles Vierges britanniques", "vi":"Iles Vierges américaines",
     "vn":"Vietnam", "vu":"Vanuatu", "wf":"Wallis-et-Futuna", "ws":"Samoa", "xk":"Kosovo", "ye":"Yemen",
     "yt":"Mayotte", "za":"Afrique du Sud", "zm":"Zambie", "zw":"Zimbabwe",
@@ -446,7 +452,7 @@ def construire_dirigeants(lignes):
             description += " ⚠️ Plusieurs titulaires actuels détectés sur Wikidata — à vérifier."
         resultats[pays] = {"pays": pays, "nom": nom, "titre": titre, "parti": parti, "position": position,
                            "description": description, "fiabilite": fiabilite,
-                           "autres": sorted(n for n in candidats if n != nom)}
+                           "autres": sorted(n for n in candidats if n != nom), "start": (info["start"] or "")[:10]}
     return resultats
 
 def appliquer_corrections(dirigeants):
@@ -466,6 +472,68 @@ def appliquer_corrections(dirigeants):
         print(f"  ✎ {pays} : Wikidata renvoie « {d['nom']} » (périmé) → {c['nom']}")
         d.update({"nom": c["nom"], "titre": c["titre"], "parti": "", "position": None, "fiabilite": 1,
                   "description": f"{c['nom']}, {c['titre'].lower()} depuis {c['depuis']}."})
+    return dirigeants
+
+def pays_fr(nom):
+    """Nom de pays en français (Wikipédia) → nom du site."""
+    if nom in NOMS_PAYS: return NOMS_PAYS[nom]
+    cible = S.norm(nom)
+    for p in ISO_VERS_SITE.values():
+        if S.norm(p) == cible: return p
+    return None
+
+def croiser_sources(dirigeants):
+    """Compare chaque titulaire avec Wikipédia (fr, en) et la CIA ; le plus récent confirmé l'emporte."""
+    def lire(nom, f):
+        try:
+            r = f(); print(f"  {nom} : {len(r[0] if isinstance(r, tuple) else r)} pays lus"); return r
+        except Exception as e:
+            print(f"  ✗ {nom} indisponible ({type(e).__name__}) : ignorée cette nuit"); return None
+    par_iso = lambda i: ISO_VERS_SITE.get((i or "").lower())
+    fr = lire("Wikipédia (fr)", lambda: S.wikipedia_fr(pays_fr))
+    fr = fr[0] if fr else {}
+    en = lire("Wikipédia (en)", lambda: S.wikipedia_en(par_iso)) or {}
+    cia = lire("CIA World Leaders", lambda: S.cia(par_iso)) or {}
+    changes, a_verifier, confirmes = [], [], 0
+    for pays in sorted(set(fr) | set(dirigeants)):
+        if pays in PAYS_IGNORES or pays not in NOMS_SITE: continue
+        role = "hos" if pays in PAYS_HOS else "hog"
+        d = dirigeants.get(pays)
+        actuel = d["nom"] if d else ""
+        ligne = S.choisir_fr(fr.get(pays, []), role)
+        def confirmations(nom):
+            out = []
+            if any(S.meme_personne(nom, n) for n in en.get(pays, [])): out.append("Wikipédia (en)")
+            if any(S.meme_personne(nom, n) for n in cia.get(pays, {}).get("noms", [])): out.append("CIA")
+            return out
+        if not ligne:
+            continue
+        if actuel and S.meme_personne(ligne["nom"], actuel):
+            if d["fiabilite"] in (3, 4) and confirmations(actuel):
+                d["fiabilite"] = 1; confirmes += 1          # Wikidata hésitait : confirmé par d'autres sources
+            continue
+        debut_actuel = (d or {}).get("start", "")
+        plus_recent = (not actuel) or (not debut_actuel) or (ligne["debut"] and ligne["debut"] > debut_actuel)
+        srcs = confirmations(ligne["nom"])
+        if plus_recent and srcs:
+            titre = d["titre"] if d else ("Chef d'État" if role == "hos" else "Chef du gouvernement")
+            depuis = ""
+            if ligne["debut"]:
+                a, m, j = ligne["debut"].split("-"); depuis = f" depuis le {j}/{m}/{a}"
+            nouveau = {"pays": pays, "nom": ligne["nom"], "titre": titre, "parti": "", "position": None,
+                       "description": f"{ligne['nom']}, {ligne['fonction'].lower()}{depuis}.", "fiabilite": 1,
+                       "autres": [], "start": ligne["debut"]}
+            dirigeants[pays] = nouveau
+            changes.append(f"{pays} : {actuel or '—'} → {ligne['nom']}{depuis} (Wikipédia fr, confirmé par {', '.join(srcs)})")
+        else:
+            raison = "non confirmé par une 2e source" if plus_recent else "Wikidata indique une prise de fonction plus récente"
+            a_verifier.append(f"{pays} : affiché {actuel or '—'} ; Wikipédia (fr) {ligne['nom']}"
+                              + (f" depuis le {ligne['debut']}" if ligne["debut"] else "") + f" — {raison}")
+    print(f"\n  🔄 {len(changes)} dirigeant(s) remplacé(s) grâce aux autres sources, {confirmes} confirmé(s) :")
+    for c in changes: print(f"     - {c}")
+    if a_verifier:
+        print(f"\n  📋 {len(a_verifier)} désaccord(s) non tranché(s), site inchangé :")
+        for c in a_verifier: print(f"     - {c}")
     return dirigeants
 
 def sauvegarder(dirigeants):
@@ -490,7 +558,7 @@ def sauvegarder(dirigeants):
 
 def main():
     print("=" * 60)
-    print("  GEOLANDAR — Mise à jour automatique des dirigeants v2.0")
+    print("  GEOLANDAR — Mise à jour automatique des dirigeants v3.0")
     print(f"  {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 60)
     print("  Interrogation de Wikidata (chefs d'État et de gouvernement)...")
@@ -500,6 +568,8 @@ def main():
         print("  Aucune donnée reçue : rien n'est modifié dans Supabase.")
         return
     dirigeants = appliquer_corrections(construire_dirigeants(lignes))
+    print("\n  Croisement avec les autres sources...")
+    dirigeants = croiser_sources(dirigeants)
     print(f"\n  {len(dirigeants)} pays avec un dirigeant identifié")
     if supabase is None:
         print("  (pas de clé Supabase : essai à blanc, rien n'est écrit)")
