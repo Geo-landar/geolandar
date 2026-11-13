@@ -479,7 +479,7 @@ def nettoyer(elections, data, plages=()):
             if controlee(r["date"]) and r["date"][4:] != "-00-00" and cle not in nationales:
                 supabase.table("elections").update({"niveau": "regionale"}).eq("id", r["id"]).execute(); n_reg += 1
                 print(f"     ↓ {r['pays']} ({r['date']}) reclassée régionale")
-            elif ancien_libelle and not libelle_national(r["type"]):
+            elif ancien_libelle and not libelle_national(r["type"]) and cle not in nationales:
                 supabase.table("elections").update({"niveau": "regionale"}).eq("id", r["id"]).execute(); n_reg += 1
         except Exception as ex:
             print(f"  ✗ nettoyage {cle}: {ex}")
