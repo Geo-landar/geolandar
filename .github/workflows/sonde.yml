@@ -9,3 +9,5 @@ jobs:
         with: { python-version: '3.11' }
       - run: pip install requests
       - run: python tools/sonde_sources.py
+      - uses: actions/upload-artifact@v4
+        with: { name: sonde, path: sonde/ }
