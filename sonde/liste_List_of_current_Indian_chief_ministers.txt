@@ -1,0 +1,838 @@
+{{Short description|Head of government of a state or union territory in India}}
+{{pp-protected|small=yes}}
+{{Use dmy dates|date=May 2026}}
+{{Use Indian English|date=May 2026}}
+{{Infobox official post
+| post = Chief Minister
+| body = States/Union Territories
+| native_name = 
+| insignia = Emblem of India.svg
+| insignia_size = 75px
+| insignia_caption = [[Emblem of India]]
+| insignia_alt = 
+| flag = Flag of India.svg
+| flag_alt = 
+| flag_caption = [[Flag of India]]
+| image = 
+| image_size = 
+| alt = 
+| image_caption = 
+| incumbent = 
+| acting = 
+| incumbent_since = 
+| department = 
+| style = *Honourable<br/>(Inside India)
+*His/Her Excellency (Outside India)
+| type = Head of the [[State governments of India|state government]]
+| status = Leader of the executive
+| abbreviation = 
+| member_of = [[State legislative assemblies of India|Member of legislature of respective states and union territories of India]]
+| reports_to = * [[Governor (India)|Governor]] of respective states
+* [[Lieutenant governor]] of respective union territories of India
+* [[State legislative assemblies of India|Legislative assembly]]
+| residence = [[List of state and union territory capitals in India|Respective state capitals]]
+| appointer = Governor
+| appointer_qualified = by [[Convention (norm)#Government|convention]], based on appointee's ability to [[Parliamentary system|command confidence]] in the [[State legislative assemblies of India|Legislative Assembly]]
+| term_length = Maxiumum of five years, given they have the confidence of the assembly
+| term_length_qualified = No restriction on renewal
+| constituting_instrument = Article No. 163 and 164, [[Constitution of India]]
+| inaugural = 
+| formation = 
+| first = 
+| last = 
+| abolished = 
+| succession = 
+| unofficial_names = 
+| deputy = [[#Deputy chief minister|Deputy chief minister]]
+| salary = {{INRConvert|405000}}<br />(incl. allowances) per month
+| website = [https://www.india.gov.in/my-government/whos-who/chief-ministers Chief Ministers of India]
+| footnotes =
+}}
+{{Politics of India}}
+
+In [[India]], a '''chief minister''' is the elected [[head of government]] of each state out of the 28<ref>{{cite web | url=https://knowindia.gov.in/states-uts/ | archive-url=https://web.archive.org/web/20170818054533/http://knowindia.gov.in/states-uts/ | url-status=dead | archive-date=18 August 2017 |website=knowindia.gov.in |title=States and Union Territories}}
+</ref> states and sometimes a [[union territory]] (UT). Currently, only the UTs of [[Delhi]], [[Jammu and Kashmir (union territory)|Jammu and Kashmir]] and [[Puducherry (union territory)|Puducherry]] have serving chief ministers. According to the [[Constitution of India]], the [[Governor (India)|governor]] is a state's head, but ''[[de facto]]'' executive authority rests with the chief minister.
+
+Following elections to the State legislative assembly or Vidhan Sabha in a state, the state's governor usually invites the party (or coalition) with a majority of seats to form the government. The governor appoints and swears in the chief minister, whose [[council of ministers]] are [[Cabinet collective responsibility|collectively responsible]] to the assembly. Based on the [[Westminster system]], given that they retain the confidence of the assembly, the chief minister's term can last for the length of the assembly's life, a maximum of five years. There are no limits to the [[term limit|number of terms]] that the chief minister can serve.<ref>{{cite book|author=Durga Das Basu|author-link=Durga Das Basu|title=Introduction to the Constitution of India|year=1960|pages=241-245|publisher=LexisNexis Butterworths Wadhwa|isbn=978-81-8038-559-9}}</ref> A chief minister heads a state government's council of ministers and can be deputised in that role by a deputy chief minister. The chief minister generally selects the [[Chief secretary (India)|chief secretary]] and can also allot departments to the cabinet ministers of their state and ministers of state. They also direct the chief secretary to transfer, suspend, or promote officers of their state.
+
+The chief minister usually serves as the leader of the house in the respective legislative assembly.{{efn|name=Leader|Except in Tamil Nadu, where [[K. A. Sengottaiyan]] serves as the [[List of leaders of the house in the Tamil Nadu Legislative Assembly|leader of the house]] whereas [[C. Joseph Vijay]] is the [[Chief Minister of Tamil Nadu|chief minister]].<ref>{{cite news|url=https://www.dtnext.in/news/tamilnadu/tvk-legislator-jcd-prabhakar-unanimously-elected-as-tn-assembly-speaker|title=TVK legislator JCD Prabhakar unanimously elected as TN Assembly Speaker |date=12 May 2026|access-date=12 May 2026|work=[[DT Next]]}}</ref>}}<ref>{{cite web|url=https://apuat21.cgg.gov.in/web/legislative-assembly/leader-of-the-house|title=Leader of the House|work=[[Andhra Pradesh Legislative Assembly]]|access-date=1 June 2025}}</ref>  
+
+Of the 31 incumbents, [[List of chief ministers from the Bharatiya Janata Party|Seventeen]] incumbents belong to the [[Bharatiya Janata Party]] and [[List of chief ministers from the Indian National Congress|four
+]] to the [[Indian National Congress]], with no other party having more than one chief minister in office. [[Neiphiu Rio]] from [[Chief Minister of Nagaland|Nagaland]], has had the [[List of longest-serving Indian chief ministers|longest tenure]] ({{age in years and days|2007|2|25}}) as a chief minister. [[Pema Khandu]] of [[Arunachal Pradesh]], serving since 16 July 2016 (for {{age in years and days|2016|7|16}}), has the longest continuous incumbency. [[Chief Minister of Mizoram | Mizoram]]'s [[Lalduhoma]] (aged {{age in years|1949|2|22}}) is the oldest and [[Pema Khandu]] (aged {{age in years|1979|8|21}}), from [[Chief Minister of Arunachal Pradesh|Arunachal Pradesh]] is the youngest. [[Chief Minister of Delhi|Delhi]]'s [[Rekha Gupta]] is the only incumbent [[List of female chief ministers in India|female]] chief minister. As of {{CURRENTDAY}} {{CURRENTMONTHNAME}} {{CURRENTYEAR}}, 20 states and 2 union territories are run by the [[National Democratic Alliance]], 6 states and 1 union territory by [[INDIA]], 2 states have no alliance, and 5 union territories have no legislature.
+
+== Eligibility ==
+The [[Constitution of India]] sets the principle qualifications one must meet to be eligible to the office of chief minister. A chief minister must be:
+
+* a citizen of India. 
+* should be a member of the state legislature
+* of 25 years of age or more<ref>Constitution  of India, Article 173</ref>
+
+An individual who is not a member of the legislature can be considered the chief minister provided they get themselves elected to the State Legislature within six months from the date of their appointment. Failing which, they would cease to be the chief minister.
+
+== Election ==
+The chief minister is elected through a majority in the state legislative assembly. This is procedurally established by the vote of confidence in the legislative assembly, as suggested by the governor of the state who is the appointing authority. They are elected for five years.<ref>The Constitution of India article 164, clause 1</ref> The chief minister holds office at the pleasure of the governor.
+
+== Oath ==
+Since, according to the constitution, the chief minister is appointed by the governor, the swearing in ceremony is held before the governor of the state.
+
+The oath of office
+
+{{Blockquote|I, <Name of Minister> do swear in the name of God/solemnly affirm that I will bear true faith and allegiance to the Constitution of India as by law established, that I will uphold the sovereignty and integrity of India, that I will faithfully and conscientiously discharge my duties as a Minister for the State of <Name of the State>
+  and that I will do right to all manner of people in accordance with the Constitution and the law without fear or favour, affection or ill-will.|Constitution of India, Schedule 3, Para 5}}
+
+The oath of secrecy
+{{Blockquote|I, <Name of Minister>, do swear in the name of God/solemnly affirm that I will not directly or indirectly communicate or reveal to any person or persons any matter which shall be brought under my consideration or shall become known to me as a Minister for the State of <Name of the State> except as may be required for the due discharge of my duties as such Minister.|Constitution of India, Schedule 3, Para 6}}
+
+==Resignation ==
+In the event of a chief minister's resignation, which conventionally occurs after a general election or during a phase of assembly majority transition, the outgoing chief minister holds the informal title of "[[Caretaker government|caretaker]]" chief minister until the governor either appoints a new chief minister or dissolves the assembly. Since the post is not constitutionally defined, the caretaker chief minister enjoys all the powers of a regular chief minister, but cannot make any major policy decisions or cabinet changes during his or her short tenure as caretaker.<ref>{{cite news|url=https://timesofindia.indiatimes.com/city/chennai/caretaker-chief-minister-is-just-a-placeholder-say-experts/articleshow/57102821.cms |title=Caretaker chief minister is just a placeholder, say experts |work=The Times of India |date=12 February 2017}}</ref>
+
+==Remuneration ==
+{{Further|Salaries of government officials in India}}
+By Article 164 of the constitution of India, remuneration of the chief minister as well as other ministers are to be decided by the respective state legislatures.<ref>The Constitution of India, article 164, clause 5</ref> Until the legislature of the state decides salary, it shall be as specified in the second schedule.
+<ref>The Constitution of India, Article 164, Clause 5</ref> The salaries thus vary from state to state. As of 2026, the highest salary is drawn by [[List of chief ministers of Telangana|chief ministers of Telangana]], which is {{INR Convert|410000}} and lowest by the [[List of chief ministers of Tripura|chief ministers of Tripura]] which is {{INR Convert|105500}} legally.<ref>{{Cite web|url=https://finapp.co.in/chief-minister-salary/|title=CM Salary India 2019 (Chief Minister Salary State Wise List)|last=Jain|first=CA Sindu|date=2017-05-21|website=FinApp|language=en-GB|access-date=2019-03-11}}</ref>
+{{transcluded section|Salaries of government officials in India#Chief Ministers}}
+{{trim|{{#section-h:Salaries of government officials in India|Chief Ministers}}}}
+
+== Current list ==
+{{Multiple image
+| align       = right
+| total_width = 400
+| image1      = Current Indian ruling and opposition parties 2026.png
+| image2      = Alliances of the Ruling Parties of Indian States (as of May 2026).png
+| footer      = Ruling parties as of May 2026 and alliances in Indian states as of May 2026
+| }}
+
+{{clear}}[[National Democratic Alliance|NDA]]: 22
+
+[[INDIA]]: 7
+
+None: 2
+=== Legend ===
+{{legend2|wheat}} Indicates that the chief minister was by- elected to the constituency he represents 
+{| class="wikitable sortable" style="text-align:center"
+|+List of chief ministers<ref>{{cite web|url=https://www.india.gov.in/my-government/whos-who/chief-ministers|title=Chief Ministers|access-date=12 March 2024|work=[[Government of India]]|archive-date=9 August 2019|archive-url=https://web.archive.org/web/20190809151722/https://www.india.gov.in/my-government/whos-who/chief-ministers|url-status=live}}</ref>
+|-
+![[States and union territories of India|State/UT]]{{Efn|The chief minister of the states in India rank 7th in the Order of Precedence of India, while the chief minister of the union territories in India rank 15th in the Order of Precedence of India.}}
+!List
+!Portrait
+!Officeholder 
+!Took office<br />{{small|(tenure length)}}
+!colspan="2" | Political Party{{efn|Only the chief minister's party is indicated. They may head a complex coalition of several parties and independents, which are not listed here.}}
+!National Alliance
+!State/UT Alliance <br/> (Regional Alliance)
+!Ministry
+!Constituency{{Efn|Current constituency}}
+!Election
+!Appointed by{{efn|Denotes the governor at the time of appointment. }}
+! scope="col" class="unsortble" | {{abbr|Ref|Reference}}
+|-
+| [[Andhra Pradesh]]
+|[[Chief Minister of Andhra Pradesh|List]]
+| [[File:The Chief Minister of Andhra Pradesh, Shri N. Chandrababu Naidu calling on the Prime Minister, Shri Narendra Modi, in New Delhi on January 12, 2018 (2) (cropped).jpg|70px]]
+! [[N. Chandrababu Naidu]]
+| {{dts|format=dmy|2024|6|12}}<br /><small>({{ayd|2024|6|12}})</small>
+| [[Telugu Desam Party|'''TDP''']]
+| {{party color cell|Telugu Desam Party}}
+| rowspan="9" | [[National Democratic Alliance|'''NDA''']]
+|'''[[Kutami]]'''
+| [[Fourth N. Chandrababu Naidu ministry|Naidu IV]]
+|[[Kuppam Assembly constituency|Kuppam]]
+|[[2024 Andhra Pradesh Legislative Assembly election|2024]]
+|[[Syed Abdul Nazeer]]
+| <ref>{{cite news|url=https://www.ndtv.com/india-news/n-chandrababu-naidu-to-take-oath-as-andhra-pradesh-chief-minister-on-june-12-pm-narendra-modi-to-attend-5868122|title=Chandrababu Naidu To Take Oath As Andhra Chief Minister On June 12, PM Modi To Attend|access-date=11 June 2024|work=[[NDTV]]|date=11 June 2024|archive-date=11 June 2024|archive-url=https://web.archive.org/web/20240611145528/https://www.ndtv.com/india-news/n-chandrababu-naidu-to-take-oath-as-andhra-pradesh-chief-minister-on-june-12-pm-narendra-modi-to-attend-5868122|url-status=live}}</ref>
+|-
+| [[Arunachal Pradesh]]
+|[[Chief Minister of Arunachal Pradesh|List]]
+| [[File:Pema Khandu in July 2016.jpg|70px]]
+! [[Pema Khandu]]
+| {{dts|format=dmy|2016|7|17}}<br /><small>({{ayd|2016|7|17}})</small>
+| rowspan="8" | [[Bharatiya Janata Party|'''BJP''']]
+| rowspan="8" {{party color cell|Bharatiya Janata Party}}
+| rowspan="2" |[[North-East Democratic Alliance|'''NEDA''']]
+| [[Fifth Pema Khandu Ministry|Khandu V]]
+|[[Mukto Assembly constituency|Mukto]]
+|[[2024 Arunachal Pradesh Legislative Assembly election|2024]]
+|[[Kaiwalya Trivikram Parnaik]] 
+| <ref>{{cite news|url=https://www.thehindu.com/news/national/other-states/pema-khandu-sworn-in-as-arunachal-pradesh-cm/article27283425.ece|title=Pema Khandu sworn in as Arunachal Pradesh CM|date=29 May 2019|work=[[The Hindu]]|access-date=12 March 2024|archive-date=12 March 2024|archive-url=https://web.archive.org/web/20240312154111/https://www.thehindu.com/news/national/other-states/pema-khandu-sworn-in-as-arunachal-pradesh-cm/article27283425.ece|url-status=live}}</ref><ref>{{cite news|url=https://indianexpress.com/article/india/arunachal-pradesh-cabinet-ministers-list-9389702/|title=list of Minister took oath on 13th June 2024 with CM Pema Khandu|date=13 June 2024|work=[[Indian express]]|access-date=1 June 2025}}</ref>
+|-
+|[[Assam]]
+|[[Chief Minister of Assam|List]]
+|[[File:Himanta Biswa Sarma (cropped).jpg|70px]]
+![[Himanta Biswa Sarma]]
+|{{dts|format=dmy|2021|5|10}}<br /><small>({{ayd|2021|5|10}})</small>
+|[[Second Sarma ministry|Sarma II]]
+|[[Jalukbari Assembly constituency|Jalukbari]]
+|[[2026 Assam Legislative Assembly election|2026]]
+|[[Lakshman Acharya]]
+|<ref>{{cite news|date=10 May 2021|title=Himanta Biswa Sarma Swearing-in: JP Nadda to Attend Oath-Taking Ceremony|url=https://www.news18.com/news/politics/himanta-biswa-sarma-swearing-in-live-updates-sarbananda-sonowal-bjp-assam-pm-narendra-modi-jp-nadda-3722531.html|access-date=10 May 2021|work=[[News18]]|archive-date=10 May 2021|archive-url=https://web.archive.org/web/20210510051711/https://www.news18.com/news/politics/himanta-biswa-sarma-swearing-in-live-updates-sarbananda-sonowal-bjp-assam-pm-narendra-modi-jp-nadda-3722531.html|url-status=live}}</ref>
+|-
+| [[Bihar]]
+|[[Chief Minister of Bihar|List]]
+| [[File:Samrat Choudhary.jpg|70px]]
+! [[Samrat Choudhary]]
+| {{dts|format=dmy|2026|4|15}}<br /><small>({{ayd|2026|4|15}})</small>
+| rowspan="6" | [[National Democratic Alliance|'''NDA''']]
+| [[Choudhary ministry|Choudhary]]
+|[[Tarapur Assembly constituency|Tarapur]]
+|[[2025 Bihar Legislative Assembly election|2025]]
+|[[Syed Ata Hasnain]] 
+| <ref>{{cite web|url=https://www.indiatoday.in/india/story/samrat-choudhary-to-be-bihar-chief-minister-as-nitish-kumar-resigns-after-20-years-2895995-2026-04-14|title=Samrat Choudhary to be Bihar's first BJP Chief Minister as Nitish Kumar era ends|work=India Today|accessdate=14 April 2026}}</ref>
+|-
+| [[Chhattisgarh]]
+|[[Chief Minister of Chhattisgarh|List]]
+| [[File:Vishnu Deo Sai, Chief Minister of Chhattisgarh.jpg|70px]]
+! [[Vishnu Deo Sai]]
+| {{dts|format=dmy|2023|12|13}}<br /><small>({{ayd|2023|12|13}})</small>
+| [[Sai ministry|Sai]]
+|[[Kunkuri]]
+|[[2023 Chhattisgarh Legislative Assembly election|2023]]
+|[[Biswabhusan Harichandan]]
+| <ref>{{cite news |url=https://www.thehindu.com/news/national/vishnu-deo-sai-takes-oath-as-chhattisgarh-chief-minister/article67634138.ece |title=Vishnu Deo Sai, his two deputies take oath in Chhattisgarh |date=13 December 2023 |work=[[The Hindu]] |access-date=12 March 2024 |archive-date=12 March 2024 |archive-url=https://web.archive.org/web/20240312154113/https://www.thehindu.com/news/national/vishnu-deo-sai-takes-oath-as-chhattisgarh-chief-minister/article67634138.ece |url-status=live}}</ref>
+|-
+| [[Delhi]]{{efn|name=UT|Although Delhi, Jammu and Kashmir and Puducherry each have an elected legislature and a council of ministers (headed by the chief minister), they are officially classified as [[Union territory|union territories]].}}
+|[[Chief Minister of Delhi|List]]
+| [[File:Rekha Gupta Cropped.jpg|70px]]
+! [[Rekha Gupta]]
+| {{dts|format=dmy|2025|2|20}}<br /><small>({{ayd|2025|2|20}})</small>
+| [[Rekha Gupta ministry|Gupta]]
+|[[Shalimar Bagh Assembly constituency|Shalimar Bagh]]
+|[[2025 Delhi Legislative Assembly election|2025]]
+|[[Vinai Kumar Saxena|V. K. Saxena]]
+| <ref>{{cite news|url=https://www.indiatoday.in/elections/assembly/story/delhi-assembly-election-results-2025-live-updates-vote-counting-bjp-aap-congress-news-candidates-winner-2676598-2025-02-08|title=BJP storming back to capital power as Delhi votes AAP out|work=[[India Today]]|date=8 February 2025|access-date=8 February 2025}}</ref>
+|-
+| [[Goa]]
+|[[Chief Minister of Goa|List]]
+| [[File:The Chief Minister of Goa, Shri Pramod Sawant.jpg|70px]]
+! [[Pramod Sawant]]
+| {{dts|format=dmy|2019|3|19}}<br /><small>({{ayd|2019|3|19}})</small>
+| [[Second Pramod Sawant ministry|Sawant II]]
+|[[Sanquelim Assembly constituency|Sanquelim]]
+|[[2022 Goa Legislative Assembly election|2022]]
+|[[P. S. Sreedharan Pillai|P. S. Sreedharan Pilliai]]
+| <ref>{{cite news|first=Murari|last=Shetye|url=https://timesofindia.indiatimes.com/india/goa-speaker-pramod-sawant-succeeds-parrikar-as-cm/articleshow/68473049.cms|title=Goa speaker Pramod Sawant succeeds Parrikar as CM|work=[[The Times of India]]|date=19 March 2019|access-date=13 March 2022|archive-date=19 March 2019|archive-url=https://web.archive.org/web/20190319124214/https://timesofindia.indiatimes.com/india/goa-speaker-pramod-sawant-succeeds-parrikar-as-cm/articleshow/68473049.cms|url-status=live}}</ref>
+|-
+| [[Gujarat]]
+|[[Chief Minister of Gujarat|List]]
+|[[File:Chief Minister of Gujarat, Shri Bhupendra Patel (2).jpg|70px]]
+! [[Bhupendrabhai Patel]]
+| {{dts|format=dmy|2021|09|13}}<br /><small>({{ayd|2021|09|13}})</small>
+| [[Second Bhupendrabhai Patel Ministry|Patel II]]
+|[[Ghatlodia Assembly constituency|Ghatlodia]]
+|[[2022 Gujarat Legislative Assembly election|2022]]
+|[[Acharya Devvrat]]
+| <ref>{{cite news|url=https://www.thehindu.com/elections/gujarat-assembly/bhupendra-patel-meets-gujarat-governor-stakes-claim-to-form-government/article66247276.ece|title=Bhupendra Patel to be sworn in as Gujarat Chief Minister on December 12|date=10 December 2022|work=[[The Hindu]]|access-date=12 March 2024|archive-date=12 March 2024|archive-url=https://web.archive.org/web/20240312154106/https://www.thehindu.com/elections/gujarat-assembly/bhupendra-patel-meets-gujarat-governor-stakes-claim-to-form-government/article66247276.ece|url-status=live}}</ref>
+|-
+| [[Haryana]]
+|[[Chief Minister of Haryana|List]]
+| [[File:Nayab Singh Saini October 2024.jpg|70px]]
+! [[Nayab Singh Saini]]
+| {{dts|format=dmy|2024|03|12}}<br /><small>({{ayd|2024|03|12}})</small>
+| [[Second Saini ministry|Saini II]]
+|[[Ladwa Assembly constituency|Ladwa]]
+|[[2024 Haryana Legislative Assembly election|2024]]
+|[[Bandaru Dattatreya]]
+| <ref>{{cite news|url=https://www.thehindu.com/news/national/nayab-saini-is-next-haryana-cm-after-manohar-lal-khattar-resigns/article67942171.ece|title=Nayab Saini sworn in as Haryana CM|work=[[The Hindu]]|date=12 March 2024|access-date=12 March 2024|archive-date=12 March 2024|archive-url=https://web.archive.org/web/20240312125020/https://www.thehindu.com/news/national/nayab-saini-is-next-haryana-cm-after-manohar-lal-khattar-resigns/article67942171.ece|url-status=live}}</ref>
+|-
+| [[Himachal Pradesh]]
+|[[Chief Minister of Himachal Pradesh|List]]
+| [[File:Sukhvinder Singh Sukhu.jpg|70px]]
+! [[Sukhvinder Singh Sukhu]]
+| {{dts|format=dmy|2022|12|11}}<br /><small>({{ayd|2022|12|11}})</small>
+| [[Indian National Congress|'''INC''']]
+| {{party color cell|Indian National Congress}}
+| rowspan="5" | [[Indian National Developmental Inclusive Alliance|'''INDIA''']]
+|[[Indian National Developmental Inclusive Alliance|'''INDIA''']]
+| [[Sukhu ministry|Sukhu]]
+|[[Nadaun Assembly constituency|Nadaun]]
+|[[2022 Himachal Pradesh Legislative Assembly election|2022]]
+|[[Rajendra Arlekar]] 
+| <ref>{{cite news|title=Sukhwinder Singh Sukhu to be next Himachal CM, Mukesh Agnihotiri his deputy|url=https://www.indiatoday.in/india/story/former-himachal-congress-chief-sukhwinder-sukhu-next-himachal-cm-2307628-2022-12-10|date=10 December 2022|access-date=10 December 2022|work=[[India Today]]|archive-date=10 December 2022|archive-url=https://web.archive.org/web/20221210143511/https://www.indiatoday.in/india/story/former-himachal-congress-chief-sukhwinder-sukhu-next-himachal-cm-2307628-2022-12-10|url-status=live}}</ref>
+|-
+| [[Jammu and Kashmir (union territory)|Jammu and Kashmir]]{{efn|name=UT}}
+|[[Chief Minister of Jammu and Kashmir|List]]
+|[[File:Omar Abdullah (portrait).jpg|91x91px]]
+! [[Omar Abdullah]]
+| {{dts|format=dmy|2024|10|16}}<br /><small>({{ayd|2024|10|16}})</small>
+| [[Jammu & Kashmir National Conference|'''JKNC''']]
+| {{party color cell|Jammu and Kashmir National Conference}}
+| [[Indian National Developmental Inclusive Alliance|'''JKNC-led INDIA''']]
+| [[Second Omar Abdullah ministry|Abdullah II]]
+|[[Ganderbal Assembly constituency|Ganderbul]]
+|[[2024 Jammu and Kashmir Legislative Assembly election|2024]]
+|[[Manoj Sinha]]
+| <ref>{{cite news |title=Omar Abdullah to become new Jammu and Kashmir CM |url=https://www.india.com/news/india/omar-abdullah-to-become-new-jammu-and-kashmir-cm-7308141/ |access-date=1 June 2025 |date=8 October 2024 |work=India.com}}</ref>
+|-
+| [[Jharkhand]]
+|[[Chief Minister of Jharkhand|List]]
+| [[File:The Chief Minister of Jharkhand, Shri Hemant Soren calling on the Prime Minister, Shri Narendra Modi, in New Delhi on January 11, 2020 (1) (cropped).jpg|88x88px]]
+! [[Hemant Soren]]
+| {{dts|format=dmy|2024|7|4}}<br /><small>({{ayd|2024|7|4}})</small>
+| [[Jharkhand Mukti Morcha|'''JMM''']]
+| {{party color cell|Jharkhand Mukti Morcha}}
+|'''[[Mahagathbandhan (Jharkhand)|MGB]]'''
+| [[Fourth Hemant Soren ministry|Soren IV]]
+|[[Barhi Assembly constituency|Barhi]]
+|[[2024 Jharkhand Legislative Assembly election|2024]]
+|[[Santosh Gangwar|Santosh Kumar Gangwar]]
+| <ref>{{cite news|date=27 November 2024|title=Hemant Soren swearing-in as Jharkhand CM: Which leaders are attending the ceremony?|url=https://timesofindia.indiatimes.com/india/hemant-soren-swearing-in-as-jharkhand-cm-which-leaders-are-attending-the-ceremony/articleshow/115738341.cms|access-date=1 June 2025|work=[[The Times of India]]|issn=0971-8257}}</ref>
+|-
+| [[Karnataka]]
+| [[Chief Minister of Karnataka|List]]
+| [[File:Dkshivakumar.png|70px]]
+! [[D. K. Shivakumar]]
+| {{dts|format=dmy|2026|06|03}}<br /><small>({{ayd|2026|06|03}})</small>
+| rowspan="2" |[[Indian National Congress|'''INC''']]
+| rowspan="2" width="2px" bgcolor="{{party color|Indian National Congress}}" |
+| [[Indian National Developmental Inclusive Alliance|'''INDIA''']]
+| [[D. K. Shivakumar ministry|Shivakumar]]
+|[[Kanakapura Assembly constituency|Kanakapura]]
+|[[2023 Karnataka Legislative Assembly election|2023]]
+| [[Thawar Chand Gehlot]]
+|
+|-
+| [[Kerala]]
+| [[Chief Minister of Kerala|List]]
+| [[File:VD Satheesan.jpg|70px]]
+! [[V. D. Satheesan]]
+| {{dts|format=dmy|2026|05|18}}<br /><small>({{ayd|2026|05|18}})</small>
+| [[United Democratic Front (Kerala)|'''UDF''']]
+| [[Satheesan ministry|Satheesan]]
+|[[Paravur Assembly constituency|Paravur]]
+|[[2026 Kerala Legislative Assembly election|2026]]
+| [[Rajendra Arlekar]]
+|
+|-
+| [[Madhya Pradesh]]
+| [[Chief Minister of Madhya Pradesh|List]]
+| [[File:PM attends swearing in ceremony of Mohan Yadav and his deputies at Bhopal, in Madhya Pradesh.jpg|70px]]
+! [[Mohan Yadav]]
+| {{dts|format=dmy|2023|12|13}}<br /><small>({{ayd|2023|12|13}})</small>
+| rowspan="3" | [[Bharatiya Janata Party|'''BJP''']]
+| rowspan="3" {{party color cell|Bharatiya Janata Party}}
+| rowspan="4" | '''[[National Democratic Alliance|NDA]]'''
+|'''[[National Democratic Alliance|NDA]]'''
+| [[Mohan Yadav ministry|Yadav]]
+|[[Ujjain South Assembly constituency|Ujjain South]]
+|[[2023 Madhya Pradesh Legislative Assembly election|2023]]
+|[[Mangubhai C. Patel]]
+| <ref>{{cite news|url=https://www.thehindu.com/news/national/other-states/mohan-yadav-sworn-in-as-chief-minister-of-madhya-pradesh/article67633496.ece|title=Mohan Yadav sworn in as Chief Minister of Madhya Pradesh|date=13 December 2023|work=[[The Hindu]]|access-date=12 March 2024|archive-date=12 March 2024|archive-url=https://web.archive.org/web/20240312154109/https://www.thehindu.com/news/national/other-states/mohan-yadav-sworn-in-as-chief-minister-of-madhya-pradesh/article67633496.ece|url-status=live}}</ref>
+|-
+| [[Maharashtra]]
+| [[Chief Minister of Maharashtra|List]]
+| [[File:Devendra fadnavis.png|70px]]
+! [[Devendra Fadnavis]]
+| {{dts|format=dmy|2024|12|5}}<br /><small>({{ayd|2024|12|5}})</small>
+| [[Mahayuti|'''MY''']]
+| [[Third Fadnavis ministry|Fadnavis III]]
+|[[Nagpur South West Assembly constituency|Nagpur South West]]
+|[[2024 Maharashtra Legislative Assembly election|2024]]
+| [[C. P. Radhakrishnan]]
+|
+|-
+| [[Manipur]]
+|[[Chief Minister of Manipur|List]]
+|[[File:YumnamKhemchandSingh (cropped).webp|70px]]
+! [[Yumnam Khemchand Singh]]
+| {{dts|format=dmy|2026|2|4}}<br /><small>({{ayd|2026|2|4}})</small>
+|[[North-East Democratic Alliance|'''NEDA''']]
+| [[Yumnam Khemchand Singh ministry|Singh]]
+|[[Singjamei Assembly constituency|Singjamei]]
+|[[2022 Manipur Legislative Assembly election|2022]]
+|[[Ajay Kumar Bhalla]]
+|<ref>{{cite news|url=https://www.news18.com/politics/yumnam-khemchand-singh-takes-oath-as-manipur-chief-minister-as-presidents-rule-ends-9879543.html|title=Yumnam Khemchand Singh Takes Oath As Manipur Chief Minister After President's Rule Ends|work=[[News18]]|date=4 February 2026|access-date=4 February 2026}}</ref>
+|-
+| [[Meghalaya]]
+|[[Chief Minister of Meghalaya|List]]
+| [[File:The Chief Minister of Meghalaya, Shri Conrad Sangma in April 03, 2018.jpg|70px]]
+! [[Conrad Sangma]]
+| {{dts|format=dmy|2018|3|6}}<br /><small>({{ayd|2018|3|6}})</small>
+| [[National People's Party (India)|'''NPP''']]
+| {{party color cell|National People's Party (India)}}
+| [[Meghalaya Democratic Alliance (2018–present)|'''MDA''']] ([[North-East Democratic Alliance|'''NEDA''']])
+| [[Second Conrad Sangma ministry|Sangma II]]
+|[[South Tura Assembly constituency|South Tura]]
+|[[2023 Meghalaya Legislative Assembly election|2023]]
+|[[Phagu Chauhan]] 
+| <ref>{{cite news|url=https://www.thehindu.com/news/national/other-states/conrad-sangma-takes-oath-as-meghalaya-cm-for-second-term-cabinet-sworn-in/article66590273.ece|title=Conrad Sangma takes oath as Meghalaya CM for second term, Cabinet sworn in|date=7 March 2023|work=[[The Hindu]]|access-date=12 March 2024|archive-date=15 March 2023|archive-url=https://web.archive.org/web/20230315062056/https://www.thehindu.com/news/national/other-states/conrad-sangma-takes-oath-as-meghalaya-cm-for-second-term-cabinet-sworn-in/article66590273.ece|url-status=live}}</ref>
+|-
+| [[Mizoram]]
+|[[Chief Minister of Mizoram|List]]
+| [[File:Lalduhawma.jpg|70px]]
+! [[Lalduhoma]]
+| {{dts|format=dmy|2023|12|8}}<br /><small>({{ayd|2023|12|8}})</small>
+| [[Zoram People's Movement|'''ZPM''']]
+| {{party color cell|Zoram People's Movement}}
+|''None''
+|''None''
+| [[Lalduhoma ministry|Lalduhoma]]
+|[[Serchhip Assembly constituency|Serchhip]]
+|[[2023 Mizoram Legislative Assembly election|2023]]
+|[[Kambhampati Hari Babu]] 
+| <ref>{{cite news|url=https://www.thehindu.com/elections/mizoram-assembly/zoram-peoples-movement-leader-lalduhoma-sworn-in-as-mizoram-cm/article67617376.ece|title=Zoram People's Movement leader Lalduhoma sworn in as Mizoram CM|date=8 December 2023|work=[[The Hindu]]|access-date=10 December 2023|archive-date=9 December 2023|archive-url=https://web.archive.org/web/20231209055755/https://www.thehindu.com/elections/mizoram-assembly/zoram-peoples-movement-leader-lalduhoma-sworn-in-as-mizoram-cm/article67617376.ece|url-status=live}}</ref>
+|-
+| [[Nagaland]]
+|[[Chief Minister of Nagaland|List]]
+| [[File:NeiphiuRio.jpg|70px]]
+! [[Neiphiu Rio]]
+| {{dts|format=dmy|2018|3|8}}<br /><small>({{ayd|2018|3|8}})</small>
+| [[Naga People's Front|'''NPF''']]
+| {{party color cell|Naga People's Front}}
+| rowspan="3" | '''[[National Democratic Alliance|NDA]]'''
+|[[People's Democratic Alliance (Nagaland)|'''PDA''']] ([[North-East Democratic Alliance|'''NEDA''']])
+| [[Fifth Rio ministry|Rio V]]
+|[[Northern Angami II Assembly constituency|Northern Angami II]]
+|[[2023 Nagaland Legislative Assembly election|2023]]
+|[[La. Ganesan]]
+| <ref>{{cite news|url=https://www.thehindu.com/news/national/other-states/neiphiu-rio-takes-oath-as-nagaland-cm-for-fifth-term/article66590851.ece|title=Neiphiu Rio takes oath as Nagaland CM for fifth term|date=7 March 2023|work=[[The Hindu]]|access-date=12 March 2024|archive-date=4 October 2023|archive-url=https://web.archive.org/web/20231004032226/https://www.thehindu.com/news/national/other-states/neiphiu-rio-takes-oath-as-nagaland-cm-for-fifth-term/article66590851.ece|url-status=live}}</ref>
+|-
+| [[Odisha]]
+|[[Chief Minister of Odisha|List]]
+| [[File:CM Mohan Charan Majhi.jpg|70px]]
+! [[Mohan Charan Majhi]]
+| {{dts|format=dmy|2024|6|12}}<br /><small>({{ayd|2024|6|12}})</small>
+| [[Bharatiya Janata Party|'''BJP''']]
+| {{party color cell|Bharatiya Janata Party}}
+|'''[[National Democratic Alliance|NDA]]'''
+| [[Majhi ministry|Majhi]]
+|[[Keonjhar Assembly constituency|Keonjhar]]
+|[[2024 Odisha Legislative Assembly election|2024]]
+|[[Raghubar Das]]
+| <ref>{{cite news |url=https://www.indiatoday.in/india/story/mohan-charan-majhi-odisha-first-bjp-chief-minister-new-cm-firebrand-tribal-leader-2551897-2024-06-11 |title=Mohan Majhi, Odisha new CM, is firebrand tribal leader who threw dal at Speaker podium |date=11 June 2024 |work=[[India Today]] |access-date=11 June 2024 |archive-date=11 June 2024 |archive-url=https://web.archive.org/web/20240611130931/https://www.indiatoday.in/india/story/mohan-charan-majhi-odisha-first-bjp-chief-minister-new-cm-firebrand-tribal-leader-2551897-2024-06-11 |url-status=live}}</ref>
+|-
+| [[Puducherry (union territory)|Puducherry]]{{efn|name=UT}}
+|[[Chief Minister of Puducherry|List]]
+| [[File:N Rangaswamy.jpg|70px]]
+! [[N. Rangaswamy]]
+| {{dts|format=dmy|2021|05|07}}<br /><small>({{ayd|2021|05|07}})</small>
+| [[All India N.R. Congress|'''AINRC''']]
+| {{party color cell|All India N.R. Congress}}
+|[[AINRC-led Alliance|'''AINRC+''']]
+|[[Fifth Rangaswamy ministry|Rangasamy V]]
+|[[Mangalam Assembly constituency|Mangalam]]
+|[[2026 Puducherry Legislative Assembly election|2026]]
+|[[Kuniyil Kailashnathan]]
+| <ref>{{cite news|last1=Stalin|first1=J Sam Daniel|last2=Ghosh|first2=Deepshikha|title=Congress loses power in Puducherry, V Narayanasamy resigns, blames BJP|url=https://www.ndtv.com/india-news/puducherry-floor-test-puducherry-floor-test-today-congress-government-shaky-with-more-exits-2375732|access-date=22 February 2021|work=[[NDTV]]|date=22 February 2021 |archive-date=4 April 2021|archive-url=https://web.archive.org/web/20210404041835/https://www.ndtv.com/india-news/puducherry-floor-test-puducherry-floor-test-today-congress-government-shaky-with-more-exits-2375732|url-status=live}}</ref> 
+|-
+| [[Punjab, India|Punjab]]
+|[[Chief Minister of Punjab, India|List]]
+| [[File:Bhagwant Mann 2026.jpg|70px]]
+! [[Bhagwant Mann]]
+|{{dts|format=dmy|2022|03|16}}<br /><small>({{ayd|2022|03|16}})</small>
+| [[Aam Aadmi Party|'''AAP''']]
+| {{party color cell|Aam Aadmi Party}}
+|''None''
+|''None''
+| [[Mann ministry|Mann]]
+|[[Dhuri Assembly constituency|Dhuri]]
+|[[2022 Punjab Legislative Assembly election|2022]]
+|[[Banwarilal Purohit]] 
+| <ref>{{cite news|url=https://www.thehindu.com/elections/punjab-assembly/aaps-bhagwant-mann-sworn-in-as-punjab-cm/article65230309.ece|title=AAP's Bhagwant Mann sworn in as Punjab Chief Minister|date=16 March 2022|work=[[The Hindu]]|access-date=12 March 2024|archive-date=9 August 2022|archive-url=https://web.archive.org/web/20220809115117/https://www.thehindu.com/elections/punjab-assembly/aaps-bhagwant-mann-sworn-in-as-punjab-cm/article65230309.ece|url-status=live}}</ref>
+|-
+| [[Rajasthan]]
+|[[Chief Minister of Rajasthan|List]]
+| [[File:Bhajan Lal Sharma sworn as CM.jpg|70px]]
+! [[Bhajan Lal Sharma]]
+| {{dts|format=dmy|2023|12|15}}<br /><small>({{ayd|2023|12|15}})</small>
+| [[Bharatiya Janata Party|'''BJP''']]
+| {{party color cell|Bharatiya Janata Party}}
+| rowspan="2" |'''[[National Democratic Alliance|NDA]]'''
+|'''[[National Democratic Alliance|NDA]]'''
+| [[Bhajan Lal Sharma ministry|Sharma]]
+|[[Sanganer Assembly constituency|Sanganer]]
+|[[2023 Rajasthan Legislative Assembly election|2023]]
+|[[Kalraj Mishra]]
+| <ref>{{cite news |url=https://www.thehindu.com/shorts/watch-who-is-bhajan-lal-sharma-rajasthans-new-cm/article67639338.ece |title=Who is Bajan Lal Sharma, Rajasthan's new CM |date=17 December 2023 |work=[[The Hindu]] |access-date=12 March 2024 |archive-date=12 March 2024 |archive-url=https://web.archive.org/web/20240312154107/https://www.thehindu.com/shorts/watch-who-is-bhajan-lal-sharma-rajasthans-new-cm/article67639338.ece |url-status=live}}</ref>
+|-
+| [[Sikkim]]
+|[[Chief Minister of Sikkim|List]]
+| [[File:Prem Singh Tamang, Chief Minister of Sikkim.jpg|70px]]
+! [[Prem Singh Tamang]]
+| {{dts|format=dmy|2019|05|27}}<br /><small>({{ayd|2019|05|27}})</small>
+| [[Sikkim Krantikari Morcha|'''SKM''']]
+| {{party color cell|Sikkim Krantikari Morcha}}
+|[[North-East Democratic Alliance|'''NEDA''']]
+| [[Second Tamang ministry|Tamang II]]
+|[[Rhenock Assembly constituency|Rhenock]]
+|[[2024 Sikkim Legislative Assembly election|2024]]
+|[[Lakshman Acharya]]
+| <ref>{{cite news |url=https://www.thehindu.com/elections/sikkim-assembly/ps-golay-sworn-in-as-sikkim-chief-minister/article27259921.ece |title=P.S. Tamang sworn in as Sikkim Chief Minister |date=27 May 2019 |work=[[The Hindu]] |access-date=12 March 2024 |archive-date=8 October 2021 |archive-url=https://web.archive.org/web/20211008084333/https://www.thehindu.com/elections/sikkim-assembly/ps-golay-sworn-in-as-sikkim-chief-minister/article27259921.ece |url-status=live}}</ref>
+|-
+|[[Tamil Nadu]]
+|[[Chief Minister of Tamil Nadu|List]]
+|[[File:JosephVijay.jpg|70px]]
+![[C. Joseph Vijay]]
+|{{dts|format=dmy|2026|05|10}}<br /><small>({{ayd|2026|05|10}})</small>
+|[[Tamilaga Vettri Kazhagam|'''TVK''']]
+|{{party color cell|Tamilaga Vettri Kazhagam}}
+| ''None''
+|[[TVK-led Alliance|'''TVK+''']]
+|[[C. Joseph Vijay ministry|Vijay]]
+|[[Perambur Assembly constituency|Perambur]]
+|[[2026 Tamil Nadu Legislative Assembly election|2026]]
+|[[Rajendra Vishwanath Arlekar]] 
+|<ref>{{Cite web |date=2026-05-08 |title=Tamil Nadu Government Formation Live: Uncertainty over govt formation in TN continues as TVK awaits governor’s invite |url=https://www.indiatoday.in/elections/assembly/story/tamil-nadu-govenrment-formation-live-updates-new-cm-vijay-tvk-dmk-aiadmk-congress-bjp-governor-2908441-2026-05-08 |access-date=2026-05-09 |website=India Today |language=en}}</ref>
+|-
+| [[Telangana]]
+|[[Chief Minister of Telangana|List]]
+| [[File:Cm-telangana.png|70px]]
+! [[Revanth Reddy]]
+| {{dts|format=dmy|2023|12|07}}<br /><small>({{ayd|2023|12|07}})</small>
+| [[Indian National Congress|'''INC''']]
+| {{party color cell|Indian National Congress}}
+| '''[[Indian National Developmental Inclusive Alliance|INDIA]]'''
+| '''[[Indian National Developmental Inclusive Alliance|INDIA]]'''
+| [[Revanth Reddy ministry|Reddy]]
+|[[Kodangal Assembly constituency|Kodangal]]
+|[[2023 Telangana Legislative Assembly election|2023]]
+|[[Tamilisai Soundararajan|Tamilisai Soundrararajan]]
+|<ref>{{cite news|title=Revanth Reddy to be sworn in as Telangana chief minister tomorrow|url=https://www.ndtv.com/india-news/revanth-reddy-to-be-sworn-in-as-telangana-chief-minister-tomorrow-4640509|date=7 December 2023|work=[[NDTV]]|access-date=1 June 2025|archive-date=8 June 2024|archive-url=https://web.archive.org/web/20240608112704/https://www.ndtv.com/india-news/revanth-reddy-to-take-oath-as-telangana-chief-minister-today-sonia-gandhi-rahul-gandhi-to-attend-4640509|url-status=live}}</ref>
+|-
+| [[Tripura]]
+|[[Chief Minister of Tripura|List]]
+| [[File:Manik Saha Invitation for HWC 2023.jpg|70px]]
+! [[Manik Saha]]
+| {{dts|format=dmy|2022|5|15}}<br /><small>({{ayd|2022|5|15}})</small>
+| rowspan="4" |[[Bharatiya Janata Party|'''BJP''']]
+| rowspan="4" {{party color cell|Bharatiya Janata Party}}
+| rowspan="4" |[[National Democratic Alliance|'''NDA''']]
+|[[North-East Democratic Alliance|'''NEDA''']]
+| [[Second Saha ministry|Saha II]]
+|[[Town Bordowali Assembly constituency|Town Bordowali]]
+|[[2023 Tripura Legislative Assembly election|2023]]
+|[[Satyadev Narayan Arya]]
+| <ref>{{cite news|url=https://www.thehindu.com/news/national/biplab-kumar-deb-to-be-sworn-in-as-tripura-cm/article22993657.ece|title=Biplab Kumar Deb sworn in as Tripura CM|date=18 December 2018|work=[[The Hindu]]|access-date=12 March 2024|archive-date=18 December 2018|archive-url=https://web.archive.org/web/20181218061436/https://www.thehindu.com/news/national/biplab-kumar-deb-to-be-sworn-in-as-tripura-cm/article22993657.ece|url-status=live}}</ref>
+|-
+| [[Uttar Pradesh]]
+|[[Chief Minister of Uttar Pradesh|List]]
+| [[File:The Uttar Pradesh Chief Minister, Shri Yogi Adityanath meeting the President, Shri Ram Nath Kovind, at Rashtrapati Bhavan, in New Delhi on February 10, 2018 (cropped).jpg|70px]]
+! [[Yogi Adityanath]]
+| {{dts|format=dmy|2017|3|19}}<br /><small>({{ayd|2017|3|19}})</small>
+| rowspan="3" |[[National Democratic Alliance|'''NDA''']]
+| [[Second Yogi Adityanath ministry|Yogi II]]
+|[[Gorakhpur Urban Assembly constituency|Gorakhpur Urban]] 
+|[[2022 Uttar Pradesh Legislative Assembly election|2022]]
+|[[Anandiben Patel]]
+| <ref>{{cite news |url=https://www.thehindu.com/elections/uttar-pradesh-2017/live-yogi-adityanath-swearing-in-in-uttar-pradesh/article62127578.ece |title=Yogi Adityanath takes oath as Uttar Pradesh Chief Minister |date=19 March 2017 |work=[[The Hindu]] |access-date=12 March 2024 |archive-date=13 June 2024 |archive-url=https://web.archive.org/web/20240613071349/https://www.thehindu.com/elections/uttar-pradesh-2017/live-yogi-adityanath-swearing-in-in-uttar-pradesh/article62127578.ece |url-status=live}}</ref>
+|-
+| [[Uttarakhand]]
+|[[Chief Minister of Uttarakhand|List]]
+| [[File:Pushkar Dhami.jpg|70px]]
+! [[Pushkar Singh Dhami]]
+| {{dts|format=dmy|2021|07|04}}<br /><small>({{ayd|2021|07|04}})</small>
+| [[Second Dhami ministry|Dhami II]]
+|bgcolor="wheat"|[[Champawat Assembly constituency|Champawat]]
+|[[2022 Uttarakhand Legislative Assembly election|2022]]
+|[[Gurmit Singh (general)|Gurmit Singh]]
+| <ref>{{cite news |date=4 July 2021 |title=Pushkar Singh Dhami takes oath as eleventh chief minister of Uttarakhand |url=https://www.hindustantimes.com/cities/dehradun-news/pushkar-singh-dhami-takes-oath-as-eleventh-chief-minister-of-uttarakhand-101625397374954.html |access-date=4 July 2021 |work=[[The Hindustan Times]] |archive-date=29 November 2022 |archive-url=https://web.archive.org/web/20221129033342/https://www.hindustantimes.com/cities/dehradun-news/pushkar-singh-dhami-takes-oath-as-eleventh-chief-minister-of-uttarakhand-101625397374954.html |url-status=live}}</ref>
+|-
+| [[West Bengal]]
+|[[Chief Minister of West Bengal|List]]
+| [[File:Suvendu Adhikari May 2026 (cropped).jpg|80x80px]]
+! [[Suvendu Adhikari]]
+| {{dts|format=dmy|2026|5|9}}<br /><small>({{ayd|2026|5|9}})</small>
+| [[Suvendu Adhikari ministry|Adhikari]]
+|[[Bhabanipur, West Bengal Assembly constituency|Bhabanipur]]
+|[[2026 West Bengal Legislative Assembly election|2026]]
+|[[R. N. Ravi]]
+|
+|-
+|}
+
+== Deputy chief minister ==
+The deputy chief minister is a member of the [[State governments of India|state government]] and usually the second highest ranking executive officer of their state's council of ministers. While not a [[Constitution of India|constitutional]] office, it seldom carries any specific powers.<ref name="dpmconsti">{{cite news|url=http://www.thehindu.com/news/national/of-deputy-chief-ministers-and-the-constitution/article3632410.ece|title=Of Deputy Chief Ministers and the Constitution|website=[[The Hindu]]|date=13 July 2012 |access-date=7 November 2017|last1=Rajendran |first1=S. }}</ref>  In the [[parliamentary system]] of government, the chief minister is treated as the "first among equals" in the cabinet; the position of deputy chief minister is used to bring political stability and strength within a [[coalition government]]. The position of deputy chief minister is not explicitly defined or mentioned in the [[Constitution of India]]. However, the [[Supreme Court of India]] has stated that the appointment of deputy chief ministers is not unconstitutional. The court has clarified that a deputy chief minister, for all practical purposes, remains a minister in the council of ministers headed by the chief minister and does not draw a higher salary or perks compared to other ministers.<ref>{{Cite news |date=2024-02-13 |title=Deputy CM is also a minister, post not unconstitutional: Supreme Court |url=https://timesofindia.indiatimes.com/india/deputy-cm-is-also-a-minister-post-not-unconstitutional-supreme-court/articleshow/107639189.cms# |access-date=2024-04-03 |work=The Times of India |issn=0971-8257}}</ref>
+
+Various states throughout the history have appointed deputy chief ministers. Despite being not mentioned in the constitution or law, the deputy-chief minister office is often used to pacify factions within the party or coalition. It is similar to the rarely used deputy-prime minister post in the central government of India. During the absence of the chief minister, the deputy-chief minister may chair cabinet meetings and lead the assembly majority. Various deputy chief ministers have also taken the oath of secrecy in line with the one that chief minister takes. This oath has also sparked controversies.<ref>{{cite web | url=https://timesofindia.indiatimes.com/india/deputy-cm-not-in-constitution-yet-a-post-with-a-long-history/articleshow/62259990.cms | title=Deputy CM: Not in Constitution, yet a post with a long history | publisher=Times of India | date=27 December 2017 | access-date=28 June 2019 | author=Dhananjay Mahapatra}}</ref><ref>{{cite web | url=https://www.thehindu.com/news/national/of-deputy-chief-ministers-and-the-constitution/article3632410.ece | title=Of Deputy Chief Ministers and the Constitution | work=The Hindu | date=13 July 2012 | access-date=28 June 2019 | author=S. Rajendran}}</ref>
+
+Currently, only 17 states and 1 union territory (out of [[States and union territories of India|28 states]] and [[Union territory|3 union territories]]) have deputy chief ministers. Out of these, [[Bihar]], [[Chhattisgarh]], [[Madhya Pradesh]], [[Maharashtra]], [[Manipur]], [[Meghalaya]], [[Nagaland]], [[Odisha]], [[Rajasthan]] and [[Uttar Pradesh]] have two deputy chief ministers each. No other state and union territory has more than one deputy chief minister in office.
+
+The [[Bharatiya Janata Party]] has fifteen incumbents, the [[Indian National Congress]] has three, the [[Naga People's Front]], [[Janata Dal (United)]] and the [[National People's Party (India)|National People's Party]] have two incumbents, the [[Jana Sena Party]], [[Nationalist Congress Party]], [[Shiv Sena (2022-present)|Shiv Sena]] and the [[Jammu and Kashmir National Conference]] has one incumbent each. Of the 28 incumbents, four are [[List of female deputy chief ministers in India|woman]] — 
+[[Sunetra Pawar]] in [[Maharashtra]],
+[[Nemcha Kipgen]] in [[Manipur]],[[Pravati Parida]] in [[Odisha]] & [[Diya Kumari]] in [[Rajasthan]]. The longest-serving incumbent deputy chief minister is [[Chowna Mein]],  who has served as the deputy chief minister of [[Arunachal Pradesh]] since 17 July 2016 (for {{age in years and days|2016|7|17}}). As of {{CURRENTDAY}} {{CURRENTMONTHNAME}} {{CURRENTYEAR}}, one state ([[Uttarakhand]]) and one union territory ([[Puducherry (union territory)|Puducherry]]) have never had a deputy chief minister.
+
+=== Current list ===
+{| class="wikitable sortable" style="text-align:center"
+|-
+! scope="col" | State
+!List
+!Portrait
+! scope="col" | Officeholder 
+! scope="col" | Took office <br />{{small|(tenure length)}}
+! colspan="2" scope="col" | Party
+!Chief Minister
+! colspan="2" scope="col" | Chief Minister's Party
+!State/UT Alliance <br /> (Regional Alliance)
+!National Alliance
+! scope="col" class="unsortable" | Ref
+|-
+|[[Andhra Pradesh]] 
+|[[List of deputy chief ministers of Andhra Pradesh|List]]
+|[[File:Shri Konidela Pawan Kalyan.jpg|90x90px]]
+![[Pawan Kalyan|Konidela Pawan Kalyan]]
+|{{dts|format=dmy|2024|6|12}} <br /> <small>{{ayd|2024|6|12}}</small>
+|[[Janasena Party|'''JSP''']]
+| bgcolor="{{party color|Janasena Party}}" |
+|[[N. Chandrababu Naidu]]
+|'''[[Telugu Desam Party|TDP]]'''
+| bgcolor="{{party color|Telugu Desam Party}}" |
+|'''[[Kutami]]'''
+| rowspan="7" |[[National Democratic Alliance|'''NDA''']]
+|
+|-
+|[[Arunachal Pradesh]] 
+|[[List of deputy chief ministers of Arunachal Pradesh|List]]
+|[[File:Chowna_Mein.jpg|90x90px]]
+![[Chowna Mein]]
+|{{dts|format=dmy|2016|7|16}} <br /> <small>{{ayd|2016|7|16}}</small>
+| rowspan="1" |[[Bharatiya Janata Party|'''BJP''']]
+| rowspan="1" bgcolor="{{party color|Bharatiya Janata Party}}" |
+|[[Pema Khandu]]
+| rowspan="6" |[[Bharatiya Janata Party|'''BJP''']]
+| bgcolor="{{party color|Bharatiya Janata Party}}" |
+| [[National Democratic Alliance|'''NDA''']] ([[North-East Democratic Alliance|'''NEDA''']])
+|<ref>[http://www.arunachalpradesh.gov.in/cabinet-ministers/ Arunachal Pradesh Cabinet Ministers]</ref>
+|-
+| rowspan="2" |[[Bihar]]
+| rowspan="2" |[[List of deputy chief ministers of Bihar|List]]
+|[[File:The Energy Minister of Bihar, Shri Bijendra Prasad Yadav meeting the Minister of State for Power, Coal, New and Renewable Energy and Mines (Independent Charge), Shri Piyush Goyal, in New Delhi on September 22, 2016 (cropped).jpg|90x90px]]
+![[Bijendra Prasad Yadav]]
+| rowspan="2" |{{dts|format=dmy|2026|4|15}} <br /> <small>{{ayd|2026|4|15}}</small>
+| rowspan="2" |[[Janata Dal (United)|'''JD (U)''']]
+| rowspan="2" bgcolor="{{party color|Janata Dal (United)}}" |
+| rowspan="2" |[[Samrat Chaudhary]]
+| rowspan="2" width="4px" style="background-color: {{party color|Bharatiya Janata Party}}" |
+| rowspan="5" |[[National Democratic Alliance|'''NDA''']]
+| 
+|-
+|[[File:Vijay Kumar Chaudhary 2022.jpg|90x90px]]
+![[Vijay Kumar Chaudhary]]   
+|
+|-
+| rowspan="2" |[[Chhattisgarh]] 
+| rowspan="2"|[[List of deputy chief ministers of Chhattisgarh|List]]
+|[[File:Arun_Sao_BJP.jpg|90x90px]]
+![[Arun Sao]]
+| rowspan="2" |{{dts|format=dmy|2023|12|13}} <br /> <small>{{ayd|2023|12|13}}</small>
+| rowspan="3" |'''[[Bharatiya Janata Party|BJP]]'''
+| rowspan="3" bgcolor="{{party color|Bharatiya Janata Party}}" |
+| rowspan="2" |[[Vishnu Deo Sai]]
+| rowspan="3" width="4px" style="background-color: {{party color|Bharatiya Janata Party}}" |
+| rowspan="2" |<ref>{{cite web | url=https://www.livemint.com/elections/assembly-elections/chhattisgarh-government-vishnu-singh-arun-sao-and-vijay-sharma-as-deputy-cms-raman-singh-as-speaker-11702214450287.html| title=Chhattisgarh likely to have two Deputy CMS, Raman Singh as Speaker: Report| date=10 December 2023}}</ref>        
+|-
+|[[File:Vijay_Sharma_BJP.jpg|90x90px]]
+![[Vijay Sharma (politician)|Vijay Sharma]]   
+|-
+|[[Gujarat]]
+|[[List of deputy chief ministers of Gujarat|List]]
+|[[File:Harsh_Sanghavi.jpg|90x90px]]
+![[Harsh Sanghavi|Harsh Rameshbhai Sanghavi]]
+|{{dts|format=dmy|2025|10|17}} <br /> <small>{{ayd|2025|10|17}}</small>
+|[[Bhupendrabhai Patel]]
+|
+|-
+|[[Himachal Pradesh]]
+|[[List of deputy chief ministers of Himachal Pradesh|List]]
+|[[File:Mukesh Agnihotri (cropped).jpg|90x90px]]
+![[Mukesh Agnihotri]]
+|{{dts|format=dmy|2022|12|11}} <br /> <small>{{ayd|2022|12|11}}</small>
+|'''[[Indian National Congress|INC]]'''
+| bgcolor="{{party color|Indian National Congress}}" |
+|[[Sukhvinder Singh Sukhu]]
+|'''[[Indian National Congress|INC]]'''
+| bgcolor="{{party color|Indian National Congress}}" |
+|[[Indian National Developmental Inclusive Alliance|'''INDIA''']]
+| rowspan="3"| [[Indian National Developmental Inclusive Alliance|'''INDIA''']]
+|<ref>{{cite web | url=https://indianexpress.com/article/cities/shimla/sukhvinder-singh-sukhu-likely-to-be-next-himachal-cm-8317280/ | title=Congress turns the page in Himachal: Sukhvinder Singh Sukhu is CM | date=10 December 2022 }}</ref>
+|-
+| [[Jammu and Kashmir (union territory)|Jammu and Kashmir]]
+| [[List of deputy chief ministers of Jammu and Kashmir|List]]
+|[[File:SURINDER KUMAR CHOUDHARY.jpg|90x90px]]
+! [[Surinder Kumar Choudhary]]
+| {{dts|format=dmy|2024|10|16}} <br /> <small>{{ayd|2024|10|16}}</small>
+| [[Jammu & Kashmir National Conference|'''JKNC''']]
+| bgcolor="{{party color|Jammu and Kashmir National Conference}}" |
+| [[Omar Abdullah]]
+| [[Jammu & Kashmir National Conference|'''JKNC''']]
+| bgcolor="{{party color|Jammu and Kashmir National Conference}}" |
+| [[Indian National Developmental Inclusive Alliance|'''JKNC-led INDIA''']]
+| 
+|-
+|[[Karnataka]]
+|[[List of deputy chief ministers of Karnataka|List]]
+|[[File:Dr G Parameshwara.JPG|90x90px]]
+![[G. Parameshwara]]
+|{{dts|format=dmy|2026|6|3}} <br /> <small>{{ayd|2026|6|3}}</small>
+|'''[[Indian National Congress|INC]]'''
+| bgcolor="{{party color|Indian National Congress}}" |
+|[[D. K. Shivakumar]]
+|'''[[Indian National Congress|INC]]'''
+| bgcolor="{{party color|Indian National Congress}}" |
+|[[Indian National Developmental Inclusive Alliance|'''INDIA''']]
+|
+|-
+| rowspan="2" |[[Madhya Pradesh]]
+| rowspan="2" |[[List of deputy chief ministers of Madhya Pradesh|List]]
+|[[File:DCM_Rajendra_Sukula.jpeg|90x90px]]
+![[Rajendra Shukla (politician)|Rajendra Shukla]]
+| rowspan="2" |{{dts|format=dmy|2023|12|13}}<br /><small>{{ayd|2023|12|13}}</small>
+| rowspan="2" |'''[[Bharatiya Janata Party|BJP]]'''
+| rowspan="2" bgcolor="{{party color|Bharatiya Janata Party}}" |
+| rowspan="2" |[[Mohan Yadav]]
+| rowspan="6" |'''[[Bharatiya Janata Party|BJP]]'''
+| rowspan="2" bgcolor="{{party color|Bharatiya Janata Party}}" |
+| rowspan="2" |[[National Democratic Alliance|'''NDA''']]
+| rowspan="14" |[[National Democratic Alliance|'''NDA''']]
+|
+|-
+|[[File:DCM_Jagdish_Dewda.jpeg|90x90px]]
+![[Jagdish Devda]]
+|
+|-
+| rowspan="2" |[[Maharashtra]]
+| rowspan="2"|[[List of deputy chief ministers of Maharashtra|List]]
+|[[File:Shri_Eknath_Sambhaji_Shinde.jpg|90x90px]]
+![[Eknath Shinde|Eknath Sambhaji Shinde]]
+|{{dts|format=dmy|2024|12|5}} <br /> <small>{{ayd|2024|12|5}}</small>
+|[[Shiv Sena (2022–present)|'''SHS''']]
+| bgcolor="{{party color|Shiv Sena}}" |
+| rowspan="2" |[[Devendra Fadnavis]]
+| rowspan="2" width="4px" style="background-color: {{party color|Bharatiya Janata Party}}" |
+| rowspan="2" |[[Mahayuti|'''MY''']]
+| rowspan="2" |<ref>[https://www.news18.com/news/politics/maharashtra-cabinet-expansion-ajit-pawar-ncp-shiv-sena-uddhav-thackeray-congress-sharad-pawar-2439487.html Maharashtra Cabinet Expansion]</ref>             
+|-
+|[[File:President of India, Pratibha Patil (left) with Sunetra Ajitdada Pawar (right) at Rashtrapati Bhavan (cropped) (2).jpg|90x90px]]
+![[ Sunetra Pawar|Sunetra Ajit Pawar]]
+|{{dts|format=dmy|2026|1|31}} <br /> <small>{{ayd|2026|1|31}}</small>
+|[[Nationalist Congress Party|'''NCP''']]
+| bgcolor="{{party color|Nationalist Congress Party }}" |
+|-                       
+| rowspan="2" |[[Manipur]] 
+| rowspan="2"|[[List of deputy chief ministers of Manipur|List]]
+|[[File:Nemcha Kipgen.jpg|90x90px]]
+![[Nemcha Kipgen]]
+| rowspan="2" |{{dts|format=dmy|2026|2|4}} <br /> <small>{{ayd|2026|2|4}}</small>
+|'''[[Bharatiya Janata Party|BJP]]'''
+| bgcolor="{{party color|Bharatiya Janata Party}}" |
+| rowspan="2" |[[Y. Khemchand Singh]]
+| rowspan="2" width="4px" style="background-color: {{party color|Bharatiya Janata Party}}" |
+| rowspan="2" |[[National Democratic Alliance|'''NDA''']] ([[North-East Democratic Alliance|'''NEDA''']])
+|
+|-
+|[[File:Losii Dikho.jpg|90x90px]]
+![[Losii Dikho]]
+|[[Naga People's Front|'''NPF''']]
+| bgcolor="{{party color|Naga People's Front}}" |
+|
+|-
+| rowspan="2" |[[Meghalaya]] 
+| rowspan="2"|[[List of deputy chief ministers of Meghalaya|List]]
+|[[File:A_delegation_from_North_Eastern_States_led_by_the_Minister_General_Administration_Home_(Civil_Defence_And_Home_Guards)_Public_Health_Engineering_Relief_And_Rehabilitation_(cropped).jpg|90x90px]]
+![[Prestone Tynsong]]
+|{{dts|format=dmy|2018|3|6}} <br /> <small>{{ayd|2018|3|6}}</small>
+| rowspan="2" |[[National People's Party (India)|'''NPP''']]
+| rowspan="2" bgcolor="{{party color|National People's Party (India)}}" |
+| rowspan="2" |[[Conrad Sangma]]
+| rowspan="2" |[[National People's Party (India)|'''NPP''']]
+| rowspan="2" bgcolor="{{party color|National People's Party (India)}}" |
+| rowspan="2" |[[Meghalaya Democratic Alliance (2018–present)|'''MDA''']] ([[North-East Democratic Alliance|'''NEDA''']])
+|<ref>{{cite web|url=https://www.oneindia.com/politicians/prestone-tynsong-13625.html|title=Prestone Tysong}}</ref>
+|-
+|[[File:DCM Sniawbhalang Dhar.jpg|90x90px]]
+![[Sniawbhalang Dhar]]
+|{{dts|format=dmy|2023|3|7}} <br /> <small>{{ayd|2023|3|7}}</small>
+|
+|-
+| rowspan="2" |[[Nagaland]] 
+| rowspan="2"|[[List of deputy chief ministers of Nagaland|List]]
+|[[File:The_Nagaland_Home_Minister,_Shri_Yanthungo_Patton_meeting_the_Minister_of_State_for_Home_Affairs,_Shri_Hansraj_Gangaram_Ahir,_in_New_Delhi_on_November_09,_2016_(cropped).jpg|90x90px]]
+![[Yanthungo Patton]]
+|{{dts|format=dmy|2018|3|9}} <br /> <small>{{ayd|2018|3|9}}</small>
+| rowspan="1" |'''[[Bharatiya Janata Party|BJP]]'''
+| rowspan="1" bgcolor="{{party color|Bharatiya Janata Party}}" |
+| rowspan="2" |[[Neiphiu Rio]]
+| rowspan="2" |[[Naga People's Front|'''NPF''']]
+| rowspan="2" bgcolor="{{party color|Naga People's Front}}" |
+| rowspan="2" |[[People's Democratic Alliance (Nagaland)|'''PDA''']] ([[North-East Democratic Alliance|'''NEDA''']])
+|<ref>{{cite news|url=https://timesofindia.indiatimes.com/india/bjp-to-get-deputy-cm-post-in-nagaland/articleshow/63179941.cms|title=BJP to get deputy cm in Nagaland|website=[[The Times of India]]|date=6 March 2018 }}</ref>
+|-
+|[[File:T._R._Zeliang_(cropped).jpg|90x90px]]
+![[T. R. Zeliang|Taditui Rangkau Zeliang]]
+|{{dts|format=dmy|2023|3|7}} <br /> <small>{{ayd|2023|3|7}}</small>
+|[[Naga People's Front|'''NPF''']]
+| bgcolor="{{party color|Naga People's Front}}" |
+|
+|-
+| rowspan="2" |[[Odisha]] 
+| rowspan="2"|[[List of deputy chief ministers of Odisha|List]]
+|[[File:Dy_CM_KV_Singh_Deo.jpg|90x90px]]
+![[Kanak Vardhan Singh Deo]]
+| rowspan="2" |{{dts|format=dmy|2024|6|12}} <br /> <small>{{ayd|2024|6|12}}</small>
+| rowspan="4" |'''[[Bharatiya Janata Party|BJP]]'''
+| rowspan="4" bgcolor="{{party color|Bharatiya Janata Party}}" |
+| rowspan="2" |[[Mohan Charan Majhi]]
+| rowspan="4" |'''[[Bharatiya Janata Party|BJP]]'''
+| rowspan="4" bgcolor="{{party color|Bharatiya Janata Party}}" |
+| rowspan="4" |[[National Democratic Alliance|'''NDA''']]
+|
+|-
+|[[File:Dy CM Pravati Parida.jpg|70px]]
+![[Pravati Parida]]
+|
+|-
+| rowspan="2" |[[Rajasthan]] 
+| rowspan="2"|[[List of deputy chief ministers of Rajasthan|List]]
+|[[File:The_Deputy_Chief_Minister_of_Rajasthan,_Shrimathi_Diya_Kumari_&_her_colleague_meet_VP_of_India_with_their_head.jpg|90x90px]]
+![[Diya Kumari]]
+| rowspan="2" | {{dts|format=dmy|2023|12|15}} <br /> <small>{{ayd|2023|12|15}}</small>
+| rowspan="2" |[[Bhajan Lal Sharma]]
+|
+|-
+|[[File:Prem_Chand_Bairwa_(cropped).jpg|90x90px]]
+![[Prem Chand Bairwa]]
+|
+|-
+|[[Telangana]] 
+|[[List of deputy chief ministers of Telangana|List]]
+|[[File:Portrait_of_Telangana_Deputy_CM_Bhatti_Vikramarka_Mallu_(4_July_2024).png|90x90px]]
+![[Mallu Bhatti Vikramarka]]
+|{{dts|format=dmy|2023|12|7}} <br /> <small>{{ayd|2023|12|7}}</small>
+|'''[[Indian National Congress|INC]]'''
+| bgcolor="{{party color|Indian National Congress}}" |
+|[[Revanth Reddy]]
+|'''[[Indian National Congress|INC]]'''
+| bgcolor="{{party color|Indian National Congress}}" |
+| colspan="2" |[[Indian National Developmental Inclusive Alliance|'''INDIA''']]
+|
+|-
+| rowspan="2" |[[Uttar Pradesh]]
+| rowspan="2" |[[List of deputy chief ministers of Uttar Pradesh|List]]
+|[[File:Shri_Keshav_Prasad_Maurya_(cropped).jpg|alt=Shri Keshav Prasad Maurya (cropped)|90x90px]]
+![[Keshav Prasad Maurya]]
+|{{dts|format=dmy|2017|3|19}} <br /> <small>{{ayd|2017|3|19}}</small>
+| rowspan="2" | '''[[Bharatiya Janata Party|BJP]]'''
+| rowspan="4" bgcolor="{{party color|Bharatiya Janata Party}}" |
+| rowspan="2" |[[Yogi Adityanath]]
+| rowspan="2" | '''[[Bharatiya Janata Party|BJP]]'''
+| rowspan="4" bgcolor="{{party color|Bharatiya Janata Party}}" |
+| colspan="2" rowspan="2" |[[National Democratic Alliance|'''NDA''']]
+|
+|-
+|[[File:Brajesh_Pathak.jpg|alt=Brajesh Pathak|frameless|90x90px]]
+![[Brajesh Pathak]]
+|{{dts|format=dmy|2022|3|25}} <br /> <small>{{ayd|2022|3|25}}</small>
+| <ref>{{Cite web|url=https://www.livehindustan.com/uttar-pradesh/lucknow/story-sindhi-punjabi-society-congratulates-deputy-chief-minister-brajesh-pathak-6112405.html|title=Sindhi Punjabi society congratulates Deputy Chief Minister Brajesh Pathak}}</ref> |
+|}
+
+== See also ==
+
+# [[Governor (India)]]
+# [[List of current Indian opposition leaders]]
+# [[Chief Whip (India)]]
+# [[List of current Indian legislative speakers and chairpersons]]
+
+== Notes ==
+{{notelist}}
+
+== References==
+<references />
+
+[[Category:Heads of government]]

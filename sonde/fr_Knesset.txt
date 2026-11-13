@@ -1,0 +1,56 @@
+{{coord|31|46|36|N|35|12|19|E|region:IL betar fr _type:landmark|display=title}}
+{{Infobox Assemblée
+ | background_color   = #0038B8
+ | text_color         = white
+ | nom                = Knesset
+ | nom_du_parlement   = {{he}} {{lang|he|HaKnesset}}
+ | nom_transcription  = {{langue|he|הכנסת}}
+ | création           = {{date|1949}}
+ | lieu               = [[Jérusalem]], [[Guivat Ram]]
+ | législature        = [[26e législature de la Knesset|{{26e|législature}}]]
+ | blason             = Emblem of Israel alternative blue-gold.svg
+ | légende_blason     = [[Armoiries d'Israël#Versions|Emblème de la Knesset]].
+ | upright            = 0.5
+ | type_chambre       = [[Monocamérisme|Monocaméral]]
+ | durée              = 4 ans
+ | leader1_type       = [[Président de la Knesset|Président]]
+ | leader1            = [[Amir Ohana]]
+ | parti1             = [[Likoud]]
+ | élection1          = {{date|29 décembre 2022}}
+ | leader2_type       = [[Premier ministre d'Israël|Premier ministre]]
+ | leader2            = [[Benyamin Netanyahou]]
+ | parti2             = [[Likoud]]
+ | élection2          = {{date|29 décembre 2022}}
+ | leader3_type       = Chef de l'opposition
+ | leader3            = [[Yaïr Lapid]]
+ | parti3             = [[Yesh Atid]]
+ | élection3          = {{date| 2 janvier 2023}}
+ | structure1         = 26th Knesset Composition.svg
+ | membres            = 120 députés
+ | groupe_politique1  = 
+{{Légende/Début}}
+{{Légende|#1f5aa5|[[Likoud]] (27)}}
+{{Légende|#62B9F2|[[Yashar (parti politique)|Yashar]] (21)}}
+{{Légende|#2A2A78|[[Ensemble (coalition israélienne)|Ensemble]] (12)}}
+{{Légende|{{Infobox Parti politique israélien/couleurs|-LU}}|[[Liste unifiée]] (11)}}
+{{Légende|#1245DC|[[Les Démocrates (Israël)|Les Démocrates]] (8)}}
+{{Légende|{{Infobox Parti politique israélien/couleurs|-Ra'am}}|[[Ra'am]] (8)}}
+{{Légende|{{Infobox Parti politique israélien/couleurs|-IB}}|[[Israel Beytenou]] (7)}}
+{{Légende|#EF2B1B|[[Otzma Yehudit]] (7)}}
+{{Légende|{{Infobox Parti politique israélien/couleurs|-JUT}}|[[Judaïsme unifié de la Torah]] (7)}}
+{{Légende|{{Infobox Parti politique israélien/couleurs|-Shas}}|[[Shas]] (6)}}
+{{Légende|#302C76|[[Parti sioniste religieux]] - [[Zehout]] (6)}}
+{{Légende/Fin}}
+ | commission1        = 
+ | dernière_élection1 = [[Élections législatives israéliennes de 2026|27 octobre 2026]]
+ | système_de_vote1   = [[Scrutin proportionnel plurinominal|Proportionnel plurinominal]]
+ | session_room       = Knesset Hall.JPG
+ | légende            = 
+ | lieu_de_réunion    = Édifice de la Knesset
+ | site_web           = {{URL| https://www.knesset.gov.il/|knesset.gov.il}}
+ | voir_aussi         = [[Politique en Israël]]
+ | notes              = 
+}}
+La '''Knesset''' (en {{lang-he|הכנסת}} (en [[Transcription de l'hébreu|alphabet latin]] : ''{{lang|he|HaKnesset}}'', c'est-à-dire « l'Assemblée ») est le [[parlement]] [[Monocamérisme|monocaméral]] de l'[[Israël|État d'Israël]], dont le siège est à [[Jérusalem]]. Les députés sont élus pour un mandat de quatre ans. 
+
+Depuis sa création en {{date|1949}}, sur les vingt-cinq Knesset élues, seize ont été dissoutes<ref name="lemonde 4595257">{{lien web|url=https://www.lemonde.fr/proche-orient/article/2015/03/17/la-knesset-israelienne-une-institution-instable-depuis-sa-creation-en-1949_4595257_3218.html|titre=La Knesset israélienne, une institution instable depuis sa création en 1949|site=[[Le Monde]]|date=17 mars 2015|auteur1=Delphine Roucaute|auteur2=Maxime Vaudano|consulté le=13 septembre 2017}}.</ref> avant le terme normal.

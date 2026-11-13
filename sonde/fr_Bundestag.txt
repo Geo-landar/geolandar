@@ -1,0 +1,59 @@
+{{coord|52|31|07|N|13|22|34|E|display=title|source:nlwiki}}
+{{Infobox Assemblée
+ | background_color   = #50638B
+ | text_color         = #FFFFFF
+ | nom                = Bundestag
+ | nom_du_parlement   = {{de}} {{lang|de|Deutscher Bundestag}}
+ | création           = {{date|1949}}
+ | lieu               = [[Berlin]]
+ | législature        = [[Vingt-et-unième législature du Bundestag|{{21e}} législature]]
+ | précédent          = [[Reichstag (république de Weimar)|Reichstag]]<br>[[Chambre du peuple (Allemagne de l'Est)|Chambre du peuple]] ([[République démocratique allemande|RDA]])
+ | blason             = Deutscher Bundestag logo.svg
+ | légende_blason     = Emblème du Bundestag.
+ | upright            = 0.5
+ | type_chambre       = [[Chambre basse]]
+ | corps              = 
+ | durée              = 4 ans
+ | leader1_type       = Présidente
+ | leader1            = [[Julia Klöckner]]
+ | parti1             = {{CDU}}
+ | élection1          = {{date|25 mars 2025}}
+ | leader2_type       = 
+ | leader2            = 
+ | parti2             = 
+ | élection2          = 
+ | membres            = 630 députés
+ | structure1         = Bundestag Allemagne 2025.svg
+ | groupe_politique1  = '''[[Cabinet Merz|Gouvernement]] (328)'''
+{{Légende/Début}}
+{{Légende|{{Infobox Parti politique allemand/couleurs|-CDU}}|[[Groupe CDU/CSU au Bundestag|CDU/CSU]] (208)}}
+*{{Légende|{{Infobox Parti politique allemand/couleurs|-CDU}}|[[Union chrétienne-démocrate d'Allemagne|CDU]] (164)}}
+*{{Légende|{{Infobox Parti politique allemand/couleurs|-CSU}}|[[Union chrétienne-sociale en Bavière|CSU]] (44)}}
+{{Légende|{{Infobox Parti politique allemand/couleurs|-SPD}}|[[Groupe SPD au Bundestag|SPD]] (120)}}
+{{Légende/Fin}}
+'''[[Opposition parlementaire|Opposition]] (302)'''
+{{Légende/Début}}
+{{Légende|{{Infobox Parti politique allemand/couleurs|-AFD}}|[[Groupe AfD au Bundestag|AfD]] (152)}}
+{{Légende|{{Infobox Parti politique allemand/couleurs|-Grünen}}|[[Groupe d'Alliance 90/Les Verts au Bundestag|Grünen]] (85)}}
+{{Légende|{{Infobox Parti politique allemand/couleurs|-Linke}}|[[Groupe Die Linke au Bundestag|Linke]] (64)}}
+{{Légende|{{Infobox Parti politique allemand/couleurs|-NI}}|[[Non-inscrit|NI]] (1)}}
+*{{Légende|{{Infobox Parti politique allemand/couleurs|-SSW}}|[[Fédération des électeurs du Schleswig du Sud|SSW]] (1)}}
+{{Légende/Fin}}
+ | commission1        = 
+ | système_de_vote1   = [[Système électoral allemand|Représentation proportionnelle personnalisée]]
+ | dernière_élection1 = [[Élections fédérales allemandes de 2025|23 février 2025]]
+ | lieu_de_réunion    = [[Palais du Reichstag]]
+ | session_room       = Deutscher Bundestag Plenarsaal Seitenansicht.jpg
+ | légende            = 
+ | site_web           = {{URL|https://www.bundestag.de/fr|bundestag.de}}
+ | voir_aussi         = [[Bundesrat (Allemagne)|Bundesrat]]<br/>[[Politique en Allemagne]]
+ | notes              = 
+}}
+
+Le '''Bundestag''' ({{MSAPI|/bundɛstaɡ/}}{{Note|groupe=alpha|texte=[[Prononciation du français|Prononciation]] en [[français de France]] [[Transcription phonétique|retranscrite]] phonémiquement selon la [[alphabet phonétique international|norme API]].}} ; <small>en allemand :</small> {{MSAPI|/ˈbʊndəsˌtaːk/}}{{Note|groupe=alpha|texte=[[Prononciation de l'allemand|Prononciation]] en [[allemand standard]] [[Transcription phonétique|retranscrite]] phonémiquement selon la [[alphabet phonétique international|norme API]].}} {{prononciation|De-Bundestag.ogg}}, {{Litt.}} « [[Diète (politique)|Diète]] fédérale »<ref>{{Lien web|auteur institutionnel=[[Assemblée nationale (France)|Assemblée nationale]] |titre=Les Parlements dans le monde |url=http://www.assemblee-nationale.fr/connaissance/allemagne.asp|site=assemblee-nationale.fr |consulté le=29 septembre 2017}}.</ref>{{,}}<ref>{{Lien archive|auteur=La Documentation française|url=http://www.ladocumentationfrancaise.fr/dossiers/d000566-l-allemagne-apres-les-elections-du-24-septembre-2017/questions-reponses|titre=L’Allemagne après les élections du 24 septembre 2017 Questions ? Réponses !|site=ladocumentationfrancaise.fr |date=20 septembre 2017|horodatage archive=20171010094218 }}</ref>{{,}}<ref>{{Lien web|auteur institutionnel=[[Encyclopædia Universalis]] |titre=Allemagne Les institutions |url=https://www.universalis.fr/encyclopedie/allemagne-les-institutions/2-le-pouvoir-legislatif/ |date= |site=universalis.fr |consulté le=29 septembre 2017}}.</ref>) est l'[[Parlement|assemblée parlementaire]] de la [[Allemagne|République fédérale d'Allemagne]] assurant la représentation du peuple allemand dans son ensemble.
+
+Établi par la [[Loi fondamentale de la République fédérale d'Allemagne|Loi fondamentale de 1949]], il siège au [[palais du Reichstag]] à [[Berlin]] depuis {{date|1999}}. Ses membres, les députés fédéraux, sont désignés lors des élections fédérales allemandes. L'[[Vingt-et-unième législature du Bundestag|actuelle législature]] s'est ouverte le {{date| 25 mars 2025}}.
+
+Le Bundestag doit notamment élire le [[Chancelier fédéral d'Allemagne|chancelier fédéral]], sur proposition du [[Président fédéral (Allemagne)|président fédéral]]. Il peut aussi renverser le [[chef du gouvernement]] par le biais d'une [[motion de censure constructive]]. Il fait également partie de l'[[Assemblée fédérale (Allemagne)|Assemblée fédérale]], [[collège électoral]] chargé d'élire le président.
+
+Si le Bundestag est considérée comme une assemblée [[Monocamérisme|monocamérale]], il partage néanmoins le [[pouvoir législatif]] fédéral avec le [[Bundesrat (Allemagne)|Bundesrat]], représentation législative fédérale des 16 [[Land (Allemagne)|Länder allemands]] (''{{Langue|de|texte=Bundesländer}}''), qui est parfois considéré comme la [[chambre haute]] d'un parlement [[Bicamérisme|bicaméral]] supposé.

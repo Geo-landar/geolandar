@@ -1,0 +1,65 @@
+{{2autres|le Sénat de la {{Ve}} République française|le Sénat sous la Troisième République|Sénat (Troisième République)||Sénat}}
+{{Infobox Assemblée
+ | background_color   = #0059A5
+ | text_color         = #FFFFFF
+ | nom                = Sénat
+ | création           = 4 octobre 1958 <small>([[Cinquième République (France)|{{Ve|République}}]])</small>
+ | lieu               = [[Palais du Luxembourg]], {{6e arrondissement de Paris}}
+ | législature        = [[Triennat 2026-2029 du Sénat (France)|Triennat 2026-2029]]
+ | précédent          = [[Conseil de la République]]
+ | blason             = Logo Sénat (France) 2018.svg
+ | légende_blason     = Logo du Sénat.
+ | upright            = 0.5
+ | type_chambre       = [[Chambre haute]]
+ | corps              = [[Parlement français]]
+ | durée              = 6 ans <small>(renouvelé par moitié tous les trois ans)</small>
+ | leader1_type       = [[Président du Sénat (France)|Président]]
+ | leader1            = [[Gérard Larcher]]
+ | parti1             = [[Les Républicains|LR]]
+ | élection1          = {{date|1 octobre 2014}}
+ | leader2_type       = 
+ | leader2            = 
+ | parti2             = 
+ | élection2          = 
+ | membres            = [[Liste des sénateurs français de 2026 à 2029|348 sénateurs]]
+ | structure1         = Sénat français 2026.svg
+ | groupe_politique1  = <!--Les personnes qui souhaitent absolument que ce tableau soit "à jour" sont priées de modifier en même temps la section correspondante en bas de l'article, ainsi que la source -->
+'''[[Union de la droite et du centre|Majorité sénatoriale]] (235)'''
+{{Légende/Début}}
+{{Légende|{{Infobox Parti politique français/couleurs|-LR}}|[[Groupe Les Républicains (Sénat)|REP]] (124)}}
+{{Légende|{{Infobox Parti politique français/couleurs|-UDI}}|[[Groupe Union centriste (Sénat)|UCI]] (63)}}
+{{Légende|{{Infobox Parti politique français/couleurs|-PRV}}|[[Groupe du Rassemblement démocratique et social européen|RDSE]] (18)}}
+{{Légende|{{Infobox Parti politique français/couleurs|-LREM}}|[[Groupe Rassemblement des démocrates, progressistes et indépendants|RDPI]] (16)}}
+{{Légende|{{Infobox Parti politique français/couleurs|-HOR}}|[[Groupe Les Indépendants – République et territoires|LIRT]] (14)}}
+{{Légende/Fin}}
+
+'''[[Opposition (politique)|Opposition]] (113)'''
+{{Légende/Début}}
+{{Légende|{{Infobox Parti politique français/couleurs|-PS}}|[[Groupe socialiste (Sénat)|SER]] (62)}}
+{{Légende|{{Infobox Parti politique français/couleurs|-PCF}}|[[Groupe communiste (Sénat)|CRCE-K]] (18)}}
+{{Légende|{{Infobox Parti politique français/couleurs|-EELV}}|[[Groupe écologiste (Sénat)|GEST]] (15)}}
+{{Légende|{{Infobox Parti politique français/couleurs|-RN}}|[[Groupe Union nationale pour les territoires |UNT]] (15)}}
+{{Légende|{{Infobox Parti politique français/couleurs|-SE}}|[[Réunion administrative des sénateurs ne figurant sur la liste d'aucun groupe|RASNAG]] (3)}}
+{{Légende/Fin}}
+ | commission1        = 
+ | système_de_vote1   = [[Scrutin indirect]] à [[système mixte]] :
+* [[Scrutin majoritaire plurinominal|scrutin plurinominal majoritaire à deux tours]] <small>(26,5 %)</small>
+* [[Scrutin proportionnel plurinominal|Proportionnel plurinominal]] <small>(73,5 %)</small>
+ | dernière_élection1 = [[Élections sénatoriales françaises de 2023|{{date|24|septembre|2023}}]] <small>(série 1)</small><br/>[[Élections sénatoriales françaises de 2026|{{date|27|septembre|2026}}]] <small>(série 2)</small>
+ | lieu_de_réunion    = [[Palais du Luxembourg]]
+ | session_room       = L'hémicycle du Sénat français en septembre 2009.jpg
+ | légende            = 
+ | site_web           = {{URL|https://www.senat.fr/|senat.fr}}
+ | voir_aussi         = [[Assemblée nationale (France)|Assemblée nationale]]<br>[[Parlement français]]
+ | notes              = 
+}}
+
+Le '''Sénat''' constitue la [[chambre haute]] du [[Parlement français]] selon le système du [[bicamérisme]] et détient le [[pouvoir législatif]] avec l'[[Assemblée nationale (France)|Assemblée nationale]]. En vertu de l'[[Article 24 de la Constitution de la Cinquième République française|article 24]] de la [[Constitution française du 4 octobre 1958|Constitution de la {{Ve}} République]], il est le représentant des [[Collectivité territoriale en France|collectivités territoriales]]. Il siège au [[palais du Luxembourg]] à Paris.
+
+Sénatrices et sénateurs sont élus par un collège de [[Grands électeurs français|grands électeurs]] (maires, adjoints, président de Conseil départemental…).
+
+Lors du vote d'une loi, en cas de positions divergentes du Sénat et de l'Assemblée nationale, le [[Premier ministre français|Premier ministre]] peut donner le dernier mot à l'Assemblée nationale après avoir convoqué une [[commission mixte paritaire]] chargée de mettre d’accord 7 députés et 7 sénateurs en huis clos. Cette dernière ne peut donc légiférer qu'avec l'accord du Sénat ou du Premier ministre, mais jamais seule. Dans le cas des [[Révisions constitutionnelles sous la Cinquième République|révisions constitutionnelles]], les deux chambres doivent voter le même texte en termes identiques avec au moins les 3/5 des votants d’accord, puis le voter lors d'un congrès réuni au château de Versailles se prononçant à la majorité des trois cinquièmes (60 %) des suffrages exprimés lorsqu'un [[projet de loi]] constitutionnelle n'est pas soumis au [[Référendum en France|référendum]].
+
+Le Sénat, qui compte 348 sénateurs depuis le [[Élections sénatoriales françaises|renouvellement]] de 2011, a subi plusieurs réformes de son mode d'élection. Depuis l'adoption de la loi {{numéro|2003-697}} du {{date|30 juillet 2003}}, le mandat des sénateurs est de six ans, et le renouvellement s'effectue par moitié, tous les trois ans depuis 2011. Les sénateurs sont élus au [[Suffrage universel|suffrage universel indirect]], par {{unité|150000 [[Grands électeurs français|grands électeurs]]}}. Le scrutin est soit [[scrutin proportionnel plurinominal|proportionnel]] (73,5 %), soit [[Scrutin majoritaire plurinominal|plurinominal à deux tours]]<ref>{{Lien web |langue=fr-FR |titre=Idées reçues et raccourcis sur les élections sénatoriales : quelques précisions sur le suffrage, sur le mode de scrutin et sur le vote [par Pierre Klimt] |url=https://blogdudroitelectoral.fr/2023/09/idees-recues-et-raccourcis-sur-les-elections-senatoriales-quelques-precisions-sur-le-suffrage-sur-le-mode-de-scrutin-et-sur-le-vote-par-pierre-klimt/ |site=blogdudroitelectoral.fr |date=2023-09-13 |consulté le=2025-11-24}}.</ref> (26,5 %) au niveau départemental<ref>{{Lien web|langue=fr|url=http://www.senat.fr/role/senate.html|titre=Mode d'élection des sénateurs |id=Mode d'élection des sénateurs |site=senat.fr |consulté le=21 février 2008}}.</ref>.
+
+La chambre haute est dominée par la [[droite (politique)|droite]] et le [[centre (politique)|centre]] depuis le début de la {{Ve République}} jusqu'à aujourd'hui, la [[Gauche (politique)|gauche]] n'ayant détenu la majorité qu'entre 2011 et 2014. Depuis cette dernière date, le groupe majoritaire est le [[Groupe Les Républicains (Sénat)|groupe Les Républicains]] et [[Gérard Larcher]] est le [[Président du Sénat français|président du Sénat]].

@@ -1,0 +1,39 @@
+{{confusion|Seimas}}
+{{Infobox Assemblée
+ | nom                = Saeima
+ | création           = {{date|1922}}<ref>{{Lien web|url=https://www.saeima.lv/fr/sur-la-saeima/genese-et-evolution-du-systeme-legislatif |titre=La genèse et l'évolution du système législatif |site=saeima.lv |consulté le=15 novembre 2020}}</ref>
+ | lieu               = [[Riga]]
+ | législature        = {{Lien|trad=Fifteenth Saeima of Latvia|langue=en|fr=15e législature de la Saeima de Lettonie|texte={{15e|législature}}}}
+ | blason             = Saeima logo.svg
+ | légende_blason     = Logo du Saeima composé des [[armoiries de la Lettonie]].
+ | upright            = 0.5
+ | type_chambre       = [[Monocamérisme|Monocaméral]]
+ | durée              = 4 ans
+ | leader1_type       = Président
+ | leader1            = [[Edvards Smiltēns]]
+ | parti1             = [[Liste Unie|AS]]
+ | élection1          = {{date|3|novembre|2026}}
+ | membres            = 100 députés
+ | structure1         = Lettonie Saeima 2026.svg
+ | groupe_politique1  =
+{{Légende/Début}}
+{{Légende|{{Infobox Parti politique letton/couleurs|-AS}}|[[Liste Unie|AS]] (41)}}
+{{Légende|{{Infobox Parti politique letton/couleurs|-LPV}}|[[Lettonie d'abord|LPV]] (17)}}
+{{Légende|{{Infobox Parti politique letton/couleurs|-SV}}|[[Pouvoir souverain (parti letton)|SV]] (15)}}
+{{Légende|{{Infobox Parti politique letton/couleurs|-NA2022}}|[[Alliance nationale (Lettonie)|NA]] (10)}}
+{{Légende|{{Infobox Parti politique letton/couleurs|-P}}|[[Les Progressistes (Lettonie)|PRO]] (10)}}
+{{Légende|{{Infobox Parti politique letton/couleurs|-V}}|[[Unité (parti politique letton)#Nouvelle Unité|JV]] (7)}}
+{{Légende/Fin}}
+ | système_de_vote1   = [[Scrutin proportionnel plurinominal#Méthode de Sainte-Laguë|Méthode de Sainte-Laguë]]
+ | dernière_élection1 = [[Élections législatives lettonnes de 2026|3 octobre 2026]]
+ | lieu_de_réunion    = [[Maison de la Noble Corporation de Livonie]]
+ | session_room       = Saeimas sēžu zāle - Flickr - Saeima (13).jpg
+ | légende            = 
+ | site_web           = {{URL|https://www.saeima.lv/|saeima.lv}}
+ | voir_aussi         = [[Politique en Lettonie]]
+ | notes              = 
+}}
+
+La '''{{Langue|lv|Saeima}}''' {{Incise|de son nom complet : '''Latvijas Republikas Saeima''' ({{en langue|fr|[[Diète (politique)|Diète]] de la république de Lettonie}})}} est le [[parlement]] [[Monocaméralisme|monocaméral]] de la [[Lettonie|république de Lettonie]].
+
+Installée à [[Riga]] dans la [[maison de la Noble Corporation de Livonie]], elle est élue pour quatre ans au [[Scrutin proportionnel plurinominal|scrutin proportionnel]]. Elle exerce le [[pouvoir législatif]], vote le budget, investit et contrôle le gouvernement, et élit le [[Président de la république de Lettonie|président de la République]].

@@ -1,0 +1,47 @@
+{{Voir internationalisation|Assemblée nationale}}
+{{Infobox Assemblée
+ | background_color   = #242970
+ | text_color         = #FFFFFF
+ | nom                = Assemblée nationale
+ | nom_du_parlement   = {{sr}} <small>{{lang|sr|Narodna skupština}}</small>
+ | nom_transcription  = <small>{{langue|sr|Народна скупштина}}</small>
+ | création           = {{date|1858}}<br/>{{date|1991}} <small>(rétablissement)</small><ref>{{Lien web|langue=en|auteur institutionnel=Assemblée nationale de Serbie|titre=The Assembly 1804-2022|url=http://www.parlament.gov.rs/national-assembly/the-assembly-1804-2020.2131.html|site=parlament.gov.rs|consulté le=16 novembre 2020}}</ref>
+ | lieu               = [[Belgrade]], [[place Nikola Pašić]]
+ | législature        = 15{{e}} législature
+ | blason             = Emblem of the National Assembly of Serbia.svg
+ | légende_blason     = Emblème de l'Assemblée nationale.
+ | upright            = 1
+ | type_chambre       = [[Monocamérisme|Monocaméral]]
+ | durée              = 4 ans
+ | leader1_type       = Présidente sortante 
+ | leader1            = [[Ana Brnabić]]
+ | parti1             = [[Parti progressiste serbe|SNS]]
+ | élection1          = 20 mars 2024
+ | leader2_type       = 
+ | leader2            = 
+ | parti2             = 
+ | élection2          = 
+ | membres            = 250 députés
+ | structure1         = 2026 Serbian parliamentary election results composition.svg
+ | groupe_politique1  = {{Légende/Début}}
+{{Légende|{{Infobox Parti politique serbe/couleurs|-LS}}|[[Liste étudiante|SL]] (140)}}
+{{Légende|{{Infobox Parti politique serbe/couleurs|-SNS}}|[[La Serbie ne doit pas s'arrêter|US]] (103)}}
+{{Légende|{{Infobox Parti politique serbe/couleurs|-VMSZ/SVM}}|[[Alliance des Magyars de Voïvodine|VMSZ]] (2)}}
+{{Légende|#0081CC|[[Coalition albanaise de la vallée de Preševo|KAPD]] (2)}}
+{{Légende|#f55325|Humainement (1)}}
+{{Légende|{{Infobox Parti politique serbe/couleurs|-SDAS}}|[[Parti d'action démocratique du Sandžak|SDAS]] (1)}}
+{{Légende|#749C75|[[Parti de la justice et de la réconciliation|SPP]] (1)}}
+{{Légende/Fin}}
+ | système_de_vote1   = [[Scrutin proportionnel plurinominal|Proportionnel plurinominal]]
+ | dernière_élection1 = [[Élections législatives serbes de 2026|25 octobre 2026]]
+ | lieu_de_réunion    = [[Bâtiment de l'Assemblée nationale (Serbie)|Bâtiment de l'Assemblée nationale]]
+ | session_room       = Domnarodne.jpg
+ | légende            = 
+ | site_web           = {{URL|http://www.parlament.gov.rs|parlament.gov.sr}}
+ | voir_aussi         = [[Politique en Serbie]]
+ | notes              = 
+}}
+
+L'{{Sujet|Assemblée nationale}} ({{en serbe|Narodna skupština|Народна скупштина}}) {{Incise|officiellement l''''Assemblée nationale de la république de Serbie''' ({{en serbe|Narodna skupština Republike Srbije|Народна скупштина Републике Србије}})}} est l'organe [[Monocamérisme|monocaméral]] exerçant le [[pouvoir législatif]] en [[Serbie]]. Chacun des 250 députés serbes représente {{Unité|26009|citoyens}} serbes, ce qui fait du parlement serbe l'une des plus grandes représentativités des pays démocratiques.
+
+Le siège de l'Assemblée nationale est situé au 13 [[place Nikola Pašić]], dans le centre de [[Belgrade]]. L'assemblée est installée dans le bâtiment actuel depuis le {{date|23|juillet|2006}}.

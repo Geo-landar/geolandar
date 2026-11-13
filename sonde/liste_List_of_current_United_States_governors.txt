@@ -1,0 +1,729 @@
+{{Short description|none}}
+{{Featured list}}
+{{Use American English|date=December 2025}}
+{{Use mdy dates|date=April 2025}}
+[[File:United States Governors map.svg|thumb|300px|alt=Map of the United States with states and territories colored according to the party affiliation of their governor|Party affiliation of United States state and territorial governors as of January 2026:
+
+{{legend|#0000FF|[[Democratic Party (United States)|Democratic]] (24 states, 2 territories, and 1 district)}}
+{{legend|#FF0000|[[Republican Party (United States)|Republican]] (26 states)}}
+{{legend|#B3B3B3|[[Independent politician|Independent]] (1 territory)}}
+{{legend|#000080|[[New Progressive Party (Puerto Rico)|New Progressive]] (Republican affiliated) (1 territory)}}
+{{legend|#704242|[[Non-partisan]] (Republican affiliated) (1 territory)}}
+]]
+{{US state gov}}
+
+The [[United States]] has 50 [[U.S. state|states]] and 5 [[Territories of the United States|territories]] that each elect a [[Governor (United States)|governor]] to serve as chief executive of the [[List of states and territories of the United States|state or territorial]] government.<ref name="BBC2020">{{cite web |date=October 14, 2020 |title=US Elections 2020 Vocabulary: Governor |url=https://www.bbc.co.uk/learningenglish/english/features/us-elections-vocabulary/governor |publisher=[[BBC Online|BBC]] |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328032708/https://www.bbc.co.uk/learningenglish/english/features/us-elections-vocabulary/governor |url-status=live}}</ref> The sole [[federal district]], the [[Washington, D.C.|District of Columbia]], elects a [[mayor]] to oversee its government in a similar manner.<ref name="Post-DCGovernor">{{cite news |last=Nirappil |first=Fenit |date=June 21, 2017 |title=Can a change of titles make DC seem more stately? Ask Gov. Bowser. |url=https://www.washingtonpost.com/local/dc-politics/can-a-name-change-make-dc-seem-more-stately-ask-governor-bowser/2017/06/20/d3570d92-55d3-11e7-a204-ad706461fa4f_story.html |work=[[The Washington Post]] |url-access=limited |accessdate=March 27, 2024 |archive-date=December 17, 2018 |archive-url=https://web.archive.org/web/20181217065519/https://www.washingtonpost.com/local/dc-politics/can-a-name-change-make-dc-seem-more-stately-ask-governor-bowser/2017/06/20/d3570d92-55d3-11e7-a204-ad706461fa4f_story.html |url-status=live}}</ref><ref>{{cite news |last=Bonessi |first=Dominique Maria |date=January 12, 2021 |title=Your Questions About How The National Guard Works In D.C., Answered |url=https://www.npr.org/local/305/2021/01/12/955707097/your-questions-about-how-the-national-guard-works-in-d-c-answered |publisher=[[NPR]] |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328032708/https://www.npr.org/local/305/2021/01/12/955707097/your-questions-about-how-the-national-guard-works-in-d-c-answered |url-status=dead}}</ref> In the event of a vacancy, the governor is succeeded by the second-highest-ranking state official; in 45 states and 4 territories, the [[List of current United States lieutenant governors|lieutenant governor]] is the first in the line of succession.<ref>{{cite web |date=May 2011 |title=States' Lines of Succession of Gubernatorial Powers |url=https://www.nlga.us/wp-content/uploads/States-Lines-of-Gubernatorial-Succession-2.pdf |publisher=[[National Emergency Management Association]] |accessdate=March 27, 2024 |archive-date=December 5, 2023 |archive-url=https://web.archive.org/web/20231205000532/https://www.nlga.us/wp-content/uploads/States-Lines-of-Gubernatorial-Succession-2.pdf |url-status=live}}</ref><ref>{{cite press release |date=February 4, 2015 |title=Method of Election Data for the Office of Lieutenant Governor |url=https://www.nlga.us/wp-content/uploads/Method-of-Election-FINAL-2.4.15.pdf |publisher=[[National Lieutenant Governors Association]] |accessdate=May 24, 2024 |archive-date=September 7, 2015 |archive-url=https://web.archive.org/web/20150907011227/http://www.nlga.us/wp-content/uploads/Method-of-Election-FINAL-2.4.15.pdf |url-status=live}}</ref>
+
+{{As of|2026|01|df=US}}<!--Do not change without an updated source-->, there are 26 states with [[Republican Party (United States)|Republican]] governors and 24 states with [[Democratic Party (United States)|Democratic]] governors.<ref name="Rutgers"/> The Democratic Party controls two [[List_of_current_United_States_governors#Territory_governors|territorial governorships]], the Republican Party controls one, and one is an [[Independent politician|independent]].{{cn|date=July 2025}} [[Jenniffer González-Colón]] of [[Puerto Rico]] is a member of the [[New Progressive Party (Puerto Rico)|New Progressive Party]], although she is also affiliated with the Republican Party.<ref>{{cite news |last=Coto |first=Dánica |date=January 2, 2025 |title=In the shadow of a massive blackout, Jenniffer González is Puerto Rico's new governor |url=https://www.csmonitor.com/World/Americas/2025/0102/jenniffer-gonzalez-puerto-rico-governor-blackouts |work=[[The Christian Science Monitor]] |agency=[[Associated Press]] |accessdate=July 23, 2025}}</ref> The federal District of Columbia is governed by a Democratic mayor.<ref>{{cite news |last=Brice-Saddler |first=Michael |date=May 5, 2021 |title=In nod to statehood bid, Bowser admitted to Democratic Governors Association |url=https://www.washingtonpost.com/local/dc-politics/governors-association-statehood-bowser-democratic/2021/05/05/f3383310-add7-11eb-ab4c-986555a1c511_story.html |work=The Washington Post |url-access=limited |accessdate=March 27, 2024 |archive-date=December 13, 2022 |archive-url=https://web.archive.org/web/20221213122319/https://www.washingtonpost.com/local/dc-politics/governors-association-statehood-bowser-democratic/2021/05/05/f3383310-add7-11eb-ab4c-986555a1c511_story.html |url-status=live}}</ref>
+
+A gubernatorial term ends and new term begins in January for most states and territories, two months after their election; in Alaska, Hawaii, North Dakota, and Kentucky, the term begins in December.<ref>{{cite web |title=2024 Gubernatorial Elections |url=https://www.nga.org/governors/elections/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=April 4, 2024 |archive-url=https://web.archive.org/web/20240404205853/https://www.nga.org/governors/elections/ |url-status=live}}</ref><ref>{{cite news |last=Marquez |first=Alexandra |date=December 30, 2022 |title=They won a race for governor in 2022. Here's when they'll be sworn into office |url=https://www.nbcnews.com/meet-the-press/meetthepressblog/gubernatorial-winner-gets-sworn-office-rcna62456 |publisher=[[NBC News]] |accessdate=March 27, 2024 |archive-date=May 27, 2023 |archive-url=https://web.archive.org/web/20230527073453/https://www.nbcnews.com/meet-the-press/meetthepressblog/gubernatorial-winner-gets-sworn-office-rcna62456 |url-status=live}}</ref> Governors serve four-year terms in most states and all territories; [[New Hampshire]] and [[Vermont]] have two-year terms for their governors. Most states and all but one territory also have [[Term limits in the United States#Gubernatorial term limits|term limit]]s that generally allow for two consecutive terms to be served by a candidate. To run for governor, a candidate must generally be a [[United States citizenship|U.S. citizen]] with prior state residence who meets the minimum age requirement—set at 30 years old in 35 states.<ref name="CSG">{{cite book |editor-last1=Francis |editor-first1=Audrey S. |editor-last2=Perkins |editor-first2=Heather M. |year=2021 |title=The Book of the States, Volume 53 |pages=109–111 |url=https://www.nga.org/wp-content/uploads/2022/10/CSG-book-of-the-states-2021.pdf |publisher=[[Council of State Governments]] |location=Lexington, Kentucky |isbn=978-0-578-30951-4 |oclc=1312806678 |accessdate=May 24, 2024 |archive-date=November 28, 2023 |archive-url=https://web.archive.org/web/20231128044524/https://www.nga.org/wp-content/uploads/2022/10/CSG-book-of-the-states-2021.pdf |url-status=live}}</ref>
+
+All 55 governors are members of the [[National Governors Association]], a non-partisan organization which represents states and territories in discussions with the federal government.<ref>{{cite news |last=Craig |first=Tim |date=August 3, 2019 |title=Sidelined on the national stage, U.S. governors are frustrated with Washington |url=https://www.washingtonpost.com/national/sidelined-on-the-national-stage-us-governors-are-frustrated-with-washington/2019/08/03/ff751dc6-b2db-11e9-951e-de024209545d_story.html |work=The Washington Post |url-access=limited |accessdate=March 27, 2024 |archive-date=August 8, 2020 |archive-url=https://web.archive.org/web/20200808095807/https://www.washingtonpost.com/national/sidelined-on-the-national-stage-us-governors-are-frustrated-with-washington/2019/08/03/ff751dc6-b2db-11e9-951e-de024209545d_story.html |url-status=live}}</ref> Other organizations for governors include the partisan [[Democratic Governors Association]] and [[Republican Governors Association]]; and the three regional associations: [[Midwestern Governors Association|Midwestern]], [[Coalition of Northeastern Governors|Northeastern]], and [[Western Governors Association|Western]].<ref>{{cite web |last=Friedman |first=Lori |date=July 19, 2016 |title=The governors and the feds |url=https://www2.lehigh.edu/news/the-governors-and-the-feds |publisher=[[Lehigh University]] |accessdate=March 27, 2024 |archive-date=April 17, 2024 |archive-url=https://web.archive.org/web/20240417145952/https://www2.lehigh.edu/news/the-governors-and-the-feds |url-status=live}}</ref>
+
+==State governors==
+
+The [[List of longest-serving governors of U.S. states|longest-serving]] incumbent U.S. governor is [[Greg Abbott]] of [[Texas]], who took office on January 20, 2015. The most recently inaugurated governor is [[Mikie Sherrill]] of [[New Jersey]], who took office on January 20, 2026.<ref name="NGA-Roster">{{cite web |date=January 27, 2025 |title=Governors Roster 2025 |url=https://www.nga.org/wp-content/uploads/2024/12/Governors-Roster.pdf |url-status=live |archive-url=https://web.archive.org/web/20250119182856/https://www.nga.org/wp-content/uploads/2024/12/Governors-Roster.pdf |archive-date=January 19, 2025 |accessdate=July 23, 2025 |publisher=[[National Governors Association]]}}</ref> A total of 15 incumbent governors previously served as [[lieutenant governor]], while 13 previously served in the [[United States House of Representatives]].<ref name="NGA-Prior">{{cite web |title=2023 Governors' Previous Experience Chart |url=https://governors.rutgers.edu/wp-content/uploads/2023/02/GOV-experience-2023.pdf |work=Center on the American Governor |publisher=[[Eagleton Institute of Politics]] at [[Rutgers University]] |accessdate=March 27, 2024 |archive-date=April 22, 2023 |archive-url=https://web.archive.org/web/20230422093643/https://governors.rutgers.edu/wp-content/uploads/2023/02/GOV-experience-2023.pdf |url-status=live}}</ref> The governor's office has [[Term limits in the United States#Gubernatorial term limits|term limit]]s in 37 states and 4 territories; these terms are four years except in [[New Hampshire]] and [[Vermont]], where governors serve two-year terms.<ref name="CSG"/><ref>{{cite web |title=Term Limits |url=http://www.nga.org/portal/site/nga/menuitem.9e1238065e726e63ee28aca9501010a0/?vgnextoid=3d252bf8a1cb6010VgnVCM1000001a01010aRCRD |publisher=National Governors Association |url-status=dead |archive-url=https://web.archive.org/web/20100402041355/http://www.nga.org/portal/site/nga/menuitem.9e1238065e726e63ee28aca9501010a0/?vgnextoid=3d252bf8a1cb6010VgnVCM1000001a01010aRCRD |archive-date=April 2, 2010 |accessdate=May 24, 2024}}</ref>
+
+The average age of governors at the time of their inauguration was about 59 years old. [[Alabama]] governor [[Kay Ivey]] (born 1944) is the oldest incumbent governor, and [[Arkansas]] governor [[Sarah Huckabee Sanders]] (born 1982) is the youngest.<ref name="Rutgers">{{cite web |title=Fast Facts About America's Governors |url=https://governors.rutgers.edu/fast-facts-about-americas-governors/ |work=Center on the American Governor |publisher=Eagleton Institute of Politics at Rutgers University |accessdate=July 4, 2025}}</ref> As of January 2026, there are 14 [[List of female governors in the United States|female state governors]] serving. Of the 50 state governors, 47 are [[non-Hispanic white]], one is [[Hispanic]] ([[Michelle Lujan Grisham]] of [[New Mexico]]), one is [[Black American|Black]] ([[Wes Moore]] of [[Maryland]]), and one is [[Native Americans in the United States|Native American]] ([[Kevin Stitt]] of [[Oklahoma]]).<ref name="Rutgers"/>
+
+The notation "(term limits)" after the year indicates that the governor is ineligible to seek re-election that year; the notation "(retiring)" indicates that the governor has announced their intention not to seek re-election at the end of their term nor to run for another office; the notation "(defeated)" indicates that the governor lost their re-election bid.
+
+{{Table TOC|A|C|D|F|G|H|I|K|L|M|N|O|P|R|S|T|U|V|W}}
+{{sticky header}}
+{| class="wikitable sortable mw-collapsible sticky-header-multi" style="text-align:center"
+|+ Incumbent state governors of the United States
+|-
+! scope="col" | State
+! scope="col" class=unsortable |Image
+! scope="col" | Governor<ref name="NGA-Roster"/>
+! scope="colgroup" colspan=2 |Party<ref name="NGA-Roster"/>
+! scope="col" | Born
+! scope="col" class=unsortable | Prior public experience<ref name="NGA-Prior"/>
+! scope="col" | Term start<ref name="NGA-Roster"/>
+! scope="col" | Term end<ref name="NGA-Roster"/>
+! scope="col" class=unsortable | {{Reference heading}}
+|- id="A"
+|[[Governor of Alabama|Alabama]] ([[List of governors of Alabama|list]])
+|[[File:Kay Ivey (2026).jpg|alt=Photographic portrait of Kay Ivey|150x150px]]
+! scope="row" | {{sortname|Kay|Ivey|Kay Ivey}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Alabama Republican Party|Republican]]
+|{{birth date and age|1944|10|15}}
+|[[List of lieutenant governors of Alabama|Lieutenant Governor]]<hr />[[Alabama State Treasurer|State Treasurer]]
+|{{dts|2017|4|10}}
+|2027 (term limits)
+|<ref name="NGA-Alabama">{{cite web |title=Gov. Kay Ivey |url=https://www.nga.org/governors/alabama/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045415/https://www.nga.org/governors/alabama/ |url-status=live}}</ref>
+|-
+|[[Governor of Alaska|Alaska]] ([[List of governors of Alaska|list]])
+|[[File:Mike Dunleavy by Gage Skidmore.jpg|alt=Photographic portrait of Mike Dunleavy|134x134px]]
+! scope="row" | {{sortname|Mike|Dunleavy|dab=politician}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Alaska Republican Party|Republican]]
+|{{birth date and age|1961|5|5}}
+|[[Alaska Senate]]
+|{{dts|2018|12|3}}
+|2026 (term limits)
+|<ref name="NGA-Alaska">{{cite web |title=Gov. Mike Dunleavy |url=https://www.nga.org/governors/alaska/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045441/https://www.nga.org/governors/alaska/ |url-status=live}}</ref>
+|-
+|[[Governor of Arizona|Arizona]] ([[List of governors of Arizona|list]])
+|[[File:Katie Hobbs by Gage Skidmore 6.jpg|alt=Photographic portrait of Katie Hobbs|131x131px]]
+! scope="row" | {{sortname|Katie|Hobbs}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+| [[Arizona Democratic Party|Democratic]]
+|{{birth date and age|1969|12|28}}
+|[[Arizona Secretary of State|Secretary of State]]<hr />Minority Leader of the [[Arizona Senate]]<hr />[[Arizona House of Representatives|Arizona House]]
+|{{dts|2023|1|2}}
+|2027
+|<ref name="NGA-Arizona">{{cite web |title=Gov. Katie Hobbs |url=https://www.nga.org/governors/arizona/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=December 12, 2023 |archive-url=https://web.archive.org/web/20231212094833/https://www.nga.org/governors/arizona/ |url-status=live}}</ref>
+|-
+|[[Governor of Arkansas|Arkansas]] ([[List of governors of Arkansas|list]])
+|[[File:Governor Sarah Huckabee Sanders (cropped) (cropped).jpg|alt=Photographic portrait of Sarah Huckabee Sanders|125x125px]]
+! scope="row" | {{sortname|Sarah Huckabee|Sanders}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+| [[Republican Party of Arkansas|Republican]]
+|{{birth date and age|1982|8|13}}
+|[[White House Press Secretary]]
+|{{dts|2023|1|10}}
+|2027
+|<ref name="NGA-Arkansas">{{cite web |title=Gov. Sarah Huckabee Sanders |url=https://www.nga.org/governors/arkansas/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=January 27, 2024 |archive-url=https://web.archive.org/web/20240127174458/https://www.nga.org/governors/arkansas/ |url-status=live}}</ref>
+|- id="C"
+|[[Governor of California|California]] ([[List of governors of California|list]])
+|[[File:Gavin Newsom 2026 (cropped 3x4 2).jpg|alt=Photographic portrait of Gavin Newsom|133x133px]]
+! scope="row" | {{sortname|Gavin|Newsom}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[California Democratic Party|Democratic]]
+|{{birth date and age|1967|10|10}}
+|[[Lieutenant Governor of California|Lieutenant Governor]]<hr />[[Mayor of San Francisco]]<hr />[[San Francisco Board of Supervisors]]
+|{{dts|2019|1|7}}
+|2027 (term limits)
+|<ref name="NGA-California">{{cite web |title=Gov. Gavin Newsom |url=https://www.nga.org/governors/california/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045728/https://www.nga.org/governors/california/ |url-status=live}}</ref>
+|-
+|[[Governor of Colorado|Colorado]] ([[Governor of Colorado|list]])
+|[[File:Governor Jared Polis 2023 (cropped) (cropped).jpg|alt=Photographic portrait of Jared Polis|129x129px]]
+! scope="row" | {{sortname|Jared|Polis}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Colorado Democratic Party|Democratic]]
+|{{birth date and age|1975|5|12}}
+|[[Colorado's 2nd congressional district|U.S. House]]<hr />[[Colorado State Board of Education]]
+|{{dts|2019|1|8}}
+|2027 (term limits)
+|<ref name="NGA-Colorado">{{cite web |title=Gov. Jared Polis |url=https://www.nga.org/governors/colorado/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050318/https://www.nga.org/governors/colorado/ |url-status=live}}</ref>
+|-
+|[[Governor of Connecticut|Connecticut]] ([[List of governors of Connecticut|list]])
+|[[File:Connecticut Governor Ned Lamont (cropped).jpg|100px|alt=Photographic portrait of Ned Lamont]]
+! scope="row" | {{sortname|Ned|Lamont}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Democratic Party of Connecticut|Democratic]]
+|{{birth date and age|1954|1|3}}
+|Chair of the State Investment Advisory Council<hr />[[Greenwich, Connecticut|Greenwich]] Board of Estimate and Taxation<hr />Greenwich [[Board of selectmen|Board of Selectmen]]
+|{{dts|2019|1|9}}
+|2027
+|<ref name="NGA-Connecticut">{{cite web |title=Gov. Ned Lamont |url=https://www.nga.org/governors/connecticut/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045531/https://www.nga.org/governors/connecticut/ |url-status=live}}</ref>
+|- id="D"
+|[[Governor of Delaware|Delaware]] ([[List of governors of Delaware|list]])
+| [[File: Delmarva Chicken Association Booster BBQ - 55313846273 (cropped).jpg |100px|alt=Photographic portrait of Matt Meyer]]
+! scope="row" | {{sortname|Matt|Meyer}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Delaware Democratic Party|Democratic]]
+|{{birth date and age|1971|9|29}}
+| Executive of [[New Castle County, Delaware|New Castle County]]
+|{{dts|2025|1|21}}
+|2029
+|<ref>{{cite web |title=Gov. Matt Meyer |url=https://www.nga.org/governors/delaware/ |publisher=National Governors Association |accessdate=January 21, 2025}}</ref>
+|- id="F"
+|[[Governor of Florida|Florida]] ([[List of governors of Florida|list]])
+|[[File:Ron DeSantis (53455112690) (cropped).png|alt=Photographic portrait of Ron DeSantis|134x134px]]
+! scope="row" | {{sortname|Ron|DeSantis}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Republican Party of Florida|Republican]]
+|{{birth date and age|1978|9|14}}
+|[[Florida's 6th congressional district|U.S. House]]
+|{{dts|2019|1|8}}
+|2027 (term limits)
+|<ref name="NGA-Florida">{{cite web |title=Gov. Ron DeSantis |url=https://www.nga.org/governors/florida/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045657/https://www.nga.org/governors/florida/ |url-status=live}}</ref>
+|- id="G"
+|[[Governor of Georgia|Georgia]] ([[List of governors of Georgia|list]])
+|[[File:DAZ 1544PS (cropped).jpg|alt=Photographic portrait of Brian Kemp|133x133px]]
+! scope="row" | {{sortname|Brian|Kemp}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Georgia Republican Party|Republican]]
+|{{birth date and age|1963|11|2}}
+|[[Georgia Secretary of State|Secretary of State]]<hr />[[Georgia State Senate|Georgia Senate]]
+|{{dts|2019|1|14}}
+|2027 (term limits)
+|<ref name="NGA-Georgia">{{cite web |title=Gov. Brian Kemp |url=https://www.nga.org/governors/georgia/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050252/https://www.nga.org/governors/georgia/ |url-status=live}}</ref>
+|- id="H"
+|[[Governor of Hawaii|Hawaii]] ([[List of governors of Hawaii|list]])
+|[[File:Josh Green Official Photo 2022 (cropped) (cropped).jpg|100px|alt=Photographic portrait of Josh Green]]
+! scope="row" | {{sortname|Josh|Green|dab=politician}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Democratic Party of Hawaii|Democratic]]
+|{{birth date and age|1970|2|11}}
+|[[Lieutenant Governor of Hawaii|Lieutenant Governor]]<hr />[[Hawaii Senate]]<hr />[[Hawaii House of Representatives|Hawaii House]]
+|{{dts|2022|12|5}}
+|2026
+|<ref name="NGA-Hawaii">{{cite web |title=Gov. Josh Green |url=https://www.nga.org/governors/hawaii/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045506/https://www.nga.org/governors/hawaii/ |url-status=live}}</ref>
+|- id="I"
+|[[Governor of Idaho|Idaho]] ([[List of governors of Idaho|list]])
+|[[File:Brad Little official photo (cropped).jpg|100px|alt=Photographic portrait of Brad Little]]
+! scope="row" | {{sortname|Brad|Little}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Idaho Republican Party|Republican]]
+|{{birth date and age|1954|2|15}}
+|[[Lieutenant Governor of Idaho|Lieutenant Governor]]<hr />[[Idaho Senate]]
+|{{dts|2019|1|7}}
+|2027
+|<ref name="NGA-Idaho">{{cite web |title=Gov. Brad Little |url=https://www.nga.org/governors/idaho/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045849/https://www.nga.org/governors/idaho/ |url-status=live}}</ref>
+|-
+|[[Governor of Illinois|Illinois]] ([[List of governors of Illinois|list]])
+|[[File:JB Pritzker 2026 (cropped 3x4).jpg|alt=Photographic portrait of JB Pritzker|133x133px]]
+! scope="row" | {{sortname|JB|Pritzker}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Democratic Party of Illinois|Democratic]]
+|{{birth date and age|1965|1|19}}
+|Chair of the [[Illinois Department of Human Rights|Illinois Human Rights Commission]]
+|{{dts|2019|1|14}}
+|2027
+|<ref name="NGA-Illinois">{{cite web |title=Gov. JB Pritzker |url=https://www.nga.org/governors/illinois/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=January 18, 2024 |archive-url=https://web.archive.org/web/20240118224853/https://www.nga.org/governors/illinois/ |url-status=live}}</ref><ref>{{cite web |title=2021–2022 Illinois Blue Book: Official Portraits & Biographies |page=21 |url=https://www.ilsos.gov/publications/illinois_bluebook/governorbio.pdf |publisher=[[Illinois Secretary of State]] |archive-url=https://web.archive.org/web/20240525021150/https://www.ilsos.gov/publications/illinois_bluebook/governorbio.pdf |archive-date=May 25, 2024 |accessdate=May 24, 2024}}</ref>
+|-
+|[[Governor of Indiana|Indiana]] ([[List of governors of Indiana|list]])
+| [[File: Governor Mike Braun DHS.jpg|128x128px]]
+! scope="row" | {{sortname|Mike|Braun}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Indiana Republican Party|Republican]]
+|{{birth date and age|1954|3|24}}
+|[[United States Senate|U.S. Senate]]
+----[[Indiana House of Representatives|Indiana House]]
+|{{dts|2025|1|13}}
+|2029
+|<ref>{{cite web |title=Gov. Mike Braun |url=https://www.nga.org/governors/indiana/ |publisher=National Governors Association |accessdate=January 21, 2025}}</ref>
+|-
+|[[Governor of Iowa|Iowa]] ([[List of governors of Iowa|list]])
+|[[File:Kim Reynolds (53462197855) (cropped) (cropped).jpg|alt=Photographic portrait of Kim Reynolds|140x140px]]
+! scope="row" | {{sortname|Kim|Reynolds}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Republican Party of Iowa|Republican]]
+|{{birth date and age|1959|8|4}}
+|[[Lieutenant Governor of Iowa|Lieutenant Governor]]<hr />[[Iowa Senate]]<hr />[[Clarke County, Iowa|Clarke County]] Treasurer
+|{{dts|2017|5|24}}
+|2027 (retiring)
+|<ref name="NGA-Iowa">{{cite web |title=Gov. Kim Reynolds |url=https://www.nga.org/governors/iowa/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050130/https://www.nga.org/governors/iowa/ |url-status=live}}</ref>
+|- id="K"
+|[[Governor of Kansas|Kansas]] ([[List of governors of Kansas|list]])
+|[[File:Laura Kelly official photo (cropped).jpg|100px|alt=Photographic portrait of Laura Kelly]]
+! scope="row" | {{sortname|Laura|Kelly}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Kansas Democratic Party|Democratic]]
+|{{birth date and age|1950|1|24}}
+|[[Kansas Senate]]
+|{{dts|2019|1|14}}
+|2027 (term limits)
+|<ref name="NGA-Kansas">{{cite web |title=Gov. Laura Kelly |url=https://www.nga.org/governors/kansas/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050012/https://www.nga.org/governors/kansas/ |url-status=live}}</ref>
+|-
+|[[Governor of Kentucky|Kentucky]] ([[List of governors of Kentucky|list]])
+|[[File:AndyBeshear2025 (cropped).jpg|alt=Photographic portrait of Andy Beshear|133x133px]]
+! scope="row" | {{sortname|Andy|Beshear}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Kentucky Democratic Party|Democratic]]
+|{{birth date and age|1977|11|29}}
+|[[Attorney General of Kentucky|State Attorney General]]
+|{{dts|2019|12|10}}
+|2027 (term limits)
+|<ref name="NGA-Kentucky">{{cite web |title=Gov. Andy Beshear |url=https://www.nga.org/governors/kentucky/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=January 18, 2024 |archive-url=https://web.archive.org/web/20240118224857/https://www.nga.org/governors/kentucky/ |url-status=live}}</ref>
+|- id="L"
+|[[Governor of Louisiana|Louisiana]] ([[List of governors of Louisiana|list]])
+|[[File:Jeff Landry in 2025 (cropped).jpg|alt=Photographic portrait of Josh Green|132x132px]]
+! scope="row" | [[Jeff Landry]]
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Republican Party of Louisiana|Republican]]
+|{{birth date and age|1970|12|23}}
+|[[List of attorneys general of Louisiana|State Attorney General]]<hr />[[United States House of Representatives|U.S. House]]
+|{{dts|2024|1|8}}
+|2028
+|<ref name="NGA-Louisiana">{{cite web |title=Gov. Josh Green |url=https://www.nga.org/governors/louisiana/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045914/https://www.nga.org/governors/louisiana/ |url-status=live}}</ref>
+|- id="M"
+|[[Governor of Maine|Maine]] ([[List of governors of Maine|list]])
+|[[File:Janet Mills in 2019.jpg|100px|alt=Photographic portrait of Janet Mills]]
+! scope="row" | {{sortname|Janet|Mills}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Maine Democratic Party|Democratic]]
+|{{birth date and age|1947|12|30}}
+|[[Maine Attorney General|State Attorney General]]<hr />[[Maine House of Representatives|Maine House]]
+|{{dts|2019|1|2}}
+|2027 (term limits)
+|<ref name="NGA-Maine">{{cite web |title=Gov. Janet Mills |url=https://www.nga.org/governors/maine/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045753/https://www.nga.org/governors/maine/ |url-status=live}}</ref>
+|-
+|[[Governor of Maryland|Maryland]] ([[List of governors of Maryland|list]])
+|[[File:Wes Moore in February 2025.jpg|alt=Photographic portrait of Wes Moore|130x130px]]
+! scope="row" | {{sortname|Wes|Moore}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Maryland Democratic Party|Democratic]]
+|{{birth date and age|1978|10|15}}
+|No prior public experience
+|{{dts|2023|1|18}}
+|2027
+|<ref name="NGA-Maryland">{{cite web |title=Gov. Wes Moore |url=https://www.nga.org/governors/maryland/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=January 18, 2024 |archive-url=https://web.archive.org/web/20240118224836/https://www.nga.org/governors/Maryland/ |url-status=live}}</ref>
+|-
+|[[Governor of Massachusetts|Massachusetts]] ([[List of governors of Massachusetts|list]])
+|[[File:Maura Healey 54502293075 (1).jpg|alt=Photographic portrait of Maura Healey|133x133px]]
+! scope="row" | {{sortname|Maura|Healey}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Massachusetts Democratic Party|Democratic]]
+|{{birth date and age|1971|02|8}}
+|[[Massachusetts Attorney General|State Attorney General]]
+|{{dts|2023|1|5}}
+|2027
+|<ref name="NGA-Massachusetts">{{cite web |title=Gov. Maura Healey |url=https://www.nga.org/governors/massachusetts/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045939/https://www.nga.org/governors/massachusetts/ |url-status=live}}</ref>
+|-
+|[[Governor of Michigan|Michigan]] ([[List of governors of Michigan|list]])
+|[[File:2025 Gretchen Whitmer (cropped).jpg|100px|alt=Photographic portrait of Gretchen Whitmer]]
+! scope="row" | {{sortname|Gretchen|Whitmer}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Michigan Democratic Party|Democratic]]
+|{{birth date and age|1971|8|23}}
+|Minority Leader of the [[Michigan Senate]]<hr />[[Michigan House of Representatives|Michigan House]]
+|{{dts|2019|1|1}}
+|2027 (term limits)
+|<ref name="NGA-Michigan">{{cite web |title=Gov. Gretchen Whitmer |url=https://www.nga.org/governors/michigan/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050514/https://www.nga.org/governors/michigan/ |url-status=live}}</ref><ref>{{cite news |last=Smith |first=Allan |date=April 8, 2020 |title='That woman from Michigan': Gov. Whitmer stands out in the pandemic. Just ask Trump. |url=https://www.nbcnews.com/politics/donald-trump/woman-michigan-gov-whitmer-stands-out-pandemic-just-ask-trump-n1170506 |publisher=[[NBC News]] |accessdate=May 24, 2024 |archive-date=April 28, 2020 |archive-url=https://web.archive.org/web/20200428212114/https://www.nbcnews.com/politics/donald-trump/woman-michigan-gov-whitmer-stands-out-pandemic-just-ask-trump-n1170506 |url-status=live}}</ref>
+|-
+|[[Governor of Minnesota|Minnesota]] ([[List of governors of Minnesota|list]])
+|[[File:TimWalz2025.jpg|alt=Photographic portrait of Tim Walz|134x134px]]
+! scope="row" | {{sortname|Tim|Walz}}
+| style="background-color:{{party color|Minnesota Democratic–Farmer–Labor Party}};" |
+|[[Minnesota Democratic–Farmer–Labor Party|Democratic–Farmer–Labor]]{{refn|The [[Minnesota Democratic–Farmer–Labor Party]] is affiliated with the national Democratic Party.<ref>{{cite news |last=Erlandson |first=Henry |date=January 25, 2020 |title=Why is Minnesota's Democratic Party called the DFL? |url=https://www.startribune.com/why-is-minnesota-s-democratic-party-called-the-dfl/565228002/ |work=[[Star Tribune]] |location=Minneapolis |accessdate=May 3, 2024 |archive-date=January 30, 2024 |archive-url=https://web.archive.org/web/20240130171637/https://www.startribune.com/why-is-minnesota-s-democratic-party-called-the-dfl/565228002/ |url-status=live}}</ref>|group=note}}
+|{{birth date and age|1964|4|6}}
+|[[Minnesota's 1st congressional district|U.S. House]]
+|{{dts|2019|1|7}}
+|2027 (retiring)
+|<ref name="NGA-Minnesota">{{cite web |title=Gov. Tim Walz |url=https://www.nga.org/governors/minnesota/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045627/https://www.nga.org/governors/minnesota/ |url-status=live}}</ref>
+|-
+|[[Governor of Mississippi|Mississippi]] ([[List of governors of Mississippi|list]])
+|[[File:Tate Reeves 2019 (cropped).jpg|alt=Photographic portrait of Tate Reeves|133x133px]]
+! scope="row" | {{sortname|Tate|Reeves}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Mississippi Republican Party|Republican]]
+|{{birth date and age|1974|6|5}}
+|[[Lieutenant Governor of Mississippi|Lieutenant Governor]]<hr />[[Mississippi State Treasurer|State Treasurer]]
+|{{dts|2020|1|14}}
+|2028 (term limits)
+|<ref name="NGA-Mississippi">{{cite web |title=Gov. Tate Reeves |url=https://www.nga.org/governors/mississippi/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050200/https://www.nga.org/governors/mississippi/ |url-status=live}}</ref>
+|-
+|[[Governor of Missouri|Missouri]] ([[List of governors of Missouri|list]])
+|[[File:Mike Kehoe 2025 (croppedfurther).jpg|alt=Photographic portrait of Mike Kehoe|133x133px]]
+! scope="row" | {{sortname|Mike|Kehoe}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Missouri Republican Party|Republican]]
+|{{birth date and age|1962|1|17}}
+|[[Lieutenant Governor of Missouri|Lieutenant Governor]]<hr />Majority Leader of the [[Missouri Senate]]
+|{{dts|2025|1|13}}
+|2029
+|<ref name="NGA-Missouri">{{cite web |title=Gov. Mike Kehoe |url=https://www.nga.org/governors/missouri/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=January 18, 2024 |archive-url=https://web.archive.org/web/20240118224834/https://www.nga.org/governors/missouri/ |url-status=live}}</ref>
+|-
+|[[Governor of Montana|Montana]] ([[List of governors of Montana|list]])
+|[[File:Greg Gianforte in Taiwan (cropped).jpg|alt=Photographic portrait of Greg Gianforte|133x133px]]
+! scope="row" | {{sortname|Greg|Gianforte}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Montana Republican Party|Republican]]
+|{{birth date and age|1961|4|17}}
+|[[Montana's at-large congressional district|U.S. House]]
+|{{dts|2021|1|4}}
+|2029 (term limits)
+|<ref name="NGA-Montana">{{cite web |title=Gov. Greg Gianforte |url=https://www.nga.org/governors/montana/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050227/https://www.nga.org/governors/montana/ |url-status=live}}</ref>
+|- id="N"
+|[[Governor of Nebraska|Nebraska]] ([[List of governors of Nebraska|list]])
+|[[File:Jim Pillen 2023 (cropped).jpg|alt=Photographic portrait of Jim Pillen|133x133px]]
+! scope="row" | {{sortname|Jim|Pillen}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Nebraska Republican Party|Republican]]
+|{{birth date and age|1955|12|31}}
+|No prior public experience
+|{{dts|2023|1|5}}
+|2027
+|<ref name="NGA-Nebraska">{{cite web |title=Gov. Jim Pillen |url=https://www.nga.org/governors/nebraska/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050105/https://www.nga.org/governors/nebraska/ |url-status=live}}</ref>
+|-
+|[[Governor of Nevada|Nevada]] ([[List of governors of Nevada|list]])
+| [[File:Joe Lombardo by Gage Skidmore (3x4 cropped).jpg|100px|alt=Photographic portrait of Joe Lombardo]]
+! scope="row" | {{sortname|Joe|Lombardo}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Nevada Republican Party|Republican]]
+|{{birth date and age|1962|11|8}}
+|[[Sheriff of Clark County|Clark County Sheriff]]
+|{{dts|2023|1|2}}
+|2027 (defeated)
+|<ref name="NGA-Nevada">{{cite web |title=Gov. Joe Lombardo |url=https://www.nga.org/governors/nevada/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050449/https://www.nga.org/governors/nevada/ |url-status=live}}</ref>
+|-
+|[[Governor of New Hampshire|New Hampshire]] ([[List of governors of New Hampshire|list]])
+| [[File:NH Governor Kelly Ayotte (December 11, 2025).jpg|alt=Photographic portrait of Kelly Ayotte|136x136px]]
+! scope="row" | {{sortname|Kelly|Ayotte}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[New Hampshire Republican State Committee|Republican]]
+|{{birth date and age|1968|6|27}}
+|[[List of United States senators from New Hampshire|U.S. Senate]]<hr />[[Attorney General of New Hampshire|State Attorney General]]
+|{{dts|2025|1|9}}
+|2027
+|<ref>{{cite web |title=Gov. Kelly Ayotte |url=https://www.nga.org/governors/new-hampshire/ |publisher=National Governors Association |accessdate=January 12, 2025}}</ref>
+|-
+|[[Governor of New Jersey|New Jersey]] ([[List of governors of New Jersey|list]])
+| [[File:Gov. Mikie Sherril (cropped).jpg|132x132px]]
+! scope="row" | {{sortname|Mikie|Sherrill}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[New Jersey Democratic State Committee|Democratic]]
+|{{birth date and age|1972|1|19}}
+|[[United States House of Representatives|U.S. House]]
+|{{dts|2026|1|20}}
+|2030
+|<ref name="NGA-NewJersey">{{cite web |title=Gov. Phil Murphy |url=https://www.nga.org/governors/new-jersey/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045601/https://www.nga.org/governors/new-jersey/ |url-status=live}}</ref>
+|-
+|[[Governor of New Mexico|New Mexico]] ([[List of governors of New Mexico|list]])
+|[[File:Michelle Lujan Grisham 2021.jpg|100px|alt=Photographic portrait of Michelle Lujan Grisham]]
+! scope="row" | {{sortname|Michelle|Lujan Grisham}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Democratic Party of New Mexico|Democratic]]
+|{{birth date and age|1959|10|24}}
+|[[New Mexico's 1st congressional district|U.S. House]]<hr />[[Bernalillo County, New Mexico|Bernalillo County]] [[County commission|Commission]]<hr />[[New Mexico Department of Health|State Secretary of Health]]
+|{{dts|2019|1|1}}
+|2027 (term limits)
+|<ref name="NGA-NewMexico">{{cite web |title=Gov. Michelle Lujan Grisham |url=https://www.nga.org/governors/new-mexico/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045823/https://www.nga.org/governors/new-mexico/ |url-status=live}}</ref><ref>{{cite news |last=Oxford |first=Andrew |date=May 15, 2018 |title=Lujan Grisham offers vision for New Mexico |url=https://www.santafenewmexican.com/news/local_news/lujan-grisham-offers-vision-for-new-mexico/article_410bfa00-e226-590b-998c-aa4af4dd99f0.html |work=[[The Santa Fe New Mexican]] |url-access=subscription |accessdate=May 24, 2024 |archive-date=May 25, 2024 |archive-url=https://web.archive.org/web/20240525045722/https://www.santafenewmexican.com/news/local_news/lujan-grisham-offers-vision-for-new-mexico/article_410bfa00-e226-590b-998c-aa4af4dd99f0.html |url-status=live}}</ref>
+|-
+|[[Governor of New York|New York]] ([[List of governors of New York|list]])
+|[[File:Kathy Hochul, 17 May 2024 (cropped).jpg|alt=Photographic portrait of Kathy Hochul|149x149px]]
+! scope="row" | {{sortname|Kathy|Hochul}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[New York State Democratic Committee|Democratic]]
+|{{birth date and age|1958|8|27}}
+|[[Lieutenant Governor of New York|Lieutenant Governor]]<hr />[[New York's 26th congressional district|U.S. House]]<hr />[[Erie County, New York|Erie County]] [[County clerk|Clerk]]
+|{{dts|2021|8|24}}
+|2026{{refn|In New York, gubernatorial terms begin at midnight on [[New Year's Day]].<ref>{{cite news |last=Confessore |first=Nicholas |date=December 16, 2010 |title=Cuomo's Inauguration Expected to Be Low Key |url=https://www.nytimes.com/2010/12/17/nyregion/17inaugural.html |work=The New York Times |url-access=limited |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328045415/https://www.nytimes.com/2010/12/17/nyregion/17inaugural.html |url-status=live}}</ref>|group=note}}
+|<ref name="NGA-NewYork">{{cite web |title=Gov. Kathy Hochul |url=https://www.nga.org/governors/new-york/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=May 25, 2024 |archive-url=https://web.archive.org/web/20240525045721/https://www.nga.org/governors/new-york/ |url-status=live}}</ref>
+|-
+|[[Governor of North Carolina|North Carolina]] ([[List of governors of North Carolina|list]])
+|[[File:Secretary Turner Meeting with Josh Stein, Governor of North Carolina - 54519013726 (cropped) (cropped).jpg|alt=Photographic portrait of Josh Stein|127x127px]]
+! scope="row" | {{sortname|Josh|Stein}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[North Carolina Democratic Party|Democratic]]
+|{{birth date and age|1966|9|13}}
+|[[Attorney General of North Carolina|State Attorney General]]<hr />[[North Carolina Senate]]
+|{{dts|2025|1|1}}
+|2029
+|<ref>{{cite web |title=Gov. Josh Stein |url=https://www.nga.org/governors/north-carolina/ |publisher=National Governors Association |accessdate=January 2, 2025}}</ref>
+|-
+|[[Governor of North Dakota|North Dakota]] ([[List of governors of North Dakota|list]])
+|[[File:Kelly Armstrong (cropped).jpg|100px|alt=Photographic portrait of Kelly Armstrong]]
+! scope="row" | {{sortname|Kelly|Armstrong}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[North Dakota Republican Party|Republican]]
+|{{birth date and age|1976|10|8}}
+|[[United States House of Representatives|U.S. House]]<hr />Chair of the [[North Dakota Republican Party]]<hr />[[North Dakota Senate]]
+|{{dts|2024|12|15}}
+|2028
+|<ref>{{cite web |title=Gov. Kelly Armstrong |url=https://www.nga.org/governors/north-dakota/ |publisher=National Governors Association |accessdate=January 2, 2025}}</ref>
+|- id="O"
+|[[Governor of Ohio|Ohio]] ([[List of governors of Ohio|list]])
+|[[File:Gov-Mike-DeWine (cropped).jpg|100px|alt=Photographic portrait of Mike DeWine]]
+! scope="row" | {{sortname|Mike|DeWine}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Ohio Republican Party|Republican]]
+|{{birth date and age|1947|1|5}}
+|[[Attorney General of Ohio|State Attorney General]]<hr />[[List of United States senators from Ohio|U.S. Senate]]<hr />[[Lieutenant Governor of Ohio|Lieutenant Governor]]<hr />[[Ohio's 7th congressional district|U.S. House]]<hr />[[Ohio Senate]]<hr />[[Greene County, Ohio|Greene County]] [[Prosecutor]]
+|{{dts|2019|1|14}}
+|2027 (term limits)
+|<ref name="NGA-Ohio">{{cite web |title=Gov. Mike DeWine |url=https://www.nga.org/governors/ohio/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050811/https://www.nga.org/governors/ohio/ |url-status=live}}</ref>
+|-
+|[[Governor of Oklahoma|Oklahoma]] ([[List of governors of Oklahoma|list]])
+|[[File:Kevin Stitt (52251950006) (cropped).jpg|100px|alt=Photographic portrait of Kevin Stitt]]
+! scope="row" | {{sortname|Kevin|Stitt}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Oklahoma Republican Party|Republican]]
+|{{birth date and age|1972|12|28}}
+|No prior public experience
+|{{dts|2019|1|14}}
+|2027 (term limits)
+|<ref name="NGA-Oklahoma">{{cite web |title=Gov. Kevin Stitt |url=https://www.nga.org/governors/oklahoma/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050933/https://www.nga.org/governors/oklahoma/ |url-status=live}}</ref>
+|-
+|[[Governor of Oregon|Oregon]] ([[List of governors of Oregon|list]])
+|[[File:Governor Kotek (cropped).jpg|100px|alt=Photographic portrait of Tina Kotek]]
+! scope="row" | {{sortname|Tina|Kotek}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Oregon Democratic Party|Democratic]]
+|{{birth date and age|1966|9|30}}
+|[[List of speakers of the Oregon House of Representatives|Speaker of the Oregon House]]
+|{{dts|2023|1|9}}
+|2027
+|<ref name="NGA-Oregon">{{cite web |title=Gov. Tina Kotek |url=https://www.nga.org/governors/oregon/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328051054/https://www.nga.org/governors/oregon/ |url-status=live}}</ref>
+|- id="P"
+|[[Governor of Pennsylvania|Pennsylvania]] ([[List of governors of Pennsylvania|list]])
+|[[File:Josh Shapiro 2023 (3x4).jpg|alt=Photographic portrait of Josh Shapiro|133x133px]]
+! scope="row" | {{sortname|Josh|Shapiro}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Pennsylvania Democratic Party|Democratic]]
+|{{birth date and age|1973|6|20}}
+|[[Pennsylvania Attorney General|State Attorney General]]<hr />[[Montgomery County Board of Commissioners]]<hr />[[Pennsylvania House of Representatives|Pennsylvania House]]
+|{{dts|2023|1|17}}
+|2027
+|<ref name="NGA-Pennsylvania">{{cite web |title=Gov. Josh Shapiro |url=https://www.nga.org/governors/pennsylvania/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050635/https://www.nga.org/governors/pennsylvania/ |url-status=live}}</ref>
+|- id="R"
+|[[Governor of Rhode Island|Rhode Island]] ([[List of governors of Rhode Island|list]])
+|[[File:RI Governor Daniel McKee.jpg|alt=Photographic portrait of Dan McKee|147x147px]]
+! scope="row" | {{sortname|Dan|McKee}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Rhode Island Democratic Party|Democratic]]
+|{{birth date and age|1951|6|16}}
+|[[Lieutenant Governor of Rhode Island|Lieutenant Governor]] 
+|{{dts|2021|3|2}}
+|2027 (defeated)
+|<ref name="NGA-RhodeIsland">{{cite web |title=Gov. Dan McKee |url=https://www.nga.org/governors/rhode-island/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=January 27, 2024 |archive-url=https://web.archive.org/web/20240127174458/https://www.nga.org/governors/rhode-island/ |url-status=live}}</ref>
+|- id="S"
+|[[Governor of South Carolina|South Carolina]] ([[List of governors of South Carolina|list]])
+|[[File:Governor Henry McMaster (crop).jpg|100px|alt=Photographic portrait of Henry McMaster]]
+! scope="row" | {{sortname|Henry|McMaster}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[South Carolina Republican Party|Republican]]
+|{{birth date and age|1947|5|27}}
+|[[Lieutenant Governor of South Carolina|Lieutenant Governor]]<hr />[[Attorney General of South Carolina|State Attorney General]]
+|{{dts|2017|1|24}}
+|2027 (term limits)
+|<ref name="NGA-SouthCarolina">{{cite web |title=Gov. Henry McMaster |url=https://www.nga.org/governors/south-carolina/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328051023/https://www.nga.org/governors/south-carolina/ |url-status=live}}</ref>
+|-
+|[[Governor of South Dakota|South Dakota]] ([[List of governors of South Dakota|list]])
+|[[File:Larry Rhoden 2025 (cropped).jpg|alt=Photographic portrait of Larry Rhoden|142x142px]]
+! scope="row" | {{sortname|Larry|Rhoden}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[South Dakota Republican Party|Republican]]
+|{{birth date and age|1959|2|5}}
+|[[Lieutenant Governor of South Dakota|Lieutenant Governor]]<hr />Secretary of Agriculture<hr />[[South Dakota House of Representatives|South Dakota House]]<hr />[[South Dakota Senate]]
+|{{dts|2025|1|25}}
+|2027
+|<ref>{{cite web |title=Gov. Larry Rhoden |url=https://www.nga.org/governors/south-dakota/ |publisher=National Governors Association |accessdate=July 4, 2025}}</ref>
+|- id="T"
+|[[Governor of Tennessee|Tennessee]] ([[List of governors of Tennessee|list]])
+|[[File:Hob Nob on the State Line with Tennessee Governor Bill Lee, Bristol (cropped).jpg|alt=Photographic portrait of Bill Lee|132x132px]]
+! scope="row" | {{sortname|Bill|Lee|dab=Tennessee politician}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Tennessee Republican Party|Republican]]
+|{{birth date and age|1959|10|9}}
+|No prior public experience 
+|{{dts|2019|1|19}}
+|2027 (term limits)
+|<ref name="NGA-Tennessee">{{cite web |title=Gov. Bill Lee |url=https://www.nga.org/governors/tennessee/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=February 22, 2019 |archive-url=https://web.archive.org/web/20190222204717/https://www.nga.org/governors/tennessee/ |url-status=live}}</ref>
+|-
+|[[Governor of Texas|Texas]] ([[List of governors of Texas|list]])
+|[[File:Greg Abbott at NASA 2024 (cropped).jpg|alt=Photographic portrait of Greg Abbott|142x142px]]
+! scope="row" | {{sortname|Greg|Abbott}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Republican Party of Texas|Republican]]
+|{{birth date and age|1957|11|13}}
+|[[Texas Attorney General|State Attorney General]]<hr />[[Supreme Court of Texas|Associate Justice of the Texas Supreme Court]]
+|{{dts|2015|1|20}}
+|2027 (defeated)
+|<ref name="NGA-Texas">{{cite web |title=Gov. Greg Abbott |url=https://www.nga.org/governors/texas/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=January 27, 2024 |archive-url=https://web.archive.org/web/20240127174457/https://www.nga.org/governors/texas/ |url-status=live}}</ref>
+|- id="U"
+|[[Governor of Utah|Utah]] ([[List of governors of Utah|list]])
+|[[File:Spencer Cox in 2024 (cropped).jpg|alt=Photographic portrait of Spencer Cox|131x131px]]
+! scope="row" | {{sortname|Spencer|Cox|dab=politician}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Utah Republican Party|Republican]]
+|{{birth date and age|1975|7|11}}
+|[[Lieutenant Governor of Utah|Lieutenant Governor]]<hr />[[Utah House of Representatives|Utah House]]<hr />[[Sanpete County, Utah|Sanpete County]] Commission
+|{{dts|2021|1|4}}
+|2029 (retiring)
+|<ref name="NGA-Utah">{{cite web |title=Gov. Spencer Cox |url=https://www.nga.org/governors/utah/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050836/https://www.nga.org/governors/utah/ |url-status=live}}</ref><ref>{{cite news |last1=Schott |first1=Bryan |last2=Semerad |first2=Tony |date=January 18, 2024 |title=Here's why Utah Gov. Spencer Cox's family business has become an internet powerhouse |url=https://www.sltrib.com/news/2024/01/18/why-utah-gov-spencer-coxs-family/ |work=[[The Salt Lake Tribune]] |accessdate=May 24, 2024 |archive-date=May 25, 2024 |archive-url=https://web.archive.org/web/20240525045723/https://www.sltrib.com/news/2024/01/18/why-utah-gov-spencer-coxs-family/ |url-status=live}}</ref>
+|- id="V"
+|[[Governor of Vermont|Vermont]] ([[List of governors of Vermont|list]])
+|[[File:Phil Scott 2019 (3x4 cropped).png|100px|alt=Photographic portrait of Phil Scott]]
+! scope="row" | {{sortname|Phil|Scott}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Vermont Republican Party|Republican]]
+|{{birth date and age|1958|8|4}}
+|[[Lieutenant Governor of Vermont|Lieutenant Governor]]<hr />[[Vermont Senate]]
+|{{dts|2017|1|5}}
+|2027
+|<ref name="NGA-Vermont">{{cite web |title=Gov. Phil Scott |url=https://www.nga.org/governors/vermont/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050539/https://www.nga.org/governors/vermont/ |url-status=live}}</ref>
+|-
+|[[Governor of Virginia|Virginia]] ([[List of governors of Virginia|list]])
+| [[File:Rep. Abigail Spanberger - 118th Congress (3x4 cropped).jpg|center|132x132px]]
+! scope="row" | {{sortname|Abigail|Spanberger}}
+| style="background-color:{{party color|Democratic Party (United States)}}; |
+|[[Democratic Party of Virginia|Democratic]]
+|{{birth date and age|1979|8|7}}
+|[[United States House of Representatives|U.S. House]]
+|{{dts|2026|1|17}}
+|2030 (term limits)
+|<ref name="NGA-Virginia">{{cite web |title=Gov. Glenn Youngkin |url=https://www.nga.org/governors/virginia/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=December 13, 2023 |archive-url=https://web.archive.org/web/20231213024313/https://www.nga.org/governors/virginia/ |url-status=live}}</ref>
+|- id="W"
+|[[Governor of Washington|Washington]] ([[List of governors of Washington|list]])
+|[[File:Bob Ferguson at his 2023 Shrimp Feed 02 (cropped).jpg|100px|alt=Photographic portrait of Bob Ferguson]]
+! scope="row" | {{sortname|Bob|Ferguson|dab=politician}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Washington State Democratic Party|Democratic]]
+|{{birth date and age|1965|2|23}}
+|[[Attorney General of Washington|State Attorney General]]<hr />Chair of the [[King County Council]]
+|{{dts|2025|1|15}}
+|2029
+|<ref>{{cite web |title=Gov. Bob Ferguson |url=https://www.nga.org/governors/washington/ |publisher=National Governors Association |accessdate=January 21, 2025}}</ref>
+|-
+|[[Governor of West Virginia|West Virginia]] ([[List of governors of West Virginia|list]])
+|[[File:Governor Patrick Morrisey in 2025.jpg|100px|alt=Photographic portrait of Patrick Morrisey]]
+! scope="row" | {{sortname|Patrick|Morrisey}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[West Virginia Republican Party|Republican]]
+|{{birth date and age|1967|12|21}}
+|[[List of attorneys general of West Virginia|State Attorney General]]
+|{{dts|2025|1|13}}
+|2029
+|<ref>{{cite web |title=Gov. Patrick Morrisey |url=https://www.nga.org/governors/west-virginia/ |publisher=National Governors Association |accessdate=January 21, 2025}}</ref>
+|-
+|[[Governor of Wisconsin|Wisconsin]] ([[List of governors of Wisconsin|list]])
+|[[File:Tony Evers (cropped).jpg|alt=Photographic portrait of Tony Evers|133x133px]]
+! scope="row" | {{sortname|Tony|Evers}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Democratic Party of Wisconsin|Democratic]]
+|{{birth date and age|1951|11|5}}
+|[[Wisconsin Department of Public Instruction|State Superintendent of Public Instruction]]
+|{{dts|2019|1|7}}
+|2027 (retiring)
+|<ref name="NGA-Wisconsin">{{cite web |title=Gov. Tony Evers |url=https://www.nga.org/governors/wisconsin/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050906/https://www.nga.org/governors/wisconsin/ |url-status=live}}</ref>
+|-
+|[[Governor of Wyoming|Wyoming]] ([[List of governors of Wyoming|list]])
+|[[File:Mark Gordon of Wyoming.jpg|100px|alt=Photographic portrait of Mark Gordon]]
+! scope="row" | {{sortname|Mark|Gordon}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Wyoming Republican Party|Republican]]
+|{{birth date and age|1957|3|14}}
+|[[Wyoming State Treasurer|State Treasurer]]
+|{{dts|2019|1|7}}
+|2027 (term limits)
+|<ref name="NGA-Wyoming">{{cite web |title=Gov. Mark Gordon |url=https://www.nga.org/governors/wyoming/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328050710/https://www.nga.org/governors/wyoming/ |url-status=live}}</ref>
+|}
+
+==Territory governors==
+
+{| class="wikitable sortable" style="text-align:center"
+|+ Incumbent territorial governors of the United States
+|-
+! scope="col" | Territory
+! scope="col" class=unsortable |Image
+! scope="col" | Governor<ref name="NGA-Roster"/>
+! scope="colgroup" colspan=2 |Party<ref name="NGA-Roster"/>
+! scope="col" | Born
+! scope="col" class=unsortable | Prior public experience
+! scope="col" | Term start<ref name="NGA-Roster"/>
+! scope="col" | Term end<ref name="NGA-Roster"/>
+! scope="col" class=unsortable | {{Reference heading}}
+|-
+|[[Governor of American Samoa|American Samoa]] ([[List of governors of American Samoa|list]])
+|[[File:Governor of American Samoa Pulaali'i Tuiteleleapaga Iuli Nikolao Pula.jpg|100px|alt=Photographic portrait of Lemanu Peleti Mauga]]
+! scope="row" | {{sortname|Pula Nikolao|Pula}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[American Samoa Republican Party|Republican]]
+|{{birth date and age|1955|12|31}}
+|Director of the [[Office of Insular Affairs]]
+|{{dts|2025|1|3}}
+|2029
+|<ref>{{cite web |title=Gov. Pula Nikolao Pula |url=https://www.nga.org/governors/american-samoa/ |publisher=National Governors Association |accessdate=January 4, 2025}}</ref><ref>{{cite news |date=March 31, 2023 |title=Senate makes moving tribute to Nikolao Pula for his service |url=https://www.samoanews.com/senate-makes-moving-tribute-nikolao-pula-his-service |work=[[Samoa News]] |accessdate=March 21, 2025}}</ref>
+|-
+|[[Governor of Guam|Guam]] ([[List of governors of Guam|list]])
+|[[File:Lou Leon Guerrero in 2018.jpeg|100px|alt=Photographic portrait of Lou Leon Guerrero]]
+! scope="row" | {{sortname|Lou Leon|Guerrero}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Democratic Party of Guam|Democratic]]
+|{{birth date and age|1950|11|8}}
+|[[Legislature of Guam|Guam Legislature]]
+|{{dts|2019|1|7}}
+|2027 (term limits)
+|<ref name="Guerrero">{{cite web |title=Gov. Lou Leon Guerrero |url=https://www.nga.org/governor/lou-leon-guerrero/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=March 7, 2024 |archive-url=https://web.archive.org/web/20240307181419/https://www.nga.org/governor/lou-leon-guerrero/ |url-status=live}}</ref><ref>{{cite web |title=About the Governor |date=11 May 2021 |url=https://governor.guam.gov/about-the-governor/ |publisher=Government of Guam |accessdate=May 24, 2024 |archive-date=16 May 2024 |archive-url=https://web.archive.org/web/20240516085251/https://governor.guam.gov/about-the-governor/ |url-status=live}}</ref>
+|-
+|[[Governor of the Northern Mariana Islands|Northern Mariana Islands]] ([[List of governors of the Northern Mariana Islands|list]])
+|[[File:Governor of the Northern Mariana Islands David Mundo Apatang.jpg|frameless|100px|alt=Photographic portrait of David Apatang]]
+! scope="row" | {{sortname|David M.|Apatang}}
+| style="background-color:{{party color|Independent (US)}};" |
+|[[Independent politician|Independent]]
+|{{birth date and age|1948|7|10}}
+|[[Lieutenant Governor of the Northern Mariana Islands|Lieutenant Governor]]<hr />Mayor of [[Saipan, Northern Mariana Islands|Saipan]]<hr />[[Northern Mariana Islands House of Representatives|Northern Mariana Islands House]]
+|{{dts|2025|7|23}}
+|2027
+|<ref>{{Cite web |title=David M. Apatang |url=https://www.nga.org/governor/david-m-apatang/ |access-date=2025-07-29 |website=National Governors Association}}</ref>
+|-
+|[[Governor of Puerto Rico|Puerto Rico]] ([[List of governors of Puerto Rico|list]])
+|[[File:Jenniffer Gonzalez (cropped).jpg|100px|alt=Official portrait of Resident Commissioner Jenniffer Gonzalez.jpg]]
+! scope="row" | {{sortname|Jenniffer|González-Colón}}
+| style="background-color:{{party color|Republican Party (United States)}};" |
+|[[Republican Party (United States)|Republican]]
+|{{birth date and age|1976|8|5}}
+|[[Resident commissioner of Puerto Rico|Resident Commissioner of Puerto Rico]]<hr />[[Speaker of the House of Representatives of Puerto Rico]]
+|{{dts|2025|1|2}}
+|2029
+|<ref>{{cite web |title=Gov. Jenniffer González-Colón |url=https://www.nga.org/governors/puerto-rico/ |publisher=National Governors Association |accessdate=January 2, 2025}}</ref>
+|-
+|[[Governor of the United States Virgin Islands|U.S. Virgin Islands]] ([[List of governors of the United States Virgin Islands|list]])
+|[[File:Governor Albert Bryan Jr..jpg|100px|alt=Photographic portrait of Albert Bryan]]
+! scope="row" | {{sortname|Albert|Bryan Jr.}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[Democratic Party of the Virgin Islands|Democratic]]
+|{{birth date and age|1968|2|21}}
+|Commissioner of the Virgin Islands Department of Labor
+|{{dts|2019|1|7}}
+|2027 (term limits)
+|<ref name="Bryan">{{cite web |title=Gov. Albert Bryan |url=https://www.nga.org/governors/virgin-islands/ |publisher=National Governors Association |accessdate=March 27, 2024 |archive-date=December 12, 2023 |archive-url=https://web.archive.org/web/20231212135126/https://www.nga.org/governors/virgin-islands/ |url-status=live}}</ref><ref>{{cite web |title=Governor Albert Bryan Jr. |url=https://www.vi.gov/governor-bryan/ |publisher=Government of the United States Virgin Islands |accessdate=May 24, 2024 |archive-date=December 11, 2021 |archive-url=https://web.archive.org/web/20211211021921/https://www.vi.gov/governor-bryan/ |url-status=live}}</ref>
+|}
+
+==Federal district mayor==
+The [[District of Columbia]] is a [[federal district]] that elects [[Mayor of the District of Columbia|a mayor]] that has similar powers to those of a state or territorial governor.<ref name="Post-DCGovernor"/> The cities of Washington and [[Georgetown (Washington, D.C.)|Georgetown]] within the district elected their own mayors until 1871, when their governments were consolidated into a reorganized District of Columbia by a [[District of Columbia Organic Act of 1871|congressional act]].<ref name="CRS-DC">{{cite report |date=January 29, 2024 |title=Governing the District of Columbia: Overview and Timeline |url=https://crsreports.congress.gov/product/pdf/IF/IF12577 |publisher=[[Congressional Research Service]] |accessdate=June 27, 2024}}</ref> The district's chief executive from 1871 to 1874 was a governor appointed by the [[president of the United States]]; the office was replaced by a board of commissioners with three members appointed by the president—two residents and a representative from the [[United States Army Corps of Engineers]].<ref name="CRS-DC"/><ref>{{cite journal |last=Davis |first=Henry E. |date=December 29, 1899 |title=The Political Development of the District of Columbia |page=215 |journal=Proceedings of the Washington Academy of Sciences |volume=1 |jstor=24526084}}</ref> The Board of Commissioners was originally a temporary body but was made permanent in 1878 with one member selected to serve as the Board President, in effect the city's chief executive.<ref>{{cite news |last=Frommer |first=Frederic |date=June 21, 2022 |title=D.C. elected its own mayors in the 1800s — until Congress stepped in |url=https://www.washingtonpost.com/history/2022/06/21/dc-home-rule-elected-mayors/ |newspaper=The Washington Post |url-access=limited |accessdate=March 27, 2024 |archive-date=March 24, 2023 |archive-url=https://web.archive.org/web/20230324173804/https://www.washingtonpost.com/history/2022/06/21/dc-home-rule-elected-mayors/ |url-status=live}}</ref> The system was replaced in 1967 by a single mayor–commissioner and [[District of Columbia home rule|home rule]] in the District of Columbia was fully restored in 1975 under a reorganized government led by an elected mayor.<ref>{{cite news |last=Martin |first=Douglas |date=October 28, 2003 |title=Walter Washington, 88, Former Mayor of Washington, Dies |url=https://www.nytimes.com/2003/10/28/us/walter-washington-88-former-mayor-of-washington-dies.html |newspaper=The Washington Post |accessdate=June 27, 2024}}</ref>
+
+{| class="wikitable" style="text-align:center"
+|+ Incumbent federal district mayors of the United States
+|-
+! scope="col" | Federal district
+! scope="col" class=unsortable |Image
+! scope="col" | Mayor
+! scope="colgroup" colspan=2 |Party
+! scope="col" | Born
+! scope="col" class=unsortable | Prior public experience
+! scope="col" | Term start
+! scope="col" | Term end
+|-
+|[[Mayor of the District of Columbia|District of Columbia]] ([[List of mayors of Washington, D.C.|list]])
+|[[File:Muriel Bowser official photo (cropped).jpg|100px|alt=Photographic portrait of Muriel Bowser]]
+! scope="row" | {{sortname|Muriel|Bowser}}
+| style="background-color:{{party color|Democratic Party (United States)}};" |
+|[[District of Columbia Democratic State Committee|Democratic]]<ref name="NationalJournal-Bowser"/>
+|{{birth date and age|1972|8|2}}<ref name="NationalJournal-Bowser">{{cite web |title=People Research Service: Muriel Bowser |url=https://go.nationaljournal.com/rs/556-YEE-969/images/Mayors_Muriel_Bowser.pdf |work=[[National Journal]] |accessdate=March 27, 2024 |archive-date=March 28, 2024 |archive-url=https://web.archive.org/web/20240328051135/https://go.nationaljournal.com/rs/556-YEE-969/images/Mayors_Muriel_Bowser.pdf |url-status=live}}</ref>
+|[[Council of the District of Columbia|D.C. Council]]<hr />[[Advisory Neighborhood Commission]]<ref name="NationalJournal-Bowser"/>
+|{{dts|2015|1|2}}<ref>{{cite news |last1=DeBonis |first1=Mike |last2=Davis |first2=Aaron C. |date=January 2, 2015 |title=Muriel Bowser sworn in as D.C. mayor; pledges to make city healthier, safer |url=https://www.washingtonpost.com/local/dc-politics/dc-mayor-elect-muriel-bowser-dc-council-members-to-be-sworn-in-friday/2015/01/01/ee6892ec-91fc-11e4-a412-4b735edc7175_story.html |newspaper=The Washington Post |url-access=limited |accessdate=March 27, 2024 |archive-date=November 4, 2016 |archive-url=https://web.archive.org/web/20161104010606/https://www.washingtonpost.com/local/dc-politics/dc-mayor-elect-muriel-bowser-dc-council-members-to-be-sworn-in-friday/2015/01/01/ee6892ec-91fc-11e4-a412-4b735edc7175_story.html |url-status=live}}</ref>
+|2027 (retiring)
+|}
+
+==See also==
+* [[Flags of governors of the U.S. states]]
+* [[List of current United States first spouses]]
+* [[List of current United States governors by age]]
+* [[List of current United States lieutenant governors]]
+* [[List of longest-serving United States governors]]
+* [[List of female governors in the United States]]
+* [[List of gubernatorial residences in the United States]]
+* [[List of minority governors and lieutenant governors in the United States]]
+* [[List of United States state legislatures]]
+* [[List of U.S. state governors born outside the United States]]
+* [[Seals of governors of the U.S. states]]
+
+==Notes==
+{{Reflist|group=note}}
+
+==References==
+{{Reflist}}
+
+==External links==
+{{sister project links|Governor (United States)}}
+* [https://www.nga.org/ National Governors Association]
+
+{{Current U.S. Governors}}
+{{US Chief Executives}}
+{{USGovElections}}
+{{USStateLists}}
+
+{{DEFAULTSORT:List of Current United States Governors}}
+[[Category:Lists of state governors of the United States| Current]]
+[[Category:Lists of current office-holders of country subdivisions|United States governors]]
+[[Category:Lists of current office-holders in the United States|Governors]]
+
+[[id:Daftar gubernur di Amerika Serikat]]
+[[he:מושל (ארצות הברית)]]
