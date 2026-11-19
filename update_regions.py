@@ -381,12 +381,18 @@ def maj_officielles(rows):
         ecrire_chambre(ch, construire_groupes(groupes, ch.get("groupes") or [], {}), "officiel")
         print(f"  ✓ {ch['pays']} / {ch['chambre']} : {total} sièges, {len(groupes)} groupes (source officielle)")
 
+DELAI_SOURCE_UNIQUE = 21    # jours d'attente après l'élection avant d'accepter une seule source à jour
+
 def actualiser_chambres(rows, elues):
-    """Chambre renouvelée : nouvelle répartition écrite seulement si 2 sources donnent
-    les mêmes sièges (Wikipédia en, Wikipédia fr, source officielle)."""
+    """Chambre renouvelée. Nouvelle répartition écrite si :
+    - 2 sources sont d'accord (même total à 3 sièges près, 3 premiers groupes à 2 sièges près) :
+      Wikipédia en, Wikipédia fr, source officielle ;
+    - ou, 21 jours après l'élection, une seule source clairement mise à jour.
+    Une source n'est « à jour » que si elle date de l'élection attendue (ou après) et
+    diffère nettement de l'ancienne répartition."""
     limite = (date.today() - timedelta(days=35)).isoformat()
     for r in rows:   # résultats provisoires → définitifs : on revérifie 35 jours
-        if r["id"] not in elues and r.get("source") in ("wikipedia", "wikipedia+fr", "wikipedia+officiel") and r.get("_elec", "") >= limite:
+        if r["id"] not in elues and str(r.get("source", "")).startswith("wikipedia") and r.get("_elec", "") >= limite:
             elues[r["id"]] = r["_elec"]
     cibles = [r for r in rows if r["id"] in elues]
     if not cibles:
@@ -395,38 +401,55 @@ def actualiser_chambres(rows, elues):
     articles = articles_chambres(sorted({iso[r["pays"]] for r in cibles if r["pays"] in iso}))
     faites, attente = [], []
     for ch in cibles:
-        anciens = ch.get("groupes") or []
-        trouve = None
-        for en, fr in articles.get(iso.get(ch["pays"], ""), []):
-            g_en, g_fr = [], []
+        anciens = sieges(ch.get("groupes") or [])
+        elec = elues[ch["id"]]
+        arts = [CW.ARTICLES_MANUELS[(ch["pays"], ch["chambre"])]] if (ch["pays"], ch["chambre"]) in CW.ARTICLES_MANUELS \
+            else articles.get(iso.get(ch["pays"], ""), [])
+        def a_jour(groupes, derniere, total_ib=None):
+            s_ = sum(g["s"] for g in groupes)
+            return bool(groupes) and derniere >= elec and (abs(s_ - ch["total"]) <= 10 or (total_ib and s_ == total_ib)) \
+                and not CW.proches(sieges(groupes), anciens)
+        candidats = []       # (nom de la source, groupes, langue)
+        for en, fr in arts:
             try:
                 if en:
-                    derniere, g_en, total_ib = CW.lire_infobox(en)
-                    somme = sum(g["s"] for g in g_en)
-                    if derniere < elues[ch["id"]] or not (somme == ch["total"] or (total_ib and somme == total_ib)): g_en = []
+                    d_en, g_en, t_en = CW.lire_infobox(en)
+                    if a_jour(g_en, d_en, t_en): candidats.append(("Wikipédia en", g_en, "en", en))
                 if fr:
-                    _, g_fr = CW.lire_infobox_fr(fr)
+                    d_fr, g_fr = CW.lire_infobox_fr(fr)
+                    # la date de l'encadré français est souvent oubliée : acceptée si proche de l'anglais
+                    if a_jour(g_fr, d_fr) or (g_fr and any(CW.proches(sieges(g_fr), sieges(c[1])) for c in candidats)
+                                              and not CW.proches(sieges(g_fr), anciens)):
+                        candidats.append(("Wikipédia fr", g_fr, "fr", fr))
+            except Exception:
+                continue
+        off = CW.OFFICIELS.get((ch["pays"], ch["chambre"]))
+        if off:
+            try:
+                g_off = off()
+                if g_off and not CW.proches(sieges(g_off), anciens): candidats.append(("source officielle", g_off, "off", ""))
             except Exception:
                 pass
-            if not g_en or sieges(g_en) == sieges(anciens): continue      # pas encore à jour
-            confirme = []
-            if g_fr and sieges(g_fr) == sieges(g_en): confirme.append("Wikipédia fr")
-            off = CW.OFFICIELS.get((ch["pays"], ch["chambre"]))
-            if off:
-                try:
-                    if sieges(off()) == sieges(g_en): confirme.append("source officielle")
-                except Exception: pass
-            if confirme:
-                trouve = (en, fr, g_en, g_fr if "Wikipédia fr" in confirme else [], confirme); break
-        if not trouve:
+        choix = None
+        for i, c1 in enumerate(candidats):
+            accord = [c2[0] for c2 in candidats if c2 is not c1 and CW.proches(sieges(c1[1]), sieges(c2[1]))]
+            if accord:
+                # préférence : officielle > français (noms en français) > anglais
+                rang = {"off": 0, "fr": 1, "en": 2}
+                meilleur = min([c1] + [c for c in candidats if c[0] in accord], key=lambda c: rang[c[2]])
+                choix = (meilleur, [c1[0]] + accord); break
+        if not choix and candidats and elec <= (date.today() - timedelta(days=DELAI_SOURCE_UNIQUE)).isoformat():
+            rang = {"off": 0, "fr": 1, "en": 2}
+            seul = min(candidats, key=lambda c: rang[c[2]])
+            choix = (seul, [seul[0] + f" seule, après {DELAI_SOURCE_UNIQUE} jours"])
+        if not choix:
             attente.append(f"{ch['pays']} / {ch['chambre']}"); continue
-        en, fr, g_en, g_fr, confirme = trouve
-        if g_fr:   # noms français
-            nouveaux = construire_groupes(g_fr, anciens, CW.couleurs_fr([g["couleur"] for g in g_fr]))
-        else:
-            nouveaux = construire_groupes(g_en, anciens, CW.couleurs([g["couleur"] for g in g_en]))
-        ecrire_chambre(ch, nouveaux, "wikipedia+fr" if g_fr else "wikipedia+officiel")
-        faites.append(f"{ch['pays']} / {ch['chambre']} : {ch['total']} sièges, {len(nouveaux)} groupes (Wikipédia en « {en} », confirmé par {', '.join(confirme)})")
+        (nom_src, groupes, langue, titre), sources = choix
+        teintes = CW.couleurs_fr([g["couleur"] for g in groupes]) if langue == "fr" else CW.couleurs([g["couleur"] for g in groupes])
+        nouveaux = construire_groupes(groupes, ch.get("groupes") or [], teintes)
+        code = {"off": "officiel", "fr": "wikipedia-fr", "en": "wikipedia-en"}[langue] + ("+" if len(sources) > 1 or "," in sources[0] else "")
+        ecrire_chambre(ch, nouveaux, code)
+        faites.append(f"{ch['pays']} / {ch['chambre']} : {ch['total']} sièges, {len(nouveaux)} groupes ({', '.join(sources)})")
     print(f"  ✓ {len(faites)} chambre(s) mise(s) à jour automatiquement")
     for x in faites: print(f"     - {x}")
     if attente:
@@ -434,7 +457,7 @@ def actualiser_chambres(rows, elues):
 
 def main():
     print("=" * 55)
-    print("  GEOLANDAR — Régions et chambres v2.0")
+    print("  GEOLANDAR — Régions et chambres v2.1")
     print(f"  {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
     print("=" * 55)
     if supabase is None:
@@ -451,7 +474,7 @@ def main():
         elues = marquer_chambres(chs, donnees["chambres"]) or {}
         print("\n[4] Chambres renouvelées : nouvelle répartition des sièges...")
         actualiser_chambres(chs, elues)
-        print("\n[5] Chambres avec source officielle (Royaume-Uni, France)...")
+        print("\n[5] Chambres avec source officielle (Royaume-Uni, Assemblée nationale, Bundestag)...")
         maj_officielles(chs)
     print(f"\n  Terminé : {datetime.now().strftime('%H:%M:%S')}")
 

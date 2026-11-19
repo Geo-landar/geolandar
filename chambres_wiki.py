@@ -163,20 +163,57 @@ def officiel_communes_uk():
             for x in r.json()["items"] if x["value"]["total"] > 0]
 
 def officiel_assemblee_fr():
-    """Assemblée nationale : députés en mandat par groupe (NosDéputés.fr, données de l'Assemblée)."""
-    org = requests.get("https://www.nosdeputes.fr/organismes/groupe/json", headers=UA, timeout=60).json()
-    groupes = {}
-    for o in org.get("organismes", []):
-        o = o["organisme"]
-        if o.get("groupe_actuel"):
-            rgb = [int(x) for x in (o.get("couleur") or "148,163,184").split(",")]
-            groupes[o["acronyme"]] = {"lien": o["nom"], "sigle": o["acronyme"], "s": 0, "couleur": "#%02x%02x%02x" % tuple(rgb[:3])}
-    deps = requests.get("https://www.nosdeputes.fr/deputes/enmandat/json", headers=UA, timeout=60).json()
-    for d in deps.get("deputes", []):
-        g = d["depute"].get("groupe_sigle")
-        if g in groupes: groupes[g]["s"] += 1
-    return [g for g in groupes.values() if g["s"] > 0]
+    """Assemblée nationale : députés en exercice par groupe (données ouvertes officielles de l'Assemblée)."""
+    import io, json, zipfile
+    url = ("https://data.assemblee-nationale.fr/static/openData/repository/17/amo/deputes_actifs_mandats_actifs_organes/"
+           "AMO10_deputes_actifs_mandats_actifs_organes.json.zip")
+    z = requests.get(url, headers=UA, timeout=180); z.raise_for_status()
+    zf = zipfile.ZipFile(io.BytesIO(z.content))
+    organes, compte = {}, {}
+    for n in zf.namelist():
+        if "/organe/" in n:
+            o = json.loads(zf.read(n))["organe"]
+            if o.get("codeType") == "GP": organes[o["uid"]] = o
+    for n in zf.namelist():
+        if "/acteur/" not in n: continue
+        ms = json.loads(zf.read(n))["acteur"]["mandats"]["mandat"]
+        ms = [m for m in (ms if isinstance(ms, list) else [ms]) if m.get("typeOrgane") == "GP" and not m.get("dateFin")]
+        if not ms: continue
+        ref = max(ms, key=lambda m: m.get("dateDebut") or "")["organes"]["organeRef"]   # un seul groupe par député
+        compte[ref] = compte.get(ref, 0) + 1
+    return [{"lien": organes[k].get("libelle") or k, "sigle": organes[k].get("libelleAbrev") or "", "s": v,
+             "couleur": organes[k].get("couleurAssociee") or "#94a3b8"} for k, v in compte.items() if k in organes]
 
-# Assemblée nationale : NosDéputés.fr ne renvoie pas encore la législature en cours (0 député au 13/11/2026) ;
-# à réactiver avec les données ouvertes officielles de l'Assemblée.
-OFFICIELS = {("Royaume-Uni", "House of Commons"): officiel_communes_uk}
+def officiel_bundestag():
+    """Bundestag : députés en exercice par groupe (abgeordnetenwatch.de, données publiques CC0)."""
+    base = "https://www.abgeordnetenwatch.de/api/v2/"
+    per = requests.get(base + "parliament-periods", headers=UA, timeout=60, params={
+        "parliament": 5, "type": "legislature", "range_end": 1, "sort_by": "id", "sort_direction": "desc"}).json()["data"][0]["id"]
+    data = requests.get(base + "candidacies-mandates", headers=UA, timeout=180, params={
+        "parliament_period": per, "type": "mandate", "range_end": 1000}).json()["data"]
+    compte = {}
+    for x in data:
+        if x.get("end_date"): continue
+        fm = [f for f in (x.get("fraction_membership") or []) if not f.get("valid_until")]
+        lab = re.sub(r"\s*\(Bundestag[^)]*\)", "", fm[0]["fraction"]["label"]).replace("\xad", "") if fm else "fraktionslos"
+        compte[lab] = compte.get(lab, 0) + 1
+    return [{"lien": "Sans groupe" if k == "fraktionslos" else k, "sigle": "", "s": v, "couleur": ""} for k, v in compte.items()]
+
+# Articles Wikipédia des chambres que Wikidata ne relie pas (anglais, français)
+ARTICLES_MANUELS = {
+    ("Pays-Bas", "Tweede Kamer"): ("House of Representatives (Netherlands)", "Seconde Chambre des États généraux"),
+    ("Bielorussie", "Chambre des représentants"): ("House of Representatives (Belarus)", "Chambre des représentants (Biélorussie)"),
+    ("Macedoine", "Sobranie"): ("Assembly of North Macedonia", ""),
+    ("Nouvelle-Caledonie", "Congrès"): ("Congress of New Caledonia", "Congrès de la Nouvelle-Calédonie"),
+    ("Polynésie française", "Assemblée de la Polynésie française"): ("Assembly of French Polynesia", "Assemblée de la Polynésie française"),
+}
+
+def proches(a, b, tol_total=3, tol=2):
+    """Deux répartitions « d'accord » : même total à 3 sièges près, 3 premiers groupes à 2 sièges près."""
+    if not a or not b or abs(sum(a) - sum(b)) > tol_total: return False
+    A, B = sorted(a, reverse=True)[:3], sorted(b, reverse=True)[:3]
+    return len(A) == len(B) and all(abs(x - y) <= tol for x, y in zip(A, B))
+
+OFFICIELS = {("Royaume-Uni", "House of Commons"): officiel_communes_uk,
+             ("France", "Assemblée nationale"): officiel_assemblee_fr,
+             ("Allemagne", "Bundestag"): officiel_bundestag}
