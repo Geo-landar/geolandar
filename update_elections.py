@@ -607,6 +607,10 @@ def main():
             if save(row, r["winner"], r["party"], src): total += 1
         elif row.get("niveau") == "national":
             manquants.append(f"{row['pays']} ({row['date']})")
+    try:
+        import rapport
+        rapport.noter("elections_sans_resultat", sorted(manquants))
+    except Exception: pass
     if manquants:
         print(f"\n  📋 {len(manquants)} élections nationales passées toujours sans résultat (à compléter dans RESULTATS_CONNUS si besoin) :")
         for m in sorted(manquants): print(f"     - {m}")

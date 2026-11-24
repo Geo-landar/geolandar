@@ -28,6 +28,7 @@ import requests
 from supabase import create_client
 import chambres_wiki as CW
 import sources_regions as SR
+import rapport
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
@@ -279,6 +280,7 @@ def verifier_dirigeants(rows):
     print(f"  {confirmes} dirigeant(s) régional(aux) confirmé(s) par au moins une source")
     print(f"  ✓ {len(ecrits)} remplacé(s) :")
     for e in ecrits: print(f"     - {e}")
+    rapport.noter("dirigeants_regionaux", [x for x in a_verifier if "une seule source" not in x])
     if a_verifier:
         print(f"\n  📋 {len(a_verifier)} désaccord(s) non tranché(s), site conservé :")
         for e in a_verifier: print(f"     - {e}")
@@ -396,10 +398,10 @@ def actualiser_chambres(rows, elues):
             elues[r["id"]] = r["_elec"]
     cibles = [r for r in rows if r["id"] in elues]
     if not cibles:
-        print("  aucune chambre renouvelée en attente"); return
+        print("  aucune chambre renouvelée en attente"); rapport.noter("chambres", []); return
     iso = iso_des_pays()
     articles = articles_chambres(sorted({iso[r["pays"]] for r in cibles if r["pays"] in iso}))
-    faites, attente = [], []
+    faites, attente, a_noter = [], [], []
     for ch in cibles:
         anciens = sieges(ch.get("groupes") or [])
         elec = elues[ch["id"]]
@@ -443,7 +445,9 @@ def actualiser_chambres(rows, elues):
             seul = min(candidats, key=lambda c: rang[c[2]])
             choix = (seul, [seul[0] + f" seule, après {DELAI_SOURCE_UNIQUE} jours"])
         if not choix:
-            attente.append(f"{ch['pays']} / {ch['chambre']}"); continue
+            attente.append(f"{ch['pays']} / {ch['chambre']}")
+            a_noter.append({"pays": ch["pays"], "chambre": ch["chambre"], "election": elec,
+                            "jours": (date.today() - date.fromisoformat(elec)).days}); continue
         (nom_src, groupes, langue, titre), sources = choix
         teintes = CW.couleurs_fr([g["couleur"] for g in groupes]) if langue == "fr" else CW.couleurs([g["couleur"] for g in groupes])
         nouveaux = construire_groupes(groupes, ch.get("groupes") or [], teintes)
@@ -452,6 +456,7 @@ def actualiser_chambres(rows, elues):
         faites.append(f"{ch['pays']} / {ch['chambre']} : {ch['total']} sièges, {len(nouveaux)} groupes ({', '.join(sources)})")
     print(f"  ✓ {len(faites)} chambre(s) mise(s) à jour automatiquement")
     for x in faites: print(f"     - {x}")
+    rapport.noter("chambres", a_noter)
     if attente:
         print(f"  ⏳ {len(attente)} chambre(s) en attente (sources pas encore à jour ou pas d'accord) : {', '.join(attente)}")
 

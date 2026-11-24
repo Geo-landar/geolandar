@@ -5,6 +5,10 @@ on:
     - cron: '0 1 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  issues: write
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -32,3 +36,20 @@ jobs:
 
       - name: Lancer la mise à jour des régions et des chambres
         run: python update_regions.py
+
+      - name: Repérer les dirigeants désignés (pas encore en fonction)
+        run: python update_designations.py
+
+      - name: Rapport « à mettre à jour à la main » et alertes
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python rapport_manuel.py
+
+      - name: Enregistrer le rapport
+        if: always()
+        run: |
+          git config user.name "geolandar-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f data/a_mettre_a_jour.json
+          if git diff --cached --quiet; then echo "Rapport inchangé"; else git commit -m "Rapport : à mettre à jour à la main" && git pull --rebase && git push; fi

@@ -121,6 +121,15 @@ function memePersonneNoms(a, b) {
   });
   console.log('Supabase : ' + n + ' dirigeant(s) mis à jour');
 })();
+(function majDesignes() {   /* dirigeant désigné, pas encore en fonction (2 mois au plus) */
+  const rows = supa('dirigeants', 'select=pays,designe_nom,designe_titre,designe_depuis&designe_nom=not.is.null');
+  if (!Array.isArray(rows)) return;
+  rows.forEach(r => {
+    if (!r.pays || !LEADERS[r.pays] || !r.designe_depuis) return;
+    const age = (Date.now() - new Date(r.designe_depuis + 'T00:00:00').getTime()) / 86400000;
+    if (age >= 0 && age <= 60) LEADERS[r.pays].designe = r;
+  });
+})();
 const codeType = t => { t = String(t || '').toLowerCase();
   if (['p', 'l', 's', 'r', 'm'].includes(t)) return t;
   if (/présidenti|presidential/.test(t)) return 'p';
@@ -310,7 +319,7 @@ function page(c, hasMap) {
   if (rows.length) body += '<dl class="info">' + rows.map(r => `<div><dt>${r[0]}</dt><dd>${esc(r[1])}</dd></div>`).join('') + '</dl>';
   body += '</section>';
   /* Dirigeant */
-  if (L) body += `<section><h2>${esc(n)} — dirigeant actuel</h2><div class="card"><div class="lname">${esc(L.n)}</div><div class="ltitle">${esc(L.t)}${L.p ? ' · ' + esc(L.p) : ''}</div>${L.d ? `<p>${esc(L.d)}</p>` : ''}</div></section>`;
+  if (L) body += `<section><h2>${esc(n)} — dirigeant actuel</h2><div class="card"><div class="lname">${esc(L.n)}</div><div class="ltitle">${esc(L.t)}${L.p ? ' · ' + esc(L.p) : ''}</div>${L.d ? `<p>${esc(L.d)}</p>` : ''}${L.designe ? `<p><strong>🕓 ${esc(L.designe.designe_nom)}</strong> a été désigné(e) ${esc((L.designe.designe_titre || 'chef du gouvernement').toLowerCase())} : formation du gouvernement en cours. Le dirigeant actuel reste en fonction pour les affaires courantes.</p>` : ''}</div></section>`;
   /* Élections à venir */
   if (next.length) {
     body += `<section><h2>${esc(n)} — prochaines élections</h2>`;

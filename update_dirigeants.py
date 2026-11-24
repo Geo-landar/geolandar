@@ -531,6 +531,10 @@ def croiser_sources(dirigeants):
                               + (f" depuis le {ligne['debut']}" if ligne["debut"] else "") + f" — {raison}")
     print(f"\n  🔄 {len(changes)} dirigeant(s) remplacé(s) grâce aux autres sources, {confirmes} confirmé(s) :")
     for c in changes: print(f"     - {c}")
+    try:
+        import rapport
+        rapport.noter("dirigeants_nationaux", a_verifier)
+    except Exception: pass
     if a_verifier:
         print(f"\n  📋 {len(a_verifier)} désaccord(s) non tranché(s), site inchangé :")
         for c in a_verifier: print(f"     - {c}")

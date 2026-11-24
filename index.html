@@ -2119,7 +2119,8 @@ var LEADERS = {
 
 
 /* ══ POSITIONNEMENT POLITIQUE — RENDU VISUEL ══ */
-function leaderHTML(pays, compact){
+function leaderHTML(pays, compact){ return leaderHTML0(pays, compact) + designeHTML(pays); }
+function leaderHTML0(pays, compact){
   var l = LEADERS[pays];
   if(!l) return '';
   var fr = lang==='fr';
@@ -4660,6 +4661,42 @@ function syncDirigeants(){
 setTimeout(loadElectionsFromSupabase, 1000);
 setTimeout(syncFromSupabase, 2500);
 setTimeout(syncDirigeants, 2000);
+
+/* ── Dirigeant désigné, pas encore en fonction (rempli chaque nuit par
+   update_designations.py). Affiché 2 mois au plus après la désignation ;
+   une nouvelle désignation repart pour 2 mois. ── */
+var DESIGNES = {};
+function syncDesignes(){
+  supaFetch('dirigeants','select=pays,designe_nom,designe_titre,designe_depuis&designe_nom=not.is.null')
+    .then(function(rows){
+      DESIGNES = {};
+      (rows||[]).forEach(function(r){
+        if(!r.pays || !r.designe_nom || !r.designe_depuis) return;
+        var age = (Date.now() - new Date(r.designe_depuis + 'T00:00:00').getTime()) / 86400000;
+        if(age >= 0 && age <= 60) DESIGNES[r.pays] = r;
+      });
+      if(typeof gSel!=='undefined' && gSel){
+        var el = document.getElementById('gnL'); if(el && el.textContent) showCountry(el.textContent);
+      }
+    })
+    .catch(function(){ /* colonnes absentes ou Supabase indisponible : rien à afficher */ });
+}
+function designeHTML(pays){
+  var d = DESIGNES[pays];
+  if(!d) return '';
+  var fr = lang==='fr';
+  var dt = new Date(d.designe_depuis + 'T00:00:00').toLocaleDateString(fr?'fr-FR':'en-GB',{day:'numeric',month:'long',year:'numeric'});
+  var titre = d.designe_titre || (fr?'chef du gouvernement':'head of government');
+  return '<div style="background:var(--cd);border:1px dashed var(--ac,#6366f1);border-radius:8px;padding:8px 10px;margin-bottom:8px">'
+    + '<div style="font-size:.66rem;color:var(--mu);margin-bottom:2px">🕓 '+(fr?'Désigné(e), pas encore en fonction':'Designated, not yet in office')+'</div>'
+    + '<div style="font-family:Syne,sans-serif;font-size:.85rem;font-weight:700;color:var(--tx)">'+d.designe_nom+'</div>'
+    + '<div style="font-size:.68rem;color:var(--mu);margin-top:2px">'
+    + (fr ? 'Désigné(e) '+titre.toLowerCase()+' (repéré le '+dt+') — formation du gouvernement en cours. Le dirigeant actuel reste en fonction pour les affaires courantes.'
+          : 'Designated '+titre+' (noted on '+dt+') — government formation under way. The incumbent remains in office in a caretaker capacity.')
+    + '</div></div>';
+}
+setTimeout(syncDesignes, 3000);
+
 /* Resynchroniser les dirigeants toutes les 6 heures */
 setInterval(syncDirigeants, 6 * 60 * 60 * 1000);
 /* Re-synchroniser toutes les heures */
