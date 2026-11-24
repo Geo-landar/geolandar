@@ -57,32 +57,54 @@ def date_en(t):
 
 COLOR_BOX = re.compile(r"\{\{\s*Colou?r ?box\s*\|\s*(#[0-9A-Fa-f]{3,6}|\{\{\s*party colou?r\s*\|[^}]+\}\})[^{}]*(?:\{\{[^}]*\}\}[^{}]*)*\}\}", re.I)
 
+def _entree(txt, niveau):
+    """Une ligne « [boîte de couleur] [[Parti|SIGLE]] (n) » → entrée, ou None."""
+    n = re.search(r"\((?:\[\[[^\]|]*\|)?(\d+)(?:\]\])?\)\s*(?:\}\})?\s*$", txt)
+    if not n: return None
+    cb = COLOR_BOX.search(txt)
+    reste = COLOR_BOX.sub("", txt[:n.start()]).strip()
+    reste = re.sub(r"^\{\{\s*nowrap\s*\|", "", reste, flags=re.I)
+    lien = re.search(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]", reste)
+    if lien:
+        nom, sigle = lien.group(1).strip(), (lien.group(2) or "").strip()
+    else:
+        nom, sigle = re.sub(r"\[\[|\]\]|\{\{[^}]*\}\}|'{2,}", "", reste).strip(), ""
+    nom = re.sub(r"\s*\([^)]*\)$", "", nom.split("#")[-1]).strip()
+    sigle = re.sub(r"'{2,}", "", sigle).strip()
+    if not nom: return None
+    return {"niveau": niveau, "lien": nom, "sigle": sigle, "s": int(n.group(1)), "couleur": cb.group(1).strip() if cb else ""}
+
+LEGENDE = re.compile(r"\{\{\s*legend\s*\|\s*((?:\{\{[^{}]*\}\}|[^|{}])*)\|((?:\{\{[^{}]*\}\}|\[\[[^\]]*\]\]|[^{}])*?)\((\d+)\)\s*\}\}", re.I)
+PARTY_LEGEND = re.compile(r"\{\{\s*Party legend\s*\|\s*([^|{}]+?)\s*\|\s*(\d+)\s*(?:\|[^{}]*)?\}\}", re.I)
+
 def analyser(t):
-    """Wikitexte de l'en-tête de l'article → (date dernière élection, groupes, total indiqué)."""
+    """Wikitexte de l'en-tête de l'article → (date dernière élection, groupes, total indiqué).
+    Présentations reconnues : listes « * [boîte] [[Parti]] (n) », modèles {{Party legend|Parti|n}}
+    et {{legend|couleur|[[Parti]] (n)}} (sur une ou plusieurs lignes). Les lignes en gras (alliances,
+    « Gouvernement », « Opposition ») sont des titres et ne sont pas comptées."""
     t = sans_modeles(t, ["efn", "refn", "efn-lr", "efn-ua", "sfn", "cn", "citation needed", "update needed", "dubious"])
     derniere = max([date_en(champ(t, k)) for k in ("last_election1", "last_election", "last_election2")] or [""])
     blocs = [champ(t, k) for k in ("political_groups1", "political_groups", "political_groups2")]
-    bloc = next((b for b in blocs if re.search(r"\(\d+\)", b)), "")
+    bloc = next((b for b in blocs if re.search(r"\(\d+\)|Party legend", b, re.I)), "")
     tot = re.search(r"\d+", re.sub(r"<[^>]+>", "", champ(t, "seats1") or champ(t, "seats") or ""))
     entrees = []
     for ligne in bloc.split("\n"):
-        m = re.match(r"^\s*\|?\s*([*:#]+)\s*(.*)$", ligne)
-        if not m: continue
+        brut = ligne.strip()
+        m = re.match(r"^\|?\s*([*:#]*)\s*(.*)$", brut)
         niveau, txt = len(m.group(1)), m.group(2).strip()
-        n = re.search(r"\((?:\[\[[^\]|]*\|)?(\d+)(?:\]\])?\)\s*(?:\}\})?\s*$", txt)
-        if not n: continue
-        cb = COLOR_BOX.search(txt)
-        reste = COLOR_BOX.sub("", txt[:n.start()]).strip()
-        lien = re.search(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]", reste)
-        if lien:
-            nom, sigle = lien.group(1).strip(), (lien.group(2) or "").strip()
-        else:
-            nom, sigle = re.sub(r"\[\[|\]\]|\{\{[^}]*\}\}|'{2,}", "", reste).strip(), ""
-        nom = re.sub(r"\s*\([^)]*\)$", "", nom.split("#")[-1]).strip()
-        sigle = re.sub(r"'{2,}", "", sigle).strip()
-        if not nom: continue
-        entrees.append({"niveau": niveau, "lien": nom, "sigle": sigle, "s": int(n.group(1)),
-                        "couleur": cb.group(1).strip() if cb else ""})
+        if txt.startswith("'" * 3) and not niveau and not LEGENDE.search(txt): continue   # titre (alliance, gouvernement…)
+        trouve = False
+        for p in PARTY_LEGEND.finditer(txt):
+            entrees.append({"niveau": max(niveau, 1), "lien": re.sub(r"\s*\([^)]*\)$", "", p.group(1).strip()),
+                            "sigle": "", "s": int(p.group(2)), "couleur": "{{party color|" + p.group(1).strip() + "}}"}); trouve = True
+        for l in LEGENDE.finditer(txt):
+            e = _entree(l.group(2).strip() + f" ({l.group(3)})", max(niveau, 1))
+            if e:
+                if not e["couleur"]: e["couleur"] = l.group(1).strip()
+                entrees.append(e); trouve = True
+        if not trouve and (niveau or COLOR_BOX.search(txt)):
+            e = _entree(txt, max(niveau, 1))
+            if e: entrees.append(e)
     total = int(tot.group()) if tot else None
     if not entrees: return derniere, [], total
     haut = min(e["niveau"] for e in entrees)
@@ -90,6 +112,15 @@ def analyser(t):
 
 def lire_infobox(titre):
     t = wiki_en({"action": "parse", "page": titre, "prop": "wikitext", "section": 0, "redirects": 1})["parse"]["wikitext"]
+    # nombres de sièges donnés par un modèle (ex. Indonésie : « ({{DPR RI|GOLKAR}}) ») → valeur calculée par Wikipédia
+    modeles = sorted(set(re.findall(r"\((\{\{(?:[^{}]|\{\{[^{}]*\}\})*\}\})\)", t)))
+    if modeles:
+        try:
+            txt = wiki_en({"action": "expandtemplates", "text": "§".join(modeles), "prop": "wikitext"})["expandtemplates"]["wikitext"]
+            for m, v in zip(modeles, txt.split("§")):
+                if re.fullmatch(r"\s*\d+\s*", v): t = t.replace("(" + m + ")", f"({v.strip()})")
+        except Exception:
+            pass
     return analyser(t)
 
 def couleurs(modeles):
@@ -206,6 +237,15 @@ ARTICLES_MANUELS = {
     ("Macedoine", "Sobranie"): ("Assembly of North Macedonia", ""),
     ("Nouvelle-Caledonie", "Congrès"): ("Congress of New Caledonia", "Congrès de la Nouvelle-Calédonie"),
     ("Polynésie française", "Assemblée de la Polynésie française"): ("Assembly of French Polynesia", "Assemblée de la Polynésie française"),
+    ("Ukraine", "Verkhovna Rada"): ("Verkhovna Rada", ""),
+    ("Perou", "Sénat"): ("Senate of Peru", ""),
+    ("Perou", "Chambre des députés"): ("Chamber of Deputies of Peru", "Chambre des députés (Pérou)"),
+    ("Iles Marshall", "Nitijela"): ("Nitijela", ""),
+    ("Inde", "Lok Sabha"): ("Lok Sabha", "Lok Sabha"),
+    ("Indonesie", "Chambre des représentants (DPR)"): ("House of Representatives (Indonesia)", "Conseil représentatif du peuple"),
+    ("Pakistan", "Assemblée nationale"): ("National Assembly of Pakistan", "Assemblée nationale (Pakistan)"),
+    ("Canada", "Sénat"): ("Senate of Canada", "Sénat du Canada"),
+    ("Namibie", "Assemblée nationale (élus)"): ("National Assembly (Namibia)", "Assemblée nationale (Namibie)"),
 }
 
 def proches(a, b, tol_total=3, tol=2):
