@@ -166,4 +166,10 @@ def main():
     for x in retires: print(f"     - {x}")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as ex:
+        if "designe_" in str(ex):
+            print("  ✗ Colonnes designe_* absentes : exécuter geolandar_designations.sql dans Supabase (SQL Editor).")
+        else:
+            raise
