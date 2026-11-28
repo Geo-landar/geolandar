@@ -1,34 +1,5 @@
 {
- "genere_le": "2026-11-27 09:39",
- "dirigeants_regionaux": [
-  "Bresil / Alagoas : site 'JHC (João Henrique Caldas)', proposé 'Paulo Dantas' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Bresil / Amapá : site 'Dr. Furlan', proposé 'Clécio Luís' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Bresil / Maranhão : site 'Eduardo Braide', proposé 'Carlos Brandão' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Bresil / Minas Gerais : site 'Cleitinho Azevedo', proposé 'Mateus Simões' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Bresil / Pará : site 'Dr. Daniel', proposé 'Hana Ghassan' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Bresil / Paraná : site 'Sergio Moro', proposé 'Ratinho Junior' (Wikidata, liste Wikipédia, article Wikipédia ; prise de fonction antérieure à notre vérification)",
-  "Bresil / Rio Grande do Sul : site 'Luciano Zucco', proposé 'Eduardo Leite' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Bresil / Roraima : site 'Arthur Henrique', proposé 'Soldado Sampaio' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Bresil / Amazonas : site 'Omar Aziz', proposé 'Roberto Cidade' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Bresil / Tocantins : site 'Vicentinho Júnior', proposé 'Wanderlei Barbosa' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Bresil / Rio Grande do Norte : site 'Cadu de Lula', proposé 'Fátima Bezerra' (Wikidata, liste Wikipédia, article Wikipédia ; prise de fonction antérieure à notre vérification)",
-  "Bresil / Espírito Santo : site 'Lorenzo Pazolini', proposé 'Ricardo Ferraço' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Bresil / Rio de Janeiro : site 'Douglas Ruas', proposé 'Ricardo Couto' (liste Wikipédia, article Wikipédia ; sans date)",
-  "Suede / Östergötland : site 'Marie Morell', proposé 'Carl Fredrik Graf' (Wikidata, article Wikipédia ; prise de fonction antérieure à notre vérification)",
-  "Suede / Blekinge : site 'Robert Lindén', proposé 'Ulrica Messing' (Wikidata, article Wikipédia ; prise de fonction antérieure à notre vérification)",
-  "Suede / Västerbotten : site 'Peter Olofsson', proposé 'Helene Hellmark Knutsson' (Wikidata, article Wikipédia ; prise de fonction antérieure à notre vérification)"
- ],
- "dirigeants_nationaux": [
-  "Serbie : affiché Aleksandar Čupić ; Wikipédia (fr) Ana Brnabić depuis le 2026-09-28 — Wikidata indique une prise de fonction plus récente"
- ],
- "chambres": [
-  {
-   "pays": "Nouvelle-Zelande",
-   "chambre": "Chambre des représentants",
-   "election": "2026-11-07",
-   "jours": 20
-  }
- ],
+ "genere_le": "2026-11-28 08:45",
  "elections_sans_resultat": [
   "Albanie (2025-05-11)",
   "Allemagne (2025-02-23)",
@@ -111,5 +82,34 @@
   "Trinidad & Tobago (2025-04-28)",
   "Vanuatu (2025-01-16)",
   "Venezuela (2025-05-25)"
+ ],
+ "chambres": [
+  {
+   "pays": "Nouvelle-Zelande",
+   "chambre": "Chambre des représentants",
+   "election": "2026-11-07",
+   "jours": 21
+  }
+ ],
+ "dirigeants_nationaux": [
+  "Serbie : affiché Aleksandar Čupić ; Wikipédia (fr) Ana Brnabić depuis le 2026-09-28 — Wikidata indique une prise de fonction plus récente"
+ ],
+ "dirigeants_regionaux": [
+  "Bresil / Alagoas : site 'JHC (João Henrique Caldas)', proposé 'Paulo Dantas' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Bresil / Amapá : site 'Dr. Furlan', proposé 'Clécio Luís' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Bresil / Maranhão : site 'Eduardo Braide', proposé 'Carlos Brandão' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Bresil / Minas Gerais : site 'Cleitinho Azevedo', proposé 'Mateus Simões' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Bresil / Pará : site 'Dr. Daniel', proposé 'Hana Ghassan' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Bresil / Paraná : site 'Sergio Moro', proposé 'Ratinho Junior' (Wikidata, liste Wikipédia, article Wikipédia ; prise de fonction antérieure à notre vérification)",
+  "Bresil / Rio Grande do Sul : site 'Luciano Zucco', proposé 'Eduardo Leite' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Bresil / Roraima : site 'Arthur Henrique', proposé 'Soldado Sampaio' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Bresil / Amazonas : site 'Omar Aziz', proposé 'Roberto Cidade' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Bresil / Tocantins : site 'Vicentinho Júnior', proposé 'Wanderlei Barbosa' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Bresil / Rio Grande do Norte : site 'Cadu de Lula', proposé 'Fátima Bezerra' (Wikidata, liste Wikipédia, article Wikipédia ; prise de fonction antérieure à notre vérification)",
+  "Bresil / Espírito Santo : site 'Lorenzo Pazolini', proposé 'Ricardo Ferraço' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Bresil / Rio de Janeiro : site 'Douglas Ruas', proposé 'Ricardo Couto' (liste Wikipédia, article Wikipédia ; sans date)",
+  "Suede / Östergötland : site 'Marie Morell', proposé 'Carl Fredrik Graf' (Wikidata, article Wikipédia ; prise de fonction antérieure à notre vérification)",
+  "Suede / Blekinge : site 'Robert Lindén', proposé 'Ulrica Messing' (Wikidata, article Wikipédia ; prise de fonction antérieure à notre vérification)",
+  "Suede / Västerbotten : site 'Peter Olofsson', proposé 'Helene Hellmark Knutsson' (Wikidata, article Wikipédia ; prise de fonction antérieure à notre vérification)"
  ]
 }
